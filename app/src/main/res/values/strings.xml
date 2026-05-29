@@ -2,4 +2,7 @@
     <string name="app_name">Laundry Demo</string>
     <string name="network_error">Could not connect to server</string>
     <string name="bad_auth">Username or password invalid</string>
+    <string name="login_button">Login</string>
+    <string name= "username">Enter phone number</string>
+    <string name= "password">Enter password</string>
 </resources>

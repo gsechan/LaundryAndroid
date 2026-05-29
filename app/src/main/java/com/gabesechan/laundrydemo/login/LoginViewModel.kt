@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.gabesechan.laundrydemo.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -25,11 +26,12 @@ class LoginViewModel @Inject constructor(
     private val _errorTextId = MutableStateFlow<Int>(0)
     val errorTextId = _errorTextId.asStateFlow()
 
-    fun onLoginClicked() {
+    fun onLoginClicked(username: CharSequence, password: CharSequence) {
         _loginButtonEnabled.value = false
         _showSpinner.value = true
+        _errorTextId.value = 0
         viewModelScope.launch(Dispatchers.IO) {
-            val result = loginAPI.login("Gabe","pw")
+            val result = loginAPI.login(username.toString(),password.toString())
             if(result is LoginAPI.LoginResult.NetworkError) {
                 _errorTextId.value = R.string.network_error
             }
@@ -40,7 +42,7 @@ class LoginViewModel @Inject constructor(
                 _errorTextId.value = 0
             }
             _loginButtonEnabled.value = true
-            _showSpinner.value = true
+            _showSpinner.value = false
         }
 
     }
