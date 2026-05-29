@@ -16,6 +16,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.gabesechan.laundrydemo.account.User
 import com.gabesechan.laundrydemo.account.UserRepository
+import com.gabesechan.laundrydemo.login.Login
 import com.gabesechan.laundrydemo.login.LoginAPI
 import com.gabesechan.laundrydemo.ui.theme.LaundryDemoTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -53,19 +54,7 @@ class MainActivity : ComponentActivity() {
                 else {
                     NavHost(navController = navController, startDestination = Login) {
                         composable<Login> {
-                            Login(
-                                {
-                                    lifecycleScope.launch(Dispatchers.IO) {
-                                        val result = loginAPI.login("Gabe","pw")
-                                        if(result is LoginAPI.LoginResult.NetworkError) {
-                                            //update UI
-                                        }
-                                        else if(result is LoginAPI.LoginResult.LoginFailed) {
-                                            //update UI
-                                        }
-                                    }
-                                }
-                            )
+                            Login()
                         }
                     }
                 }
@@ -94,20 +83,4 @@ fun Content(logoutFunc: ()->Unit, modifier: Modifier = Modifier) {
     }
 
 
-}
-
-@Composable
-fun Login(loginFunc: ()->Unit, modifier: Modifier = Modifier) {
-    Column {
-        Text(
-            text = "Login screen",
-            modifier = modifier
-        )
-        Button(onClick = {
-            loginFunc()
-        })
-        {
-            Text("Click me!")
-        }
-    }
 }

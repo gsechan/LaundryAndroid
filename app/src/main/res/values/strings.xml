@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Laundry Demo</string>
+    <string name="network_error">Could not connect to server</string>
+    <string name="bad_auth">Username or password invalid</string>
 </resources>

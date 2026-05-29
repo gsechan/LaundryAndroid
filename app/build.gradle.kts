@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.navigation)
     ksp(libs.hilt.compiler) // Use `ksp` instead of `kapt`
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
+    implementation("androidx.hilt:hilt-lifecycle-viewmodel-compose:1.3.0")
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui)
