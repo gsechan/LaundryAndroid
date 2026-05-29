@@ -1,16 +1,14 @@
-package com.gabesechan.laundrydemo
+package com.gabesechan.laundrydemo.account
 
-import com.gabesechan.laundrydemo.account.User
-import com.gabesechan.laundrydemo.account.UserRepository
-import org.junit.Test
 import junit.framework.TestCase.*
+import org.junit.Test
 
 class UserRepositoryTest {
 
     @Test
     fun testInitialUserIsNone() {
         val repo = UserRepository()
-        assertEquals( User.NoUser, repo.current.value)
+        assertEquals(User.NoUser, repo.current.value)
     }
 
     @Test
@@ -18,7 +16,7 @@ class UserRepositoryTest {
         val repo = UserRepository()
         val user = User.RealUser("1", "Gabe", "", "")
         repo.setUser(user)
-        assertEquals( user, repo.current.value)
+        assertEquals(user, repo.current.value)
     }
 
     @Test
@@ -27,7 +25,7 @@ class UserRepositoryTest {
         val user = User.RealUser("1", "Gabe", "", "")
         repo.setUser(user)
         repo.clearUser()
-        assertEquals( User.NoUser, repo.current.value)
+        assertEquals(User.NoUser, repo.current.value)
     }
 
     @Test

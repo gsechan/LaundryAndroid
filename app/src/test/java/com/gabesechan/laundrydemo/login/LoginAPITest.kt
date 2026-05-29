@@ -1,0 +1,81 @@
+package com.gabesechan.laundrydemo.login
+
+import com.gabesechan.laundrydemo.account.User
+import com.gabesechan.laundrydemo.account.UserRepository
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import okio.IOException
+import org.junit.Test
+import kotlinx.coroutines.test.runTest
+import junit.framework.TestCase.*
+
+class LoginAPITest {
+
+    @Test
+    fun testLogoutClearsRepo() {
+        val userRepo = mockk<UserRepository> {
+            every { clearUser() } returns Unit
+        }
+        val loginServer = mockk<LoginServer>()
+        val api = LoginAPI(userRepo, loginServer)
+        api.logout()
+        verify(exactly=1) { userRepo.clearUser() }
+    }
+
+    @Test
+    fun testLoginNetworkErrorReturnsError()= runTest {
+        val userRepo = mockk<UserRepository>()
+        val loginServer = mockk<LoginServer>{
+            coEvery { login(any()) } throws IOException()
+        }
+        val api = LoginAPI(userRepo, loginServer)
+        val result = api.login("","")
+        assertEquals(LoginAPI.LoginResult.NetworkError, result)
+    }
+
+    @Test
+    fun testLoginBadInfoReturnsFailure()= runTest {
+        val userRepo = mockk<UserRepository>()
+        val loginServer = mockk<LoginServer>{
+            coEvery { login(any()) } returns LoginResponse(false, null)
+        }
+        val api = LoginAPI(userRepo, loginServer)
+        val result = api.login("","")
+        assertEquals(LoginAPI.LoginResult.LoginFailed, result)
+    }
+
+    @Test
+    fun testLoginNoServerUserReturnsFailure()= runTest {
+        val userRepo = mockk<UserRepository>()
+        val loginServer = mockk<LoginServer>{
+            coEvery { login(any()) } returns LoginResponse(true, null)
+        }
+        val api = LoginAPI(userRepo, loginServer)
+        val result = api.login("","")
+        assertEquals(LoginAPI.LoginResult.LoginFailed, result)
+    }
+
+    @Test
+    fun testLoginSuccessSetsUserAndReturnsSuccess()= runTest {
+        val userRepo = mockk<UserRepository>() {
+            every { setUser(any()) } returns Unit
+        }
+        val loginServer = mockk<LoginServer>{
+            coEvery { login(any()) } returns
+                    LoginResponse(true, LoginUser("1", "gabe","",""))
+        }
+        val api = LoginAPI(userRepo, loginServer)
+        val result = api.login("","")
+        assertTrue(result is LoginAPI.LoginResult.LoginSuccess)
+        verify {
+            userRepo.setUser(
+                match {
+                    it.phone == "" && it.email == "" && it.id == "1" && it.name == "gabe"
+                }
+            )
+        }
+    }
+
+}

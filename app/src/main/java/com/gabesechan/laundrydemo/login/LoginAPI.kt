@@ -24,7 +24,7 @@ class LoginAPI @Inject constructor(
     suspend fun login(username: String, password: String): LoginResult {
         try {
             val response = loginServer.login(LoginRequest(username, password))
-            if(response.success) {
+            if(response.success && response.user!= null) {
                 val user = User.RealUser(
                     response.user.id,
                     response.user.name,
