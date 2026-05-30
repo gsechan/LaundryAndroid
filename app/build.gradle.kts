@@ -56,6 +56,8 @@ dependencies {
     implementation(libs.retrofitGson)
     implementation(libs.hilt)
     implementation(libs.navigation)
+    implementation(libs.androidx.core.splash)
+    implementation(libs.androidx.datastore.preferences)
     ksp(libs.hilt.compiler) // Use `ksp` instead of `kapt`
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
     implementation("androidx.hilt:hilt-lifecycle-viewmodel-compose:1.3.0")

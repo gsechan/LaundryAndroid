@@ -3,6 +3,7 @@ package com.gabesechan.laundrydemo.login
 import com.gabesechan.laundrydemo.account.User
 import com.gabesechan.laundrydemo.account.UserRepository
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -14,14 +15,14 @@ import junit.framework.TestCase.*
 class LoginAPITest {
 
     @Test
-    fun testLogoutClearsRepo() {
+    fun testLogoutClearsRepo() = runTest {
         val userRepo = mockk<UserRepository> {
-            every { clearUser() } returns Unit
+            coEvery { clearUser() } returns Unit
         }
         val loginServer = mockk<LoginServer>()
         val api = LoginAPI(userRepo, loginServer)
         api.logout()
-        verify(exactly=1) { userRepo.clearUser() }
+        coVerify(exactly=1) { userRepo.clearUser() }
     }
 
     @Test
@@ -60,7 +61,7 @@ class LoginAPITest {
     @Test
     fun testLoginSuccessSetsUserAndReturnsSuccess()= runTest {
         val userRepo = mockk<UserRepository>() {
-            every { setUser(any()) } returns Unit
+            coEvery { setUser(any()) } returns Unit
         }
         val loginServer = mockk<LoginServer>{
             coEvery { login(any()) } returns
@@ -69,11 +70,11 @@ class LoginAPITest {
         val api = LoginAPI(userRepo, loginServer)
         val result = api.login("","")
         assertTrue(result is LoginAPI.LoginResult.LoginSuccess)
-        verify {
+        coVerify {
             userRepo.setUser(
                 match {
                     it.phone == "" && it.email == "" && it.id == "1" && it.name == "gabe"
-                }
+                },
             )
         }
     }

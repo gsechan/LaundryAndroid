@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,6 +22,7 @@ import com.gabesechan.laundrydemo.login.LoginAPI
 import com.gabesechan.laundrydemo.ui.theme.LaundryDemoTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import javax.inject.Inject
@@ -39,8 +41,16 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var loginAPI: LoginAPI
 
+    private var isReady = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val splashScreen = installSplashScreen()
+        splashScreen.setKeepOnScreenCondition { !isReady }
+        lifecycleScope.launch(Dispatchers.IO) {
+            userRepository.initFromDisk()
+            isReady = true
+        }
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
@@ -48,7 +58,7 @@ class MainActivity : ComponentActivity() {
             LaundryDemoTheme {
                 if(user.isLoggedIn()) {
                     NavHost(navController = navController, startDestination = Content) {
-                        composable<Content> { Content({ loginAPI.logout() }) }
+                        composable<Content> { Content({ lifecycleScope.launch { loginAPI.logout() }}) }
                     }
                 }
                 else {

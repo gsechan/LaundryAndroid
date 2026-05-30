@@ -2,6 +2,7 @@ package com.gabesechan.laundrydemo.login
 
 import com.gabesechan.laundrydemo.account.User
 import com.gabesechan.laundrydemo.account.UserRepository
+import kotlinx.coroutines.CoroutineScope
 import okio.IOException
 import javax.inject.Inject
 
@@ -9,7 +10,7 @@ class LoginAPI @Inject constructor(
     private var userRepository: UserRepository,
     private var loginServer: LoginServer
 ) {
-    fun logout() {
+    suspend fun logout() {
         userRepository.clearUser()
     }
 
