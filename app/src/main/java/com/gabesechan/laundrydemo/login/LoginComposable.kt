@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.gabesechan.laundrydemo.R
@@ -50,9 +51,6 @@ fun LoginInner(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(innerPadding).padding(16.dp).fillMaxSize()
         ) {
-            Text(
-                text = "Login screen",
-            )
             val usernameState = rememberTextFieldState("")
             val passwordState = rememberTextFieldState("")
             TextField(usernameState, placeholder = {Text(stringResource(R.string.username))})
@@ -73,3 +71,21 @@ fun LoginInner(
     }
 }
 
+@Preview
+@Composable
+fun LoginEnabled() {
+    LoginInner({_,_ -> }, true, false, 0)
+}
+
+@Preview
+@Composable
+fun LoginSpinner() {
+    LoginInner({_,_ -> }, false, true, 0)
+}
+
+
+@Preview
+@Composable
+fun LoginErrorText() {
+    LoginInner({_,_ -> }, true, false, R.string.network_error)
+}

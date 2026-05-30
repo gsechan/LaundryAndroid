@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -17,14 +18,14 @@ fun LoadingButton(onClick: ()->Unit, text: String, enabled:Boolean, showSpinner:
 
     Button(
         onClick = { onClick() },
-        modifier = Modifier.height(ButtonDefaults.MinHeight).fillMaxWidth(),
+        modifier = Modifier.height(ButtonDefaults.MinHeight).fillMaxWidth().testTag("LoadingButtonRoot"),
         // Disable button while loading to prevent multiple clicks
         enabled = enabled
     ) {
         if (showSpinner) {
             // Indeterminate indicator that runs while task is active
             CircularProgressIndicator(
-                modifier = Modifier.size(18.dp),
+                modifier = Modifier.size(18.dp).testTag("LoadingProgress"),
                 color = MaterialTheme.colorScheme.onPrimary,
                 strokeWidth = 2.dp
             )
