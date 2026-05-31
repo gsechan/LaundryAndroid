@@ -26,7 +26,7 @@ class LoginAPI @Inject constructor(
         try {
             val response = loginServer.login(LoginRequest(username, password))
             if(response.success && response.user!= null) {
-                val user = User.RealUser(
+                val user = User(
                     response.user.id,
                     response.user.name,
                     response.user.email,

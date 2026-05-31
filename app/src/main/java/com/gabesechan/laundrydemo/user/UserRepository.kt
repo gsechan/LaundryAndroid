@@ -8,26 +8,22 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 class UserRepository @Inject constructor( private val datastore: DataStore<Preferences>) {
     private val _current: MutableStateFlow<User> = MutableStateFlow(User.NoUser)
     val current = _current.asStateFlow()
 
-    private val namePreferenceKey = stringPreferencesKey("Name")
-    private val idPreferenceKey = stringPreferencesKey("id")
-    private val emailPreferenceKey = stringPreferencesKey("email")
-    private val phonePreferenceKey = stringPreferencesKey("phone")
+    private val jsonKey = stringPreferencesKey("json")
 
 
     suspend fun initFromDisk() {
         val stored = datastore.data.first()
-        val name = stored[namePreferenceKey]
-        val id = stored[idPreferenceKey]
-        val phone = stored[phonePreferenceKey]
-        val email = stored[emailPreferenceKey]
-        if(name != null && id != null) {
-            _current.value = User.RealUser(id, name, email, phone, emptyList())
+        val json = stored[jsonKey]
+        if(json != null) {
+            val user = Json.decodeFromString<User>(json)
+            _current.value = user
         }
         else {
             _current.value = User.NoUser
@@ -35,25 +31,19 @@ class UserRepository @Inject constructor( private val datastore: DataStore<Prefe
     }
 
     suspend fun setUser(user: User) {
-        if(user is User.NoUser) {
+        if(user == User.NoUser) {
             throw RuntimeException("Cannot use login to logout")
         }
         _current.value = user
         datastore.edit {
-            it[namePreferenceKey] = user.name
-            it[idPreferenceKey] = user.id
-            it.writeOrRemove(emailPreferenceKey, user.email)
-            it.writeOrRemove(phonePreferenceKey, user.phone)
+            it[jsonKey] = Json.encodeToString(user)
         }
     }
 
     suspend fun clearUser() {
         _current.value = User.NoUser
         datastore.edit {
-            it.remove(namePreferenceKey)
-            it.remove(emailPreferenceKey)
-            it.remove(idPreferenceKey)
-            it.remove(phonePreferenceKey)
+            it.remove(jsonKey)
         }
     }
 

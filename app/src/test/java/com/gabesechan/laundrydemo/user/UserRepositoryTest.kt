@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -18,10 +20,7 @@ class UserRepositoryTest {
     val temporaryFolder = TemporaryFolder.builder().assureDeletion().build()
     private val testDispatcher = StandardTestDispatcher()
     private val testScope = TestScope(testDispatcher)
-    private val namePreferenceKey = stringPreferencesKey("Name")
-    private val idPrefenceKey = stringPreferencesKey("id")
-    private val emailPreferkeceKey = stringPreferencesKey("email")
-    private val phonePreferenceKey = stringPreferencesKey("phone")
+    private val jsonPreferenceKeys = stringPreferencesKey("json")
 
     // Build the test DataStore instance
     private val testDataStore = PreferenceDataStoreFactory.create(
@@ -39,39 +38,25 @@ class UserRepositoryTest {
     @Test
     fun settingUserSetsCurrent() = testScope.runTest {
         val repo = UserRepository(testDataStore)
-        val user = User.RealUser("1", "Gabe", "a", "b", emptyList())
+        val user = User("1", "Gabe", "a", "b", emptyList())
         repo.setUser(user)
         assertEquals(user, repo.current.value)
 
         val updatedPrefs = testDataStore.data.first()
-        assertEquals("Gabe", updatedPrefs[namePreferenceKey])
-        assertEquals("1", updatedPrefs[idPrefenceKey])
-        assertEquals("a", updatedPrefs[emailPreferkeceKey])
-        assertEquals("b", updatedPrefs[phonePreferenceKey])
+        assertEquals(Json.encodeToString(user), updatedPrefs[jsonPreferenceKeys])
 
     }
 
     @Test
     fun clearingUserSetsNoUser() = testScope.runTest {
-        testDataStore.edit {
-            it[namePreferenceKey] = "Fake"
-            it[idPrefenceKey] = "2"
-            it.writeOrRemove(emailPreferkeceKey, "email")
-            it.writeOrRemove(phonePreferenceKey, "phone")
-
-        }
+        val user = User("1", "Gabe", "", "", emptyList())
         val repo = UserRepository(testDataStore)
-        val user = User.RealUser("1", "Gabe", "", "", emptyList())
         repo.setUser(user)
         repo.clearUser()
         assertEquals(User.NoUser, repo.current.value)
 
         val updatedPrefs = testDataStore.data.first()
-        assertNull( updatedPrefs[namePreferenceKey])
-        assertNull(updatedPrefs[idPrefenceKey])
-        assertNull(updatedPrefs[emailPreferkeceKey])
-        assertNull(updatedPrefs[phonePreferenceKey])
-
+        assertNull( updatedPrefs[jsonPreferenceKeys])
     }
 
     @Test
@@ -86,14 +71,11 @@ class UserRepositoryTest {
 
     @Test
     fun initFromDiskReadsDatastore() = testScope.runTest {
-        val user = User.RealUser("2", "Fake", "email", "phone", emptyList())
+        val user = User("2", "Fake", "email", "phone", emptyList())
+        val userJson = Json.encodeToString(user)
         val repo = UserRepository(testDataStore)
         testDataStore.edit {
-            it[namePreferenceKey] = user.name
-            it[idPrefenceKey] = user.id
-            it.writeOrRemove(emailPreferkeceKey, user.email)
-            it.writeOrRemove(phonePreferenceKey, user.phone)
-
+            it[jsonPreferenceKeys] = userJson
         }
         repo.initFromDisk()
         assertEquals(user.name, repo.current.value.name)
@@ -102,10 +84,7 @@ class UserRepositoryTest {
         assertEquals(user.email, repo.current.value.email)
 
         val updatedPrefs = testDataStore.data.first()
-        assertEquals(user.name, updatedPrefs[namePreferenceKey])
-        assertEquals(user.id, updatedPrefs[idPrefenceKey])
-        assertEquals(user.email, updatedPrefs[emailPreferkeceKey])
-        assertEquals(user.phone, updatedPrefs[phonePreferenceKey])
+        assertEquals(userJson, updatedPrefs[jsonPreferenceKeys])
 
     }
 

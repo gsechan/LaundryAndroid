@@ -62,7 +62,7 @@ class LoginAPITest {
         }
         val loginServer = mockk<LoginServer>{
             coEvery { login(any()) } returns
-                    LoginResponse(true, LoginUser("1", "gabe","",""))
+                    LoginResponse(true, LoginUser("1", "gabe","","", emptyList()))
         }
         val api = LoginAPI(userRepo, loginServer)
         val result = api.login("","")
