@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -15,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.gabesechan.laundrydemo.accountscreen.AccountScreen
+import com.gabesechan.laundrydemo.homescreen.HomeScreen
 import com.gabesechan.laundrydemo.user.UserRepository
 import com.gabesechan.laundrydemo.login.Login
 import com.gabesechan.laundrydemo.login.LoginAPI
@@ -80,20 +80,8 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-
-
-
 }
 
-@Composable
-fun HomeScreen() {
-    Column {
-        Text(
-            text = "Home screen",
-        )
-    }
-}
 
 @Composable
 fun WashFoldScreen() {
