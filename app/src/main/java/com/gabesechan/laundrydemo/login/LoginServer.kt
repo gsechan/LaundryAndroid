@@ -17,9 +17,18 @@ data class LoginUser(
     val id: String,
     val name: String,
     val email: String?,
-    val phone: String?
+    val phone: String?,
+    val addresses: List<LoginAddress>,
 )
 
+data class LoginAddress(
+    val street1: String,
+    val street2: String?,
+    val city: String,
+    val state: String,
+    val country: String,
+    val postcode: String
+)
 interface LoginServer {
 
 

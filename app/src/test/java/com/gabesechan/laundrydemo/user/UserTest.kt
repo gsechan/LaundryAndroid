@@ -13,7 +13,7 @@ class UserTest {
 
     @Test
     fun RealUserIsLoggedIn() {
-        val user = User.RealUser("1","Gabe","","")
+        val user = User.RealUser("1","Gabe","","", emptyList())
         assertTrue(user.isLoggedIn())
     }
 

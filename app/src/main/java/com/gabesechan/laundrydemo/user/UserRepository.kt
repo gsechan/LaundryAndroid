@@ -27,7 +27,7 @@ class UserRepository @Inject constructor( private val datastore: DataStore<Prefe
         val phone = stored[phonePreferenceKey]
         val email = stored[emailPreferenceKey]
         if(name != null && id != null) {
-            _current.value = User.RealUser(id, name, email, phone)
+            _current.value = User.RealUser(id, name, email, phone, emptyList())
         }
         else {
             _current.value = User.NoUser

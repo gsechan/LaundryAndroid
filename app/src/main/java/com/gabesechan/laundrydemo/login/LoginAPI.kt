@@ -1,5 +1,6 @@
 package com.gabesechan.laundrydemo.login
 
+import com.gabesechan.laundrydemo.user.Address
 import com.gabesechan.laundrydemo.user.User
 import com.gabesechan.laundrydemo.user.UserRepository
 import okio.IOException
@@ -29,7 +30,8 @@ class LoginAPI @Inject constructor(
                     response.user.id,
                     response.user.name,
                     response.user.email,
-                    response.user.phone
+                    response.user.phone,
+                    response.user.addresses.toAddress()
                 )
                 userRepository.setUser(user)
                 return LoginResult.LoginSuccess(user)
@@ -40,5 +42,18 @@ class LoginAPI @Inject constructor(
             ex.printStackTrace()
             return LoginResult.NetworkError
         }
+    }
+}
+
+private fun List<LoginAddress>.toAddress(): List<Address> {
+    return map {
+        Address(
+            it.street1,
+            it.street2,
+            it.city,
+            it.state,
+            it.country,
+            it.postcode
+        )
     }
 }
