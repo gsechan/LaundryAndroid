@@ -2,7 +2,6 @@ package com.gabesechan.laundrydemo.ui.widgets
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -15,11 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 
 data class DestinationScreen(
     val route: String,
@@ -30,7 +25,7 @@ data class DestinationScreen(
 
 @Composable
 fun NavMenuScreen(navController: NavController, items: List<DestinationScreen>, content: @Composable () -> Unit) {
-    var curScreen = navController.currentDestination?.route
+    val curScreen = navController.currentDestination?.route
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {

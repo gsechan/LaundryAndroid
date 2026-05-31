@@ -5,23 +5,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.gabesechan.laundrydemo.account.User
 import com.gabesechan.laundrydemo.account.UserRepository
 import com.gabesechan.laundrydemo.login.Login
 import com.gabesechan.laundrydemo.login.LoginAPI
@@ -30,9 +22,7 @@ import com.gabesechan.laundrydemo.ui.widgets.DestinationScreen
 import com.gabesechan.laundrydemo.ui.widgets.NavMenuScreen
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -91,24 +81,6 @@ class MainActivity : ComponentActivity() {
     }
 
 
-
-
-}
-
-@Composable
-fun Content(logoutFunc: ()->Unit, modifier: Modifier = Modifier) {
-    Column {
-        Text(
-            text = "Content screen",
-            modifier = modifier
-        )
-        Button(onClick = {
-            logoutFunc()
-        }) {
-            Text("Click me!")
-        }
-
-    }
 
 
 }
