@@ -5,7 +5,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -20,17 +26,14 @@ import com.gabesechan.laundrydemo.account.UserRepository
 import com.gabesechan.laundrydemo.login.Login
 import com.gabesechan.laundrydemo.login.LoginAPI
 import com.gabesechan.laundrydemo.ui.theme.LaundryDemoTheme
+import com.gabesechan.laundrydemo.ui.widgets.DestinationScreen
+import com.gabesechan.laundrydemo.ui.widgets.NavMenuScreen
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import javax.inject.Inject
-
-@Serializable
-object Login
-@Serializable
-object Content
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -42,6 +45,13 @@ class MainActivity : ComponentActivity() {
     lateinit var loginAPI: LoginAPI
 
     private var isReady = false
+
+    private var navItems = listOf(
+        DestinationScreen("home", R.string.home, 0, ::HomeScreen),
+        DestinationScreen("wash", R.string.wash_fold, 0, ::WashFoldScreen),
+        DestinationScreen("dryclean", R.string.dry_clean, 0, ::DryCleaningScreen),
+        DestinationScreen("account", R.string.account, 0, ::AccountScreen),
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,13 +67,21 @@ class MainActivity : ComponentActivity() {
             val user = userRepository.current.collectAsState().value
             LaundryDemoTheme {
                 if(user.isLoggedIn()) {
-                    NavHost(navController = navController, startDestination = Content) {
-                        composable<Content> { Content({ lifecycleScope.launch { loginAPI.logout() }}) }
+                    NavMenuScreen(navController, navItems) {
+                        NavHost(
+                            navController = navController,
+                            startDestination = "home",
+                        ) {
+                            navItems.forEach { item->
+                                composable(item.route){ item.screen() }
+                            }
+                        }
+
                     }
                 }
                 else {
-                    NavHost(navController = navController, startDestination = Login) {
-                        composable<Login> {
+                    NavHost(navController = navController, startDestination = "login") {
+                        composable("login") {
                             Login()
                         }
                     }
@@ -92,5 +110,48 @@ fun Content(logoutFunc: ()->Unit, modifier: Modifier = Modifier) {
 
     }
 
+
+}
+
+@Composable
+fun HomeScreen() {
+    Column {
+        Text(
+            text = "Home screen",
+        )
+    }
+}
+
+@Composable
+fun WashFoldScreen() {
+    Column {
+        Text(
+            text = "Wash and Fold",
+        )
+    }
+}
+
+@Composable
+fun DryCleaningScreen() {
+    Column {
+        Text(
+            text = "Dry Cleaning",
+        )
+    }
+}
+
+@Composable
+fun AccountScreen() {
+    Column {
+        Text(
+            text = "Account",
+        )
+        Button(onClick = {
+    //        { lifecycleScope.launch { loginAPI.logout() } }
+        }) {
+            Text("Logout")
+        }
+
+    }
 
 }

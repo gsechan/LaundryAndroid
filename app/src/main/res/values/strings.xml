@@ -5,4 +5,10 @@
     <string name="login_button">Login</string>
     <string name= "username">Enter phone number</string>
     <string name= "password">Enter password</string>
+
+    <string name= "home">Home</string>
+    <string name= "wash_fold">Wash and Fold</string>
+    <string name= "dry_clean">Dry Cleaning</string>
+    <string name= "account">Account</string>
+
 </resources>
