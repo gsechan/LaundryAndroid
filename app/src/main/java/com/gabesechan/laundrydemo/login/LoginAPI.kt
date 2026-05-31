@@ -1,7 +1,7 @@
 package com.gabesechan.laundrydemo.login
 
-import com.gabesechan.laundrydemo.account.User
-import com.gabesechan.laundrydemo.account.UserRepository
+import com.gabesechan.laundrydemo.user.User
+import com.gabesechan.laundrydemo.user.UserRepository
 import okio.IOException
 import javax.inject.Inject
 

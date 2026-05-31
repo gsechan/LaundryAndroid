@@ -1,4 +1,4 @@
-package com.gabesechan.laundrydemo.account
+package com.gabesechan.laundrydemo.user
 
 import org.junit.Test
 import junit.framework.TestCase.assertFalse

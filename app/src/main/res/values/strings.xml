@@ -11,4 +11,8 @@
     <string name= "dry_clean">Dry Cleaning</string>
     <string name= "account">Account</string>
 
+    <string name = "logout">Logout</string>
+    <string name = "phone_label">Phone: %1$s</string>
+    <string name = "email_label">Email: %1$s</string>
+
 </resources>

@@ -1,12 +1,9 @@
 package com.gabesechan.laundrydemo.login
 
-import com.gabesechan.laundrydemo.account.User
-import com.gabesechan.laundrydemo.account.UserRepository
+import com.gabesechan.laundrydemo.user.UserRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import okio.IOException
 import org.junit.Test
 import kotlinx.coroutines.test.runTest

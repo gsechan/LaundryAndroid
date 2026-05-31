@@ -1,7 +1,7 @@
 package com.gabesechan.laundrydemo.login
 
 import com.gabesechan.laundrydemo.R
-import com.gabesechan.laundrydemo.account.User
+import com.gabesechan.laundrydemo.user.User
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.delay

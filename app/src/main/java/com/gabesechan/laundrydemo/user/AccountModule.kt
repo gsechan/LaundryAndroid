@@ -1,4 +1,4 @@
-package com.gabesechan.laundrydemo.account
+package com.gabesechan.laundrydemo.user
 
 import android.content.Context
 import androidx.datastore.core.DataStore

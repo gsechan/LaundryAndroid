@@ -14,7 +14,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.gabesechan.laundrydemo.account.UserRepository
+import com.gabesechan.laundrydemo.accountscreen.AccountScreen
+import com.gabesechan.laundrydemo.user.UserRepository
 import com.gabesechan.laundrydemo.login.Login
 import com.gabesechan.laundrydemo.login.LoginAPI
 import com.gabesechan.laundrydemo.ui.theme.LaundryDemoTheme
@@ -112,18 +113,3 @@ fun DryCleaningScreen() {
     }
 }
 
-@Composable
-fun AccountScreen() {
-    Column {
-        Text(
-            text = "Account",
-        )
-        Button(onClick = {
-    //        { lifecycleScope.launch { loginAPI.logout() } }
-        }) {
-            Text("Logout")
-        }
-
-    }
-
-}

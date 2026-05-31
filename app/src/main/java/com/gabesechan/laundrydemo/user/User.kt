@@ -1,4 +1,4 @@
-package com.gabesechan.laundrydemo.account
+package com.gabesechan.laundrydemo.user
 
 sealed class User(val id: String, val name: String, val email: String?, val phone: String?) {
    class RealUser(idVal: String, nameVal: String, emailVal: String?, phoneVal: String?):
