@@ -53,7 +53,7 @@ dependencies {
     implementation(libs.androidx.junit.ktx)
     implementation(libs.androidx.ui.test.junit4)
     implementation(libs.retrofit)
-    implementation(libs.retrofitGson)
+    implementation(libs.retrofitConverter)
     implementation(libs.hilt)
     implementation(libs.navigation)
     implementation(libs.androidx.core.splash)

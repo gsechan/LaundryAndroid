@@ -8,11 +8,13 @@ import retrofit2.http.POST
 @Serializable
 data class LoginRequest(val username: String, val password: String)
 
+@Serializable
 data class LoginResponse(
     val success: Boolean,
     val user: LoginUser?
 )
 
+@Serializable
 data class LoginUser(
     val id: String,
     val name: String,
@@ -21,6 +23,7 @@ data class LoginUser(
     val addresses: List<LoginAddress>,
 )
 
+@Serializable
 data class LoginAddress(
     val street1: String,
     val street2: String?,
