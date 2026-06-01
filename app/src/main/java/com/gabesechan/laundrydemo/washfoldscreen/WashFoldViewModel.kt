@@ -32,7 +32,18 @@ class WashFoldViewModel @Inject constructor(
     private val _pickupTime = MutableStateFlow<TimeRange?>(null)
     val pickupTime = _pickupTime.asSharedFlow()
 
+    private val _dropOffDate = MutableStateFlow<Long?>(null)
+    val dropOffDate = _dropOffDate.asSharedFlow()
+
+    private val _dropOffTime = MutableStateFlow<TimeRange?>(null)
+    val dropOffTime = _dropOffTime.asSharedFlow()
+
+
     private var pickupTimesForDateSelected = emptyList<TimeRange>()
+    private var dropOffTimesForDateSelected = emptyList<TimeRange>()
+
+    private val _isBooked = MutableStateFlow(false)
+    val isBooked = _isBooked.asStateFlow()
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -41,6 +52,9 @@ class WashFoldViewModel @Inject constructor(
             _dataLoaded.value = true
         }
     }
+
+    fun washPrice(): Int = pricesResponse.washFold
+
 
     fun availablePickups(): List<AvailableDateTime> = availableTimesResponse.pickup
     fun availableDropoffs(): List<AvailableDateTime> = availableTimesResponse.delivery
@@ -75,7 +89,40 @@ class WashFoldViewModel @Inject constructor(
         }
     }
 
+    fun getSelectableDropoffDates(): SelectableDates {
+        if(dataLoaded.value == false) {
+            return DatePickerDefaults.AllDates
+        }
+        return object: SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                // Convert milliseconds to local date
+                availableDropoffs().forEach {
+                    if(it.date == utcTimeMillis) {
+                        return@isSelectableDate true
+                    }
+                }
+                return false
+            }
+
+            override fun isSelectableYear(year: Int): Boolean {
+                availableDropoffs().forEach {
+                    if(Instant.ofEpochMilli(it.date)
+                            .atZone(ZoneId.of("UTC"))
+                            .toLocalDate().year == year) {
+                        return@isSelectableYear true
+                    }
+                }
+                return false
+            }
+
+        }
+    }
+
+
     fun getPickupTimesForCurrentDate(): List<TimeRange> {
+        return pickupTimesForDateSelected
+    }
+    fun getDropOffTimesForCurrentDate(): List<TimeRange> {
         return pickupTimesForDateSelected
     }
 
@@ -83,9 +130,27 @@ class WashFoldViewModel @Inject constructor(
         pickupTimesForDateSelected = availablePickups().first { it.date == date}.times
         _pickupDate.value = date
         _pickupTime.value = null
+        _dropOffDate.value = null
+        _dropOffTime.value = null
+        dropOffTimesForDateSelected = emptyList()
+
     }
 
     fun setPickupTime(time: TimeRange) {
         _pickupTime.value = time
+    }
+
+    fun setDropoffDate(date: Long?) {
+        dropOffTimesForDateSelected = availableDropoffs().first { it.date == date}.times
+        _dropOffDate.value = date
+        _dropOffTime.value = null
+    }
+
+    fun setDropoffTime(time: TimeRange) {
+        _dropOffTime.value = time
+    }
+
+    fun book() {
+        _isBooked.value = true
     }
 }

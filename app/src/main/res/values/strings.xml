@@ -9,6 +9,7 @@
     <string name= "home">Home</string>
     <string name= "wash_fold">Wash and Fold</string>
     <string name= "dry_clean">Dry Cleaning</string>
+    <string name= "orders">Account</string>
     <string name= "account">Account</string>
 
     <string name = "logout">Logout</string>
@@ -19,6 +20,10 @@
     <string name="address_format">%1$s, %2$s %3$s</string>
 
     <string name="pickup_select">Select Pickup Date</string>
+    <string name="dropoff_select">Select Pickup Date</string>
     <string name="time_range_format">%1$s - %2$s</string>
+    <string name="expected_wash_price">The price of this order depends on weight.  The price is %1$s per pound.  The average cost is %2$s</string>
+    <string name="book_now">Book Now</string>
+    <string name="order_booked">Congratulations, your order is booked.</string>
 
 </resources>

@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
         DestinationScreen("home", R.string.home, 0, ::HomeScreen),
         DestinationScreen("wash", R.string.wash_fold, 0, ::WashFoldScreen),
         DestinationScreen("dryclean", R.string.dry_clean, 0, ::DryCleaningScreen),
-        DestinationScreen("orders", R.string.dry_clean, 0, ::OrderScreen),
+        DestinationScreen("orders", R.string.orders, 0, ::OrderScreen),
         DestinationScreen("account", R.string.account, 0, ::AccountScreen),
     )
 
