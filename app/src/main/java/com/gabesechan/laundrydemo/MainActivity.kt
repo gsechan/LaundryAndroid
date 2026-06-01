@@ -21,6 +21,7 @@ import com.gabesechan.laundrydemo.login.LoginAPI
 import com.gabesechan.laundrydemo.ui.theme.LaundryDemoTheme
 import com.gabesechan.laundrydemo.ui.widgets.DestinationScreen
 import com.gabesechan.laundrydemo.ui.widgets.NavMenuScreen
+import com.gabesechan.laundrydemo.washfoldscreen.WashFoldScreen
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -84,14 +85,6 @@ class MainActivity : ComponentActivity() {
 }
 
 
-@Composable
-fun WashFoldScreen() {
-    Column {
-        Text(
-            text = "Wash and Fold",
-        )
-    }
-}
 
 @Composable
 fun DryCleaningScreen() {
