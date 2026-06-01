@@ -4,12 +4,14 @@ import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.SelectableDates
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gabesechan.laundrydemo.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.ZoneId
@@ -18,7 +20,14 @@ import javax.inject.Inject
 @HiltViewModel
 class WashFoldViewModel @Inject constructor(
     laundromatInfoServer: LaundromatInfoServer,
+    userRepository: UserRepository
 ): ViewModel() {
+
+    val addresses = userRepository.current.map { it.addresses }
+
+    private val _selectedAddressIndex = MutableStateFlow(0)
+    val selectedAddressIndex = _selectedAddressIndex.asStateFlow()
+
 
     private val _dataLoaded = MutableStateFlow(false)
     val dataLoaded = _dataLoaded.asStateFlow()
@@ -51,6 +60,10 @@ class WashFoldViewModel @Inject constructor(
             pricesResponse = laundromatInfoServer.prices()
             _dataLoaded.value = true
         }
+    }
+
+    fun selectAddress(index: Int) {
+        _selectedAddressIndex.value = index
     }
 
     fun washPrice(): Int = pricesResponse.washFold

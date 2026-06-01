@@ -14,9 +14,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.gabesechan.laundrydemo.R
+import com.gabesechan.laundrydemo.ui.widgets.AddressPicker
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePicker
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerCallbacks
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerValues
+import com.gabesechan.laundrydemo.user.Address
 import java.math.BigDecimal
 import java.text.NumberFormat
 
@@ -28,12 +30,18 @@ fun WashFoldScreen(viewModel: WashFoldViewModel = hiltViewModel()) {
     val pickupTime by viewModel.pickupTime.collectAsState(null)
     val dropoffDate by viewModel.dropOffDate.collectAsState(null)
     val dropoffTime by viewModel.dropOffTime.collectAsState(null)
+    val selectedAddressIndex by viewModel.selectedAddressIndex.collectAsState()
+    val addresses by viewModel.addresses.collectAsState(emptyList())
 
     if(isBooked) {
         Text(stringResource(R.string.order_booked))
     }
     else if(isLoaded) {
+
         WashFoldScreenInner(
+            addresses,
+            selectedAddressIndex,
+            viewModel::selectAddress,
             DateTimePickerValues(
                 viewModel.getSelectablePickupDates(),
                 pickupDate,
@@ -60,6 +68,9 @@ fun WashFoldScreen(viewModel: WashFoldViewModel = hiltViewModel()) {
 
 @Composable
 fun WashFoldScreenInner(
+    addresses: List<Address>,
+    selectedAddress: Int,
+    onAddressSelected: (Int)->Unit,
     pickup: DateTimePickerValues,
     pickupCallbacks: DateTimePickerCallbacks,
     dropoff: DateTimePickerValues,
@@ -71,6 +82,10 @@ fun WashFoldScreenInner(
         Text(
             text = "Wash and Fold",
         )
+
+        AddressPicker(addresses, selectedAddress, onAddressSelected)
+
+
         DateTimePicker(
             stringResource(R.string.pickup_select),
             pickup,
