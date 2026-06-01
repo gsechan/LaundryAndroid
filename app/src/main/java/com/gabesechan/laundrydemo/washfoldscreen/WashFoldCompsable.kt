@@ -1,18 +1,28 @@
 package com.gabesechan.laundrydemo.washfoldscreen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeightIn
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
@@ -33,37 +43,95 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.gabesechan.laundrydemo.R
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 @Composable
 fun WashFoldScreen(viewModel: WashFoldViewModel = hiltViewModel()) {
     val isLoaded by viewModel.dataLoaded.collectAsState()
+    val pickupDate by viewModel.pickupDate.collectAsState(null)
+    val pickupTime by viewModel.pickupTime.collectAsState(null)
+
     if(isLoaded) {
-        WashFoldScreenInner(viewModel.getSelectablePickupDates())
+        WashFoldScreenInner(
+            viewModel.getSelectablePickupDates(),
+            viewModel.getPickupTimesForCurrentDate(),
+            viewModel::setPickupDate,
+            viewModel::setPickupTime,
+            pickupDate,
+            pickupTime,
+        )
     }
 }
 
 @Composable
-fun WashFoldScreenInner(pickupDates: SelectableDates) {
+fun WashFoldScreenInner(
+    pickupDates: SelectableDates,
+    pickupTimes: List<TimeRange>,
+    pickupDateSelected: (Long?)-> Unit,
+    pickupTimeSelected: (TimeRange)->Unit,
+    selectedPickupDate: Long?,
+    selectedPickupTime: TimeRange?,
+) {
     Column(Modifier.fillMaxHeight()) {
         Text(
             text = "Wash and Fold",
         )
-        DatePickerDocked(stringResource(R.string.pickup_select), pickupDates, {})
+        DatePickerDocked(
+            stringResource(R.string.pickup_select),
+            pickupDates,
+            pickupDateSelected
+        )
+        if(selectedPickupDate != null) {
+            Spacer(Modifier.height(12.dp))
+            DisplayTimes(pickupTimes, selectedPickupTime, pickupTimeSelected)
+        }
     }
 }
 
+
+@Composable
+fun DisplayTimes(times: List<TimeRange>, selected: TimeRange?, onTimeSelected: (TimeRange)->Unit) {
+    val dateFormat = SimpleDateFormat("hh:mma")
+    dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+    FlowRow(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp, horizontal = 12.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        val unselectedModifier = Modifier.width(120.dp).height(32.dp).background(Color.Blue)
+        val selectedModifier = Modifier.width(120.dp).height(32.dp).border(width = 2.dp, color = Color.Black)
+            .background(Color.Blue)
+        times.forEach{
+            val startTime = dateFormat.format(it.startTime)
+            val endTime = dateFormat.format(it.endTime)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = (if(selected == it) selectedModifier else unselectedModifier).clickable { onTimeSelected(it) }
+            ) {
+                Text(
+                    text= stringResource(R.string.time_range_format, startTime, endTime),
+                    color = Color.White,
+                    fontSize = 8.sp,
+                )
+            }
+        }
+
+    }
+}
 
 @Composable
 fun DatePickerDocked(placeholder: String, selectableDates: SelectableDates?, onDateSelected: (Long?) -> Unit) {
@@ -75,7 +143,8 @@ fun DatePickerDocked(placeholder: String, selectableDates: SelectableDates?, onD
         convertMillisToDate(it)
     } ?: ""
 
-    //When the state updates, hide the dialog and notify the callback
+    //When the state updates, hide the dialog and notify the callback.  This is how we get away
+    //without ok and cancel dialog buttons
     LaunchedEffect(datePickerState.selectedDateMillis) {
         datePickerState.selectedDateMillis?.let { millis ->
             val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -85,11 +154,6 @@ fun DatePickerDocked(placeholder: String, selectableDates: SelectableDates?, onD
            onDateSelected(millis)
         }
     }
-    val configuration = LocalConfiguration.current
-    val screenHeightDp = configuration.screenHeightDp
-    val screenWidthDp = configuration.screenWidthDp
-
-
 
     Box(
         modifier = Modifier.fillMaxWidth()
@@ -138,23 +202,15 @@ fun DatePickerDocked(placeholder: String, selectableDates: SelectableDates?, onD
                         .background(MaterialTheme.colorScheme.surface)
                         .padding(16.dp)
                 ) {
-                    /*
-                    DatePicker(
-                        state = datePickerState,
-                        showModeToggle = false
-                    )*/
+
                     DatePickerDialog(
                         onDismissRequest = { showDatePicker = false },
                         confirmButton = {
                         },
                         dismissButton = {
                         },
-                        modifier = Modifier
-                            .widthIn(max = screenWidthDp.dp)
-                            .requiredHeightIn(max = (screenHeightDp * 0.75).dp) // Scales to 75% of screen height
                     ) {
-                        DatePicker(state = datePickerState
-                        )
+                        DatePicker(state = datePickerState)
                     }
                 }
             }

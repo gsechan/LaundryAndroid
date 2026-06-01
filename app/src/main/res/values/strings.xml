@@ -19,5 +19,6 @@
     <string name="address_format">%1$s, %2$s %3$s</string>
 
     <string name="pickup_select">Select Pickup Date</string>
+    <string name="time_range_format">%1$s - %2$s</string>
 
 </resources>

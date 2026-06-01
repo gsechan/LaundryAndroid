@@ -13,8 +13,8 @@ object WashFoldModule {
 
     @Provides
     @Singleton
-    fun provideAvailableTimesServer(retrofit: Retrofit): AvailableTimesServer {
-        return retrofit.create(AvailableTimesServer::class.java)
+    fun provideAvailableTimesServer(retrofit: Retrofit): LaundromatInfoServer {
+        return retrofit.create(LaundromatInfoServer::class.java)
     }
 
 }
