@@ -60,62 +60,44 @@ class WashFoldViewModel @Inject constructor(
     fun availableDropoffs(): List<AvailableDateTime> = availableTimesResponse.delivery
     fun minTimeBetweenPickupAndDelivery(): Long = availableTimesResponse.minTimeBetweenPickupAndDelivery
 
+
+    private class SelectableDeliveryDates(
+        dates: List<AvailableDateTime>,
+        earliestDay: Long
+    ): SelectableDates {
+        val allowedYears = mutableSetOf<Int>()
+        val allowedDates = mutableSetOf<Long>()
+
+        init {
+            dates.forEach {
+                if(it.date >= earliestDay) {
+                    allowedYears.add(
+                        Instant.ofEpochMilli(it.date)
+                            .atZone(ZoneId.of("UTC"))
+                            .toLocalDate().year
+                    )
+                    allowedDates.add(it.date)
+                }
+            }
+        }
+
+        override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+            return allowedDates.contains(utcTimeMillis)
+        }
+
+        override fun isSelectableYear(year: Int): Boolean {
+            return allowedYears.contains(year)
+        }
+
+    }
     fun getSelectablePickupDates(): SelectableDates {
-        if(dataLoaded.value == false) {
-            return DatePickerDefaults.AllDates
-        }
-        return object: SelectableDates {
-            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                // Convert milliseconds to local date
-                availablePickups().forEach {
-                    if(it.date == utcTimeMillis) {
-                        return@isSelectableDate true
-                    }
-                }
-                return false
-            }
-
-            override fun isSelectableYear(year: Int): Boolean {
-                availablePickups().forEach {
-                    if(Instant.ofEpochMilli(it.date)
-                        .atZone(ZoneId.of("UTC"))
-                        .toLocalDate().year == year) {
-                            return@isSelectableYear true
-                    }
-                }
-                return false
-            }
-
-        }
+        return SelectableDeliveryDates(availablePickups(), 0L)
     }
 
     fun getSelectableDropoffDates(): SelectableDates {
-        if(dataLoaded.value == false) {
-            return DatePickerDefaults.AllDates
-        }
-        return object: SelectableDates {
-            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                // Convert milliseconds to local date
-                availableDropoffs().forEach {
-                    if(it.date == utcTimeMillis) {
-                        return@isSelectableDate true
-                    }
-                }
-                return false
-            }
-
-            override fun isSelectableYear(year: Int): Boolean {
-                availableDropoffs().forEach {
-                    if(Instant.ofEpochMilli(it.date)
-                            .atZone(ZoneId.of("UTC"))
-                            .toLocalDate().year == year) {
-                        return@isSelectableYear true
-                    }
-                }
-                return false
-            }
-
-        }
+        val pickupDate = _pickupDate.value ?: 0
+        val earliest = pickupDate + minTimeBetweenPickupAndDelivery()
+        return SelectableDeliveryDates(availableDropoffs(), earliest)
     }
 
 
@@ -153,4 +135,6 @@ class WashFoldViewModel @Inject constructor(
     fun book() {
         _isBooked.value = true
     }
+
+
 }

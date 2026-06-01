@@ -37,6 +37,7 @@ import com.gabesechan.laundrydemo.R
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 
 /**
@@ -135,5 +136,6 @@ fun DatePickerTextfield(
 
 fun convertMillisToDate(millis: Long): String {
     val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+    formatter.timeZone = TimeZone.getTimeZone("UTC")
     return formatter.format(Date(millis))
 }
