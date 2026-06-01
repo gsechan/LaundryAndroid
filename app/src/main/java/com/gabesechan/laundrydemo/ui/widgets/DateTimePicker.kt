@@ -1,0 +1,46 @@
+package com.gabesechan.laundrydemo.ui.widgets
+
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.SelectableDates
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.gabesechan.laundrydemo.washfoldscreen.TimeRange
+
+
+data class DateTimePickerValues(
+    val selectableDates: SelectableDates,
+    val curSelectedDate: Long?,
+    val selectableTimes: List<TimeRange>,
+    val curSelectedTime: TimeRange?,
+)
+
+data class DateTimePickerCallbacks(
+    val onDateSelected: (Long) -> Unit,
+    val onTimeRangeSelected: (TimeRange)->Unit
+)
+
+@Composable
+fun DateTimePicker(
+    datePickerLabel: String,
+    dateTimeValues: DateTimePickerValues,
+    callbacks: DateTimePickerCallbacks,
+) {
+    DatePickerTextfield(
+        datePickerLabel,
+        dateTimeValues.selectableDates,
+        callbacks.onDateSelected
+    )
+    if(dateTimeValues.curSelectedDate != null) {
+        Spacer(Modifier.height(12.dp))
+        DisplayTimes(
+            dateTimeValues.selectableTimes,
+            dateTimeValues.curSelectedTime,
+            callbacks.onTimeRangeSelected
+        )
+    }
+
+}
+
+

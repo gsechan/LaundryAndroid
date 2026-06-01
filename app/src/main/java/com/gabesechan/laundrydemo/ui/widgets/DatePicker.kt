@@ -48,10 +48,14 @@ import java.util.Locale
  * onDateSelected-  a callback used to inform when a date was selected.
  */
 @Composable
-fun DatePickerTextfield(placeholder: String, selectableDates: SelectableDates?, onDateSelected: (Long?) -> Unit) {
+fun DatePickerTextfield(
+    placeholder: String,
+    selectableDates: SelectableDates = DatePickerDefaults.AllDates,
+    onDateSelected: (Long) -> Unit
+) {
     var showDatePicker by rememberSaveable { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState(
-        selectableDates = if(selectableDates != null) selectableDates else DatePickerDefaults.AllDates
+        selectableDates = selectableDates
     )
     val selectedDate = datePickerState.selectedDateMillis?.let {
         convertMillisToDate(it)
@@ -61,9 +65,6 @@ fun DatePickerTextfield(placeholder: String, selectableDates: SelectableDates?, 
     //without ok and cancel dialog buttons
     LaunchedEffect(datePickerState.selectedDateMillis) {
         datePickerState.selectedDateMillis?.let { millis ->
-            val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            val dateString = formatter.format(Date(millis))
-
             showDatePicker = false
             onDateSelected(millis)
         }

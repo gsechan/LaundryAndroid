@@ -9,7 +9,7 @@
     <string name= "home">Home</string>
     <string name= "wash_fold">Wash and Fold</string>
     <string name= "dry_clean">Dry Cleaning</string>
-    <string name= "orders">Account</string>
+    <string name= "orders">Orders</string>
     <string name= "account">Account</string>
 
     <string name = "logout">Logout</string>
