@@ -67,9 +67,7 @@ fun WashFoldScreenInner(
     onBook: ()->Unit
 ) {
     Column(Modifier.fillMaxHeight()) {
-        Text(
-            text = "Wash and Fold",
-        )
+        Text(stringResource(R.string.wash_fold))
 
         AddressPicker(addresses, selectedAddress, onAddressSelected)
 

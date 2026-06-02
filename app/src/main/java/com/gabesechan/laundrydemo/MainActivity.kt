@@ -89,7 +89,10 @@ class MainActivity : ComponentActivity() {
 fun OrderScreen() {
     Column {
         Text(
-            text = "Dry Cleaning",
+            text = "Orders",
+        )
+        Text(
+            text = "This screen would have prior and current orders info- status, pricing, etc",
         )
     }
 }
