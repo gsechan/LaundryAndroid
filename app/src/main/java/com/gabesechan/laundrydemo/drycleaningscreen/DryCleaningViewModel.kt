@@ -1,0 +1,171 @@
+package com.gabesechan.laundrydemo.drycleaningscreen
+
+import androidx.compose.material3.DatePickerDefaults.AllDates
+import com.gabesechan.laundrydemo.laundromatinfo.AvailableDateTime
+import com.gabesechan.laundrydemo.laundromatinfo.AvailableTimesResponse
+import com.gabesechan.laundrydemo.laundromatinfo.LaundromatInfoServer
+import com.gabesechan.laundrydemo.laundromatinfo.PricesResponse
+import com.gabesechan.laundrydemo.laundromatinfo.TimeRange
+import kotlin.collections.forEach
+
+import androidx.compose.material3.SelectableDates
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerValues
+import com.gabesechan.laundrydemo.user.UserRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import java.time.Instant
+import java.time.ZoneId
+import javax.inject.Inject
+
+@HiltViewModel
+class DryCleaningViewModel @Inject constructor(
+    laundromatInfoServer: LaundromatInfoServer,
+    userRepository: UserRepository
+): ViewModel() {
+    val addresses = userRepository.current.map { it.addresses }
+
+    private val _selectedAddressIndex = MutableStateFlow(0)
+    val selectedAddressIndex = _selectedAddressIndex.asStateFlow()
+
+
+    private val _dataLoaded = MutableStateFlow(false)
+    val dataLoaded = _dataLoaded.asStateFlow()
+
+    lateinit var availableTimesResponse: AvailableTimesResponse
+    lateinit var pricesResponse: PricesResponse
+
+
+    private val _pickupDateValues = MutableStateFlow(
+        DateTimePickerValues(
+            AllDates,
+            null,
+            emptyList(),
+            null
+        )
+    )
+    val pickupDateValues = _pickupDateValues.asStateFlow()
+
+    private val _dropoffDateValues = MutableStateFlow(
+        DateTimePickerValues(
+            AllDates,
+            null,
+            emptyList(),
+            null
+        )
+    )
+    val dropoffDateValues = _dropoffDateValues.asStateFlow()
+
+    private val _isBooked = MutableStateFlow(false)
+    val isBooked = _isBooked.asStateFlow()
+
+    private val _itemCounts = MutableStateFlow(mapOf( "shirts" to 0, "pants" to 0))
+    val itemCounts = _itemCounts.asStateFlow()
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            availableTimesResponse = laundromatInfoServer.availableTimes()
+            pricesResponse = laundromatInfoServer.prices()
+            _pickupDateValues.value = _pickupDateValues.value.copy(
+                selectableDates = SelectableDeliveryDates(availableTimesResponse.pickup, 0)
+            )
+            _dataLoaded.value = true
+        }
+    }
+
+    fun selectAddress(index: Int) {
+        _selectedAddressIndex.value = index
+    }
+
+    fun washPrice(): Int = pricesResponse.washFold
+
+    private class SelectableDeliveryDates(
+        dates: List<AvailableDateTime>,
+        earliestDay: Long
+    ): SelectableDates {
+        val allowedYears = mutableSetOf<Int>()
+        val allowedDates = mutableSetOf<Long>()
+
+        init {
+            dates.forEach {
+                if(it.date >= earliestDay) {
+                    allowedYears.add(
+                        Instant.ofEpochMilli(it.date)
+                            .atZone(ZoneId.of("UTC"))
+                            .toLocalDate().year
+                    )
+                    allowedDates.add(it.date)
+                }
+            }
+        }
+
+        override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+            return allowedDates.contains(utcTimeMillis)
+        }
+
+        override fun isSelectableYear(year: Int): Boolean {
+            return allowedYears.contains(year)
+        }
+
+    }
+
+
+    fun setPickupDate(date: Long?) {
+        _pickupDateValues.value = _pickupDateValues.value.copy(
+            curSelectedDate = date,
+            selectableTimes = availableTimesResponse.pickup.first { it.date == date}.times
+        )
+        _dropoffDateValues.value = _dropoffDateValues.value.copy(
+            selectableDates = AllDates,
+            curSelectedDate = null,
+            selectableTimes = emptyList(),
+            curSelectedTime = null,
+        )
+    }
+
+    fun setPickupTime(time: TimeRange) {
+        _pickupDateValues.value = _pickupDateValues.value.copy(
+            curSelectedTime = time,
+        )
+        val pickupDate = _pickupDateValues.value.curSelectedDate ?: 0
+        val earliest = pickupDate + availableTimesResponse.minTimeBetweenPickupAndDelivery
+        _dropoffDateValues.value = _dropoffDateValues.value.copy(
+            selectableDates = SelectableDeliveryDates(availableTimesResponse.delivery, earliest),
+            curSelectedDate = null,
+            selectableTimes = emptyList(),
+            curSelectedTime = null,
+        )
+    }
+
+    fun setDropoffDate(date: Long?) {
+        _dropoffDateValues.value = _dropoffDateValues.value.copy(
+            curSelectedDate = date,
+            selectableTimes = availableTimesResponse.delivery.first { it.date == date}.times
+        )
+    }
+
+    fun setDropoffTime(time: TimeRange) {
+        _dropoffDateValues.value = _dropoffDateValues.value.copy(
+            curSelectedTime = time
+        )
+    }
+
+    fun book() {
+        _isBooked.value = true
+    }
+
+    fun onCountChanged(item:String, value: Int) {
+        val counts = _itemCounts.value.toMutableMap()
+        counts[item] = value
+        _itemCounts.value = counts
+    }
+
+    fun getPrices(): Map<String, Int> {
+        return mapOf("shirts" to pricesResponse.shirts, "pants" to pricesResponse.pants)
+    }
+}
