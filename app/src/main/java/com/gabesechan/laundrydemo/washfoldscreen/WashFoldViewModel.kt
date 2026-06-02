@@ -1,15 +1,19 @@
 package com.gabesechan.laundrydemo.washfoldscreen
 
-import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DatePickerDefaults.AllDates
 import androidx.compose.material3.SelectableDates
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gabesechan.laundrydemo.laundromatinfo.AvailableDateTime
+import com.gabesechan.laundrydemo.laundromatinfo.AvailableTimesResponse
+import com.gabesechan.laundrydemo.laundromatinfo.LaundromatInfoServer
+import com.gabesechan.laundrydemo.laundromatinfo.PricesResponse
+import com.gabesechan.laundrydemo.laundromatinfo.TimeRange
+import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerValues
 import com.gabesechan.laundrydemo.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -35,21 +39,26 @@ class WashFoldViewModel @Inject constructor(
     lateinit var availableTimesResponse: AvailableTimesResponse
     lateinit var pricesResponse: PricesResponse
 
-    private val _pickupDate = MutableStateFlow<Long?>(null)
-    val pickupDate = _pickupDate.asSharedFlow()
 
-    private val _pickupTime = MutableStateFlow<TimeRange?>(null)
-    val pickupTime = _pickupTime.asSharedFlow()
+    private val _pickupDateValues = MutableStateFlow(
+        DateTimePickerValues(
+            AllDates,
+            null,
+            emptyList(),
+            null
+        )
+    )
+    val pickupDateValues = _pickupDateValues.asStateFlow()
 
-    private val _dropOffDate = MutableStateFlow<Long?>(null)
-    val dropOffDate = _dropOffDate.asSharedFlow()
-
-    private val _dropOffTime = MutableStateFlow<TimeRange?>(null)
-    val dropOffTime = _dropOffTime.asSharedFlow()
-
-
-    private var pickupTimesForDateSelected = emptyList<TimeRange>()
-    private var dropOffTimesForDateSelected = emptyList<TimeRange>()
+    private val _dropoffDateValues = MutableStateFlow(
+        DateTimePickerValues(
+            AllDates,
+            null,
+            emptyList(),
+            null
+        )
+    )
+    val dropoffDateValues = _dropoffDateValues.asStateFlow()
 
     private val _isBooked = MutableStateFlow(false)
     val isBooked = _isBooked.asStateFlow()
@@ -58,6 +67,9 @@ class WashFoldViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             availableTimesResponse = laundromatInfoServer.availableTimes()
             pricesResponse = laundromatInfoServer.prices()
+            _pickupDateValues.value = _pickupDateValues.value.copy(
+                selectableDates = SelectableDeliveryDates(availableTimesResponse.pickup, 0)
+            )
             _dataLoaded.value = true
         }
     }
@@ -67,12 +79,6 @@ class WashFoldViewModel @Inject constructor(
     }
 
     fun washPrice(): Int = pricesResponse.washFold
-
-
-    fun availablePickups(): List<AvailableDateTime> = availableTimesResponse.pickup
-    fun availableDropoffs(): List<AvailableDateTime> = availableTimesResponse.delivery
-    fun minTimeBetweenPickupAndDelivery(): Long = availableTimesResponse.minTimeBetweenPickupAndDelivery
-
 
     private class SelectableDeliveryDates(
         dates: List<AvailableDateTime>,
@@ -103,46 +109,46 @@ class WashFoldViewModel @Inject constructor(
         }
 
     }
-    fun getSelectablePickupDates(): SelectableDates {
-        return SelectableDeliveryDates(availablePickups(), 0L)
-    }
 
-    fun getSelectableDropoffDates(): SelectableDates {
-        val pickupDate = _pickupDate.value ?: 0
-        val earliest = pickupDate + minTimeBetweenPickupAndDelivery()
-        return SelectableDeliveryDates(availableDropoffs(), earliest)
-    }
-
-
-    fun getPickupTimesForCurrentDate(): List<TimeRange> {
-        return pickupTimesForDateSelected
-    }
-    fun getDropOffTimesForCurrentDate(): List<TimeRange> {
-        return pickupTimesForDateSelected
-    }
 
     fun setPickupDate(date: Long?) {
-        pickupTimesForDateSelected = availablePickups().first { it.date == date}.times
-        _pickupDate.value = date
-        _pickupTime.value = null
-        _dropOffDate.value = null
-        _dropOffTime.value = null
-        dropOffTimesForDateSelected = emptyList()
-
+        _pickupDateValues.value = _pickupDateValues.value.copy(
+            curSelectedDate = date,
+            selectableTimes = availableTimesResponse.pickup.first { it.date == date}.times
+        )
+        _dropoffDateValues.value = _dropoffDateValues.value.copy(
+            selectableDates = AllDates,
+            curSelectedDate = null,
+            selectableTimes = emptyList(),
+            curSelectedTime = null,
+        )
     }
 
     fun setPickupTime(time: TimeRange) {
-        _pickupTime.value = time
+        _pickupDateValues.value = _pickupDateValues.value.copy(
+            curSelectedTime = time,
+        )
+        val pickupDate = _pickupDateValues.value.curSelectedDate ?: 0
+        val earliest = pickupDate + availableTimesResponse.minTimeBetweenPickupAndDelivery
+        _dropoffDateValues.value = _dropoffDateValues.value.copy(
+            selectableDates = SelectableDeliveryDates(availableTimesResponse.delivery, earliest),
+            curSelectedDate = null,
+            selectableTimes = emptyList(),
+            curSelectedTime = null,
+        )
     }
 
     fun setDropoffDate(date: Long?) {
-        dropOffTimesForDateSelected = availableDropoffs().first { it.date == date}.times
-        _dropOffDate.value = date
-        _dropOffTime.value = null
+        _dropoffDateValues.value = _dropoffDateValues.value.copy(
+            curSelectedDate = date,
+            selectableTimes = availableTimesResponse.delivery.first { it.date == date}.times
+        )
     }
 
     fun setDropoffTime(time: TimeRange) {
-        _dropOffTime.value = time
+        _dropoffDateValues.value = _dropoffDateValues.value.copy(
+            curSelectedTime = time
+        )
     }
 
     fun book() {

@@ -26,10 +26,8 @@ import java.text.NumberFormat
 fun WashFoldScreen(viewModel: WashFoldViewModel = hiltViewModel()) {
     val isLoaded by viewModel.dataLoaded.collectAsState()
     val isBooked by viewModel.isBooked.collectAsState()
-    val pickupDate by viewModel.pickupDate.collectAsState(null)
-    val pickupTime by viewModel.pickupTime.collectAsState(null)
-    val dropoffDate by viewModel.dropOffDate.collectAsState(null)
-    val dropoffTime by viewModel.dropOffTime.collectAsState(null)
+    val pickupDateValues by viewModel.pickupDateValues.collectAsState()
+    val dropoffDateValues by viewModel.dropoffDateValues.collectAsState()
     val selectedAddressIndex by viewModel.selectedAddressIndex.collectAsState()
     val addresses by viewModel.addresses.collectAsState(emptyList())
 
@@ -42,21 +40,11 @@ fun WashFoldScreen(viewModel: WashFoldViewModel = hiltViewModel()) {
             addresses,
             selectedAddressIndex,
             viewModel::selectAddress,
-            DateTimePickerValues(
-                viewModel.getSelectablePickupDates(),
-                pickupDate,
-                viewModel.getPickupTimesForCurrentDate(),
-                pickupTime
-            ),
+            pickupDateValues,
             DateTimePickerCallbacks(
                 viewModel::setPickupDate,viewModel::setPickupTime
             ),
-            DateTimePickerValues(
-                viewModel.getSelectableDropoffDates(),
-                dropoffDate,
-                viewModel.getDropOffTimesForCurrentDate(),
-                dropoffTime
-            ),
+            dropoffDateValues,
         DateTimePickerCallbacks(
             viewModel::setDropoffDate, viewModel::setDropoffTime
              ),

@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.gabesechan.laundrydemo.accountscreen.AccountScreen
+import com.gabesechan.laundrydemo.drycleaningscreen.DryCleaningComposable
 import com.gabesechan.laundrydemo.homescreen.HomeScreen
 import com.gabesechan.laundrydemo.user.UserRepository
 import com.gabesechan.laundrydemo.login.Login
@@ -41,7 +42,7 @@ class MainActivity : ComponentActivity() {
     private var navItems = listOf(
         DestinationScreen("home", R.string.home, 0, ::HomeScreen),
         DestinationScreen("wash", R.string.wash_fold, 0, ::WashFoldScreen),
-        DestinationScreen("dryclean", R.string.dry_clean, 0, ::DryCleaningScreen),
+        DestinationScreen("dryclean", R.string.dry_clean, 0, ::DryCleaningComposable),
         DestinationScreen("orders", R.string.orders, 0, ::OrderScreen),
         DestinationScreen("account", R.string.account, 0, ::AccountScreen),
     )
@@ -83,18 +84,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-
-
-@Composable
-fun DryCleaningScreen() {
-    Column {
-        Text(
-            text = "Dry Cleaning",
-        )
-    }
-}
-
 
 @Composable
 fun OrderScreen() {

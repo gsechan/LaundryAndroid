@@ -11,10 +11,12 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 
 data class DestinationScreen(
     val route: String,
@@ -26,13 +28,14 @@ data class DestinationScreen(
 @Composable
 fun NavMenuScreen(navController: NavController, items: List<DestinationScreen>, content: @Composable () -> Unit) {
     val curScreen = navController.currentDestination?.route
+    val stackEntry by navController.currentBackStackEntryAsState()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             NavigationBar {
                 items.forEach {
                     NavigationBarItem(
-                        selected = curScreen == it.route,
+                        selected = stackEntry?.destination?.route == it.route,
                         onClick = {
                             navController.navigate(it.route)
                         },

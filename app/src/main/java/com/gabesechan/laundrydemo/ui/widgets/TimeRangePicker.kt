@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gabesechan.laundrydemo.R
-import com.gabesechan.laundrydemo.washfoldscreen.TimeRange
+import com.gabesechan.laundrydemo.laundromatinfo.TimeRange
 import java.text.SimpleDateFormat
 import java.util.TimeZone
 import kotlin.collections.forEach

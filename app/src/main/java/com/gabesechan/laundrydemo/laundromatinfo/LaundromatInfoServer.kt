@@ -1,4 +1,4 @@
-package com.gabesechan.laundrydemo.washfoldscreen
+package com.gabesechan.laundrydemo.laundromatinfo
 
 import kotlinx.serialization.Serializable
 import retrofit2.http.GET

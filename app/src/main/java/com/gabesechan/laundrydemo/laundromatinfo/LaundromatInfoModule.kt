@@ -1,4 +1,4 @@
-package com.gabesechan.laundrydemo.washfoldscreen
+package com.gabesechan.laundrydemo.laundromatinfo
 
 import dagger.Module
 import dagger.Provides
@@ -9,7 +9,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object WashFoldModule {
+object LaundromatInfoModule {
 
     @Provides
     @Singleton
