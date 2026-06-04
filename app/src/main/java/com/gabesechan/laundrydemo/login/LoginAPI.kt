@@ -43,9 +43,9 @@ class LoginAPI @Inject constructor(
         }
     }
 
-    suspend fun checkAuth(): Boolean {
+    suspend fun checkAuth(token: String): Boolean {
         try {
-            return loginServer.checkAuth(CheckAuthRequest(userRepository.authToken)).success
+            return loginServer.checkAuth(CheckAuthRequest(token)).success
         }
         catch (ex: IOException) {
             return false

@@ -26,6 +26,7 @@ import com.gabesechan.laundrydemo.user.User
 import com.gabesechan.laundrydemo.washfoldscreen.WashFoldScreen
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -38,7 +39,7 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var loginAPI: LoginAPI
 
-    private var isReady = false
+    private var isReady = MutableStateFlow(false)
 
     private var navItems = listOf(
         DestinationScreen("home", R.string.home, 0, ::HomeScreen),
@@ -51,16 +52,22 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val splashScreen = installSplashScreen()
-        splashScreen.setKeepOnScreenCondition { !isReady }
+        splashScreen.setKeepOnScreenCondition { !isReady.value }
         lifecycleScope.launch(Dispatchers.IO) {
-            userRepository.initFromDisk()
+            val login = userRepository.initFromDisk()
             //If we're logged in, check the auth with the server for expiry issues
-            if(userRepository.current.value!= User.NoUser) {
-                if (!loginAPI.checkAuth()) {
+            if(login.user!= User.NoUser) {
+                if (loginAPI.checkAuth(login.token)) {
+                    userRepository.setUser(login.user,login.token)
+                }
+                else {
                     loginAPI.logout()
                 }
             }
-            isReady = true
+            else {
+                loginAPI.logout()
+            }
+            isReady.value = true
         }
         enableEdgeToEdge()
         setContent {

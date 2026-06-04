@@ -22,19 +22,17 @@ class UserRepository @Inject constructor( private val datastore: DataStore<Prefe
     private val userKey = stringPreferencesKey("json")
     private val tokenKey = stringPreferencesKey("token")
 
-
-    suspend fun initFromDisk() {
+    data class UserSession(val user: User, val token: String)
+    suspend fun initFromDisk(): UserSession {
         val stored = datastore.data.first()
         val json = stored[userKey]
         val token = stored[tokenKey]
         if(json != null && token!= null) {
             val user = Json.decodeFromString<User>(json)
-            _current.value = user
-            authToken = token
+            return UserSession(user, token)
         }
         else {
-            _current.value = User.NoUser
-            authToken = ""
+            return UserSession(User.NoUser, "")
         }
     }
 
