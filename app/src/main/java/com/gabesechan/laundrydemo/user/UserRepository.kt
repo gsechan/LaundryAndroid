@@ -15,35 +15,47 @@ class UserRepository @Inject constructor( private val datastore: DataStore<Prefe
     private val _current: MutableStateFlow<User> = MutableStateFlow(User.NoUser)
     val current = _current.asStateFlow()
 
-    private val jsonKey = stringPreferencesKey("json")
+   var authToken = ""
+       private set
+
+
+    private val userKey = stringPreferencesKey("json")
+    private val tokenKey = stringPreferencesKey("token")
 
 
     suspend fun initFromDisk() {
         val stored = datastore.data.first()
-        val json = stored[jsonKey]
-        if(json != null) {
+        val json = stored[userKey]
+        val token = stored[tokenKey]
+        if(json != null && token!= null) {
             val user = Json.decodeFromString<User>(json)
             _current.value = user
+            authToken = token
         }
         else {
             _current.value = User.NoUser
+            authToken = ""
         }
     }
 
-    suspend fun setUser(user: User) {
+    suspend fun setUser(user: User, session: String) {
         if(user == User.NoUser) {
             throw RuntimeException("Cannot use login to logout")
         }
         _current.value = user
+        authToken = session
         datastore.edit {
-            it[jsonKey] = Json.encodeToString(user)
+            it[userKey] = Json.encodeToString(user)
+            it[tokenKey] = session
         }
     }
 
     suspend fun clearUser() {
         _current.value = User.NoUser
+
         datastore.edit {
-            it.remove(jsonKey)
+            it.remove(userKey)
+            it.remove(tokenKey)
         }
     }
 

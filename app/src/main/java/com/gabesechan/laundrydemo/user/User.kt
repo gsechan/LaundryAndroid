@@ -4,14 +4,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class User(
-   val id: String,
    val name: String,
    val email: String?,
    val phone: String?,
    val addresses: List<Address>) {
 
    companion object {
-       val  NoUser = User("", "", "", "", emptyList())
+       val  NoUser = User("", "", "", emptyList())
    }
 
    fun isLoggedIn(): Boolean {

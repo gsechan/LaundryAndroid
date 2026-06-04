@@ -6,20 +6,19 @@ import retrofit2.http.Headers
 import retrofit2.http.POST
 
 @Serializable
-data class LoginRequest(val username: String, val password: String)
+data class LoginRequest(val phone: String, val password: String, val organization: String)
 
 @Serializable
 data class LoginResponse(
     val success: Boolean,
+    val session: String?,
     val user: LoginUser?
 )
-
 @Serializable
 data class LoginUser(
-    val id: String,
     val name: String,
     val email: String?,
-    val phone: String?,
+    val phone: String,
     val addresses: List<LoginAddress>,
 )
 
@@ -32,10 +31,23 @@ data class LoginAddress(
     val country: String,
     val postcode: String
 )
+
+@Serializable
+data class CheckAuthRequest(val token: String)
+
+@Serializable
+data class CheckAuthResponse(val success: Boolean)
+
+
 interface LoginServer {
 
 
     @Headers("Content-Type: application/json")
     @POST("login")
     suspend fun login(@Body request: LoginRequest): LoginResponse
+
+    @Headers("Content-Type: application/json")
+    @POST("checkAuth")
+    suspend fun checkAuth(@Body request: CheckAuthRequest): CheckAuthResponse
+
 }

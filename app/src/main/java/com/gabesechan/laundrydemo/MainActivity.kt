@@ -22,6 +22,7 @@ import com.gabesechan.laundrydemo.login.LoginAPI
 import com.gabesechan.laundrydemo.ui.theme.LaundryDemoTheme
 import com.gabesechan.laundrydemo.ui.widgets.DestinationScreen
 import com.gabesechan.laundrydemo.ui.widgets.NavMenuScreen
+import com.gabesechan.laundrydemo.user.User
 import com.gabesechan.laundrydemo.washfoldscreen.WashFoldScreen
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -53,6 +54,12 @@ class MainActivity : ComponentActivity() {
         splashScreen.setKeepOnScreenCondition { !isReady }
         lifecycleScope.launch(Dispatchers.IO) {
             userRepository.initFromDisk()
+            //If we're logged in, check the auth with the server for expiry issues
+            if(userRepository.current.value!= User.NoUser) {
+                if (!loginAPI.checkAuth()) {
+                    loginAPI.logout()
+                }
+            }
             isReady = true
         }
         enableEdgeToEdge()

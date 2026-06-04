@@ -38,7 +38,7 @@ class UserRepositoryTest {
     @Test
     fun settingUserSetsCurrent() = testScope.runTest {
         val repo = UserRepository(testDataStore)
-        val user = User("1", "Gabe", "a", "b", emptyList())
+        val user = User( "Gabe", "a", "b", emptyList())
         repo.setUser(user)
         assertEquals(user, repo.current.value)
 
@@ -49,7 +49,7 @@ class UserRepositoryTest {
 
     @Test
     fun clearingUserSetsNoUser() = testScope.runTest {
-        val user = User("1", "Gabe", "", "", emptyList())
+        val user = User( "Gabe", "", "", emptyList())
         val repo = UserRepository(testDataStore)
         repo.setUser(user)
         repo.clearUser()
@@ -71,7 +71,7 @@ class UserRepositoryTest {
 
     @Test
     fun initFromDiskReadsDatastore() = testScope.runTest {
-        val user = User("2", "Fake", "email", "phone", emptyList())
+        val user = User( "Fake", "email", "phone", emptyList())
         val userJson = Json.encodeToString(user)
         val repo = UserRepository(testDataStore)
         testDataStore.edit {
@@ -79,7 +79,6 @@ class UserRepositoryTest {
         }
         repo.initFromDisk()
         assertEquals(user.name, repo.current.value.name)
-        assertEquals(user.id, repo.current.value.id)
         assertEquals(user.phone, repo.current.value.phone)
         assertEquals(user.email, repo.current.value.email)
 

@@ -24,16 +24,15 @@ class LoginAPI @Inject constructor(
 
     suspend fun login(username: String, password: String): LoginResult {
         try {
-            val response = loginServer.login(LoginRequest(username, password))
-            if(response.success && response.user!= null) {
+            val response = loginServer.login(LoginRequest(username, password, "eaf6aefc-33ef-4245-8ef9-fd87827f0000"))
+            if(response.success && response.user!= null && response.session != null) {
                 val user = User(
-                    response.user.id,
                     response.user.name,
                     response.user.email,
                     response.user.phone,
                     response.user.addresses.toAddress()
                 )
-                userRepository.setUser(user)
+                userRepository.setUser(user, response.session)
                 return LoginResult.LoginSuccess(user)
             }
             return LoginResult.LoginFailed
@@ -41,6 +40,15 @@ class LoginAPI @Inject constructor(
         catch(ex: IOException){
             ex.printStackTrace()
             return LoginResult.NetworkError
+        }
+    }
+
+    suspend fun checkAuth(): Boolean {
+        try {
+            return loginServer.checkAuth(CheckAuthRequest(userRepository.authToken)).success
+        }
+        catch (ex: IOException) {
+            return false
         }
     }
 }

@@ -76,7 +76,7 @@ class LoginViewModelTest {
         val loginAPI = mockk<LoginAPI>{
             coEvery { login(any(), any()) } coAnswers {
                 delay(100L)
-                LoginAPI.LoginResult.LoginSuccess(User("1","Gabe","","", emptyList()))
+                LoginAPI.LoginResult.LoginSuccess(User("Gabe","","", emptyList()))
             }
         }
         val viewModel = LoginViewModel(loginAPI)
@@ -126,7 +126,7 @@ class LoginViewModelTest {
         val loginAPI = mockk<LoginAPI>{
             coEvery { login(any(), any()) } coAnswers {
                 delay(100L)
-                LoginAPI.LoginResult.LoginSuccess(User("1","Gabe","","", emptyList()))
+                LoginAPI.LoginResult.LoginSuccess(User("Gabe","","", emptyList()))
             }
         }
         val viewModel = LoginViewModel(loginAPI)
