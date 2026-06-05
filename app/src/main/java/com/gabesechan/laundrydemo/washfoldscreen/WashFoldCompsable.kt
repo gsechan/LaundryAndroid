@@ -94,7 +94,7 @@ fun WashFoldScreenInner(
             Text(
                 stringResource(
                     R.string.expected_wash_price,
-                    washFoldPrice,
+                    formatter.format(washFoldPrice),
                     formatter.format(totalPrice)
                     )
             )
