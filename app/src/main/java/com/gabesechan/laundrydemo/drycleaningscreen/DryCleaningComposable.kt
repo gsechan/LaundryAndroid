@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.gabesechan.laundrydemo.R
+import com.gabesechan.laundrydemo.laundromatinfo.JSONDryCleanItem
 import com.gabesechan.laundrydemo.ui.widgets.AddressPicker
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePicker
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerCallbacks
@@ -50,11 +51,10 @@ fun DryCleaningComposable(viewModel: DryCleaningViewModel = hiltViewModel()) {
             DateTimePickerCallbacks(
                 viewModel::setDropoffDate, viewModel::setDropoffTime
             ),
-            viewModel.washPrice(),
             viewModel::book,
             itemCounts,
             viewModel::onCountChanged,
-            viewModel.getPrices()
+            viewModel.getItems()
         )
     }
 }
@@ -68,16 +68,22 @@ fun DryCleaningComposableInner(
     pickupCallbacks: DateTimePickerCallbacks,
     dropoff: DateTimePickerValues,
     dropoffCallbacks: DateTimePickerCallbacks,
-    washFoldPrice: Int,
     onBook: ()->Unit,
     itemCounts: Map<String, Int>,
     onCountChanged: (String, Int)->Unit,
-    prices: Map<String, Int>
+    items:List<JSONDryCleanItem>
 ) {
     Column(Modifier.fillMaxHeight()) {
         Text(stringResource(R.string.dry_clean))
-        NumericDropdownMenu("Shirts", 0,10, 0, { onCountChanged("shirts", it) })
-        NumericDropdownMenu("Pants", 0,10, 0, { onCountChanged("pants", it)})
+        items.forEach { item->
+            NumericDropdownMenu(
+                item.name,
+                0,
+                10,
+                itemCounts[item.id]!!,
+                { onCountChanged(item.id, it) }
+            )
+        }
         Spacer(Modifier.height(12.dp))
         AddressPicker(addresses, selectedAddress, onAddressSelected)
 
@@ -97,16 +103,17 @@ fun DryCleaningComposableInner(
         }
         if(dropoff.curSelectedTime != null) {
             Spacer(Modifier.height(12.dp))
-            val shirtCost = itemCounts["shirts"]!! * prices["shirts"]!!
-            val pantsCost = itemCounts["pants"]!! * prices["pants"]!!
-            val price = BigDecimal(shirtCost + pantsCost).movePointLeft(2)
+            var totalCost = BigDecimal(0)
+            items.forEach { item->
+                val cost = BigDecimal(item.price) * BigDecimal(itemCounts[item.id]!!)
+                totalCost = totalCost.plus(cost)
+            }
             val formatter = NumberFormat.getCurrencyInstance()
-            val totalPrice = price.times(BigDecimal(8))
             Text(
                 stringResource(
                     R.string.total_price,
-                    formatter.format(price),
-                    formatter.format(totalPrice)
+                    formatter.format(totalCost),
+                    formatter.format(totalCost)
                 )
             )
             Spacer(Modifier.height(12.dp))

@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import java.math.BigDecimal
+import java.util.UUID
 
 @Serializable
 data class AvailableTimesResponse(
@@ -27,6 +28,18 @@ data class PricesResponse(val washFold: Int, val shirts: Int, val pants: Int, va
 @Serializable
 data class WashFoldResponse(val price: String, val avgWeight: String)
 
+@Serializable
+data class DryCleanItemsResponse(
+    val items: List<JSONDryCleanItem>
+)
+
+@Serializable
+data class JSONDryCleanItem(
+    val id: String,
+    val name: String,
+    val price: String
+)
+
 
 interface LaundromatInfoServer {
 
@@ -39,4 +52,7 @@ interface LaundromatInfoServer {
     @GET("washFold")
     suspend fun washFold(): WashFoldResponse
 
+    @Headers("Content-Type: application/json")
+    @GET("dryCleanItem")
+    suspend fun dryCleanItems(): DryCleanItemsResponse
 }
