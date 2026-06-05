@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -68,7 +69,7 @@ fun WashFoldScreenInner(
     avgWeight: BigDecimal,
     onBook: ()->Unit
 ) {
-    Column(Modifier.fillMaxHeight()) {
+    Column(Modifier.fillMaxHeight().padding(horizontal = 12.dp)) {
         Text(stringResource(R.string.wash_fold))
 
         AddressPicker(addresses, selectedAddress, onAddressSelected)

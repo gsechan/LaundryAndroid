@@ -1,9 +1,13 @@
 package com.gabesechan.laundrydemo.drycleaningscreen
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,6 +23,7 @@ import com.gabesechan.laundrydemo.ui.widgets.AddressPicker
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePicker
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerCallbacks
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerValues
+import com.gabesechan.laundrydemo.ui.widgets.NumberPicker
 import com.gabesechan.laundrydemo.ui.widgets.NumericDropdownMenu
 import com.gabesechan.laundrydemo.user.Address
 import java.math.BigDecimal
@@ -73,16 +78,13 @@ fun DryCleaningComposableInner(
     onCountChanged: (String, Int)->Unit,
     items:List<JSONDryCleanItem>
 ) {
-    Column(Modifier.fillMaxHeight()) {
-        Text(stringResource(R.string.dry_clean))
+    Column(Modifier.fillMaxHeight().padding(12.dp)) {
         items.forEach { item->
-            NumericDropdownMenu(
-                item.name,
-                0,
-                10,
-                itemCounts[item.id]!!,
-                { onCountChanged(item.id, it) }
-            )
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text(item.name)
+                NumberPicker(itemCounts[item.id]!!, {onCountChanged(item.id, it)}, 0, 10)
+            }
+
         }
         Spacer(Modifier.height(12.dp))
         AddressPicker(addresses, selectedAddress, onAddressSelected)

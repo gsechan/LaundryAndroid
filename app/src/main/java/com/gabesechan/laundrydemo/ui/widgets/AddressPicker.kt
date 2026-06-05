@@ -1,5 +1,6 @@
 package com.gabesechan.laundrydemo.ui.widgets
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,7 +27,8 @@ fun AddressPicker(
     onSelection: (Int)->Unit,
 ) {
 
-    Column(Modifier.selectableGroup()) {
+    Column(Modifier.selectableGroup(),
+        verticalArrangement = Arrangement.spacedBy(8.dp)) {
         addresses.forEachIndexed { index, address ->
             Row(
                 Modifier
@@ -35,9 +37,9 @@ fun AddressPicker(
                         selected = (index == selectedIndex),
                         onClick = { onSelection(index) },
                         role = Role.RadioButton
-                    )
-                    .padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    ),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 RadioButton(
                     selected =  (index == selectedIndex),
@@ -45,7 +47,6 @@ fun AddressPicker(
                 )
                 AddressDisplay(address)
             }
-            Spacer(Modifier.height(8.dp))
         }
     }
 }
