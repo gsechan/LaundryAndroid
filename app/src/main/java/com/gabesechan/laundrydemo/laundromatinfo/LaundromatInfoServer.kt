@@ -3,6 +3,7 @@ package com.gabesechan.laundrydemo.laundromatinfo
 import kotlinx.serialization.Serializable
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import java.math.BigDecimal
 
 @Serializable
 data class AvailableTimesResponse(
@@ -23,6 +24,9 @@ data class TimeRange(val startTime: Long, val endTime:Long) //Start and end of a
 @Serializable
 data class PricesResponse(val washFold: Int, val shirts: Int, val pants: Int, val dress: Int, val suit: Int)
 
+@Serializable
+data class WashFoldResponse(val price: String, val avgWeight: String)
+
 
 interface LaundromatInfoServer {
 
@@ -32,6 +36,7 @@ interface LaundromatInfoServer {
     suspend fun availableTimes(): AvailableTimesResponse
 
     @Headers("Content-Type: application/json")
-    @GET("prices")
-    suspend fun prices(): PricesResponse
+    @GET("washFold")
+    suspend fun washFold(): WashFoldResponse
+
 }

@@ -9,6 +9,7 @@ import com.gabesechan.laundrydemo.laundromatinfo.AvailableTimesResponse
 import com.gabesechan.laundrydemo.laundromatinfo.LaundromatInfoServer
 import com.gabesechan.laundrydemo.laundromatinfo.PricesResponse
 import com.gabesechan.laundrydemo.laundromatinfo.TimeRange
+import com.gabesechan.laundrydemo.laundromatinfo.WashFoldResponse
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerValues
 import com.gabesechan.laundrydemo.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 import java.time.Instant
 import java.time.ZoneId
 import javax.inject.Inject
@@ -37,7 +39,7 @@ class WashFoldViewModel @Inject constructor(
     val dataLoaded = _dataLoaded.asStateFlow()
 
     lateinit var availableTimesResponse: AvailableTimesResponse
-    lateinit var pricesResponse: PricesResponse
+    lateinit var pricesResponse: WashFoldResponse
 
 
     private val _pickupDateValues = MutableStateFlow(
@@ -66,7 +68,7 @@ class WashFoldViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             availableTimesResponse = laundromatInfoServer.availableTimes()
-            pricesResponse = laundromatInfoServer.prices()
+            pricesResponse = laundromatInfoServer.washFold()
             _pickupDateValues.value = _pickupDateValues.value.copy(
                 selectableDates = SelectableDeliveryDates(availableTimesResponse.pickup, 0)
             )
@@ -78,7 +80,8 @@ class WashFoldViewModel @Inject constructor(
         _selectedAddressIndex.value = index
     }
 
-    fun washPrice(): Int = pricesResponse.washFold
+    fun washPrice(): BigDecimal = BigDecimal(pricesResponse.price)
+    fun avgWeight(): BigDecimal = BigDecimal(pricesResponse.avgWeight)
 
     private class SelectableDeliveryDates(
         dates: List<AvailableDateTime>,

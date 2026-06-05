@@ -49,6 +49,7 @@ fun WashFoldScreen(viewModel: WashFoldViewModel = hiltViewModel()) {
             viewModel::setDropoffDate, viewModel::setDropoffTime
              ),
             viewModel.washPrice(),
+            viewModel.avgWeight(),
             viewModel::book
         )
     }
@@ -63,7 +64,8 @@ fun WashFoldScreenInner(
     pickupCallbacks: DateTimePickerCallbacks,
     dropoff: DateTimePickerValues,
     dropoffCallbacks: DateTimePickerCallbacks,
-    washFoldPrice: Int,
+    washFoldPrice: BigDecimal,
+    avgWeight: BigDecimal,
     onBook: ()->Unit
 ) {
     Column(Modifier.fillMaxHeight()) {
@@ -87,13 +89,12 @@ fun WashFoldScreenInner(
         }
         if(dropoff.curSelectedTime != null) {
             Spacer(Modifier.height(12.dp))
-            val price = BigDecimal(washFoldPrice).movePointLeft(2)
             val formatter = NumberFormat.getCurrencyInstance()
-            val totalPrice = price.times(BigDecimal(8))
+            val totalPrice = washFoldPrice.times(avgWeight)
             Text(
                 stringResource(
                     R.string.expected_wash_price,
-                    formatter.format(price),
+                    washFoldPrice,
                     formatter.format(totalPrice)
                     )
             )

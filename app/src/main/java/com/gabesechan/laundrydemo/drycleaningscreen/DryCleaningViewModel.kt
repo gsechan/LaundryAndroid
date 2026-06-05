@@ -70,7 +70,7 @@ class DryCleaningViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             availableTimesResponse = laundromatInfoServer.availableTimes()
-            pricesResponse = laundromatInfoServer.prices()
+       //     pricesResponse = laundromatInfoServer.prices()
             _pickupDateValues.value = _pickupDateValues.value.copy(
                 selectableDates = SelectableDeliveryDates(availableTimesResponse.pickup, 0)
             )
