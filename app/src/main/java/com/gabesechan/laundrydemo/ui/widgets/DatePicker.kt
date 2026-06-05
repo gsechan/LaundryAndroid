@@ -83,6 +83,7 @@ fun DatePickerTextfield(
                 IconButton(onClick = { showDatePicker = !showDatePicker }) {
                     Icon(
                         painterResource( R.drawable.date_range),
+                        tint = MaterialTheme.colorScheme.onSurface,
                         contentDescription = "Select date"
                     )
                 }

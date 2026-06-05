@@ -3,6 +3,7 @@ package com.gabesechan.laundrydemo.ui.widgets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -20,7 +21,8 @@ fun LoadingButton(onClick: ()->Unit, text: String, enabled:Boolean, showSpinner:
         onClick = { onClick() },
         modifier = Modifier.height(ButtonDefaults.MinHeight).fillMaxWidth().testTag("LoadingButtonRoot"),
         // Disable button while loading to prevent multiple clicks
-        enabled = enabled
+        enabled = enabled,
+        shape = RoundedCornerShape(0.dp)
     ) {
         if (showSpinner) {
             // Indeterminate indicator that runs while task is active

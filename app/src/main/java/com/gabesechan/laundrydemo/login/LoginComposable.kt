@@ -1,9 +1,13 @@
 package com.gabesechan.laundrydemo.login
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SecureTextField
@@ -14,6 +18,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,24 +49,43 @@ fun LoginInner(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
     ) { innerPadding ->
-        Column(verticalArrangement = Arrangement.Center,
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(innerPadding).padding(16.dp).fillMaxSize()
         ) {
+            Image(painterResource(R.drawable.logo), null, modifier = Modifier.size(320.dp))
             val usernameState = rememberTextFieldState("")
             val passwordState = rememberTextFieldState("")
-            TextField(usernameState, placeholder = {Text(stringResource(R.string.username))})
-            SecureTextField(passwordState,
-                placeholder = {Text(stringResource(R.string.password))},
-            )
-            LoadingButton(
-                {loginFunc(usernameState.text, passwordState.text)},
-                stringResource(R.string.login_button),
-                loginEnabled && usernameState.text.isNotEmpty() && passwordState.text.isNotEmpty(),
-                showSpinner
-            )
-            if(errorTextId != 0) {
-                Text(text= stringResource(errorTextId),  color = Color.Red)
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(.8f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    TextField(
+                        usernameState,
+                        placeholder = { Text(stringResource(R.string.username)) },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    SecureTextField(
+                        passwordState,
+                        placeholder = { Text(stringResource(R.string.password)) },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    LoadingButton(
+                        { loginFunc(usernameState.text, passwordState.text) },
+                        stringResource(R.string.login_button),
+                        loginEnabled && usernameState.text.isNotEmpty() && passwordState.text.isNotEmpty(),
+                        showSpinner
+                    )
+                    if (errorTextId != 0) {
+                        Text(text = stringResource(errorTextId), color = Color.Red)
+                    }
+
+                }
             }
         }
 

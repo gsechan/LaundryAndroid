@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -43,7 +44,8 @@ fun NavMenuScreen(navController: NavController, items: List<DestinationScreen>, 
                             if(it.icon != 0) {
                                 Icon(
                                     painter = painterResource(id = it.icon),
-                                    contentDescription = stringResource(it.text)
+                                    contentDescription = stringResource(it.text),
+                                    tint = MaterialTheme.colorScheme.onSurface
                                 )
                             }
                         },

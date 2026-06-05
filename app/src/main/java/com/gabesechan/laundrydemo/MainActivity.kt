@@ -42,11 +42,11 @@ class MainActivity : ComponentActivity() {
     private var isReady = MutableStateFlow(false)
 
     private var navItems = listOf(
-        DestinationScreen("home", R.string.home, 0, ::HomeScreen),
-        DestinationScreen("wash", R.string.wash_fold, 0, ::WashFoldScreen),
-        DestinationScreen("dryclean", R.string.dry_clean, 0, ::DryCleaningComposable),
-        DestinationScreen("orders", R.string.orders, 0, ::OrderScreen),
-        DestinationScreen("account", R.string.account, 0, ::AccountScreen),
+        DestinationScreen("home", R.string.home, R.drawable.home, ::HomeScreen),
+        DestinationScreen("wash", R.string.wash_fold, R.drawable.washer, ::WashFoldScreen),
+        DestinationScreen("dryclean", R.string.dry_clean, R.drawable.dry_cleaning, ::DryCleaningComposable),
+        DestinationScreen("orders", R.string.orders, R.drawable.order, ::OrderScreen),
+        DestinationScreen("account", R.string.account, R.drawable.account, ::AccountScreen),
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
