@@ -116,24 +116,7 @@ fun DryCleaningComposableInner(
 
         Spacer(Modifier.height(12.dp))
 
-        TextFieldPicker(
-            stringResource(R.string.select_address),
-            selectedAddress.street1,
-            { callback ->
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text(stringResource(R.string.select_address))
-                    addresses.forEachIndexed { index, address ->
-                        AddressDisplay(address, Modifier.clickable() {
-                            callback(address)
-                        })
-                        if(index != addresses.size -1) {
-                            Spacer(modifier = Modifier.fillMaxWidth().background(Color.Black).height(2.dp))
-                        }
-                    }
-                }
-            },
-            onAddressSelected
-        )
+        AddressPicker(addresses, selectedAddress, onAddressSelected)
 
         DateTimePicker(
             stringResource(R.string.pickup_select),

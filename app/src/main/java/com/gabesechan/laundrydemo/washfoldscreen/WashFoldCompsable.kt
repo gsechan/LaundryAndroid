@@ -29,7 +29,7 @@ fun WashFoldScreen(viewModel: WashFoldViewModel = hiltViewModel()) {
     val isBooked by viewModel.isBooked.collectAsState()
     val pickupDateValues by viewModel.pickupDateValues.collectAsState()
     val dropoffDateValues by viewModel.dropoffDateValues.collectAsState()
-    val selectedAddressIndex by viewModel.selectedAddressIndex.collectAsState()
+    val selectedAddress by viewModel.selectedAddress.collectAsState()
     val addresses by viewModel.addresses.collectAsState(emptyList())
 
     if(isBooked) {
@@ -39,7 +39,7 @@ fun WashFoldScreen(viewModel: WashFoldViewModel = hiltViewModel()) {
 
         WashFoldScreenInner(
             addresses,
-            selectedAddressIndex,
+            selectedAddress,
             viewModel::selectAddress,
             pickupDateValues,
             DateTimePickerCallbacks(
@@ -59,8 +59,8 @@ fun WashFoldScreen(viewModel: WashFoldViewModel = hiltViewModel()) {
 @Composable
 fun WashFoldScreenInner(
     addresses: List<Address>,
-    selectedAddress: Int,
-    onAddressSelected: (Int)->Unit,
+    selectedAddress: Address,
+    onAddressSelected: (Address)->Unit,
     pickup: DateTimePickerValues,
     pickupCallbacks: DateTimePickerCallbacks,
     dropoff: DateTimePickerValues,

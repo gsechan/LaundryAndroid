@@ -7,10 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.gabesechan.laundrydemo.laundromatinfo.AvailableDateTime
 import com.gabesechan.laundrydemo.laundromatinfo.AvailableTimesResponse
 import com.gabesechan.laundrydemo.laundromatinfo.LaundromatInfoServer
-import com.gabesechan.laundrydemo.laundromatinfo.PricesResponse
 import com.gabesechan.laundrydemo.laundromatinfo.TimeRange
 import com.gabesechan.laundrydemo.laundromatinfo.WashFoldResponse
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerValues
+import com.gabesechan.laundrydemo.user.Address
 import com.gabesechan.laundrydemo.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -31,8 +31,8 @@ class WashFoldViewModel @Inject constructor(
 
     val addresses = userRepository.current.map { it.addresses }
 
-    private val _selectedAddressIndex = MutableStateFlow(0)
-    val selectedAddressIndex = _selectedAddressIndex.asStateFlow()
+    private val _selectedAddress = MutableStateFlow(userRepository.current.value.addresses[0])
+    val selectedAddress = _selectedAddress.asStateFlow()
 
 
     private val _dataLoaded = MutableStateFlow(false)
@@ -76,8 +76,8 @@ class WashFoldViewModel @Inject constructor(
         }
     }
 
-    fun selectAddress(index: Int) {
-        _selectedAddressIndex.value = index
+    fun selectAddress(address: Address) {
+        _selectedAddress.value = address
     }
 
     fun washPrice(): BigDecimal = BigDecimal(pricesResponse.price)

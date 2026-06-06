@@ -1,21 +1,17 @@
 package com.gabesechan.laundrydemo.ui.widgets
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.gabesechan.laundrydemo.R
 import com.gabesechan.laundrydemo.user.Address
@@ -23,32 +19,28 @@ import com.gabesechan.laundrydemo.user.Address
 @Composable
 fun AddressPicker(
     addresses: List<Address>,
-    selectedIndex: Int,
-    onSelection: (Int)->Unit,
+    selectedAddress: Address,
+    onSelection: (Address)->Unit,
 ) {
 
-    Column(Modifier.selectableGroup(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        addresses.forEachIndexed { index, address ->
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .selectable(
-                        selected = (index == selectedIndex),
-                        onClick = { onSelection(index) },
-                        role = Role.RadioButton
-                    ),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                RadioButton(
-                    selected =  (index == selectedIndex),
-                    onClick = null // null recommended for accessibility with screen readers
-                )
-                AddressDisplay(address)
+    TextFieldPicker(
+        stringResource(R.string.select_address),
+        selectedAddress.street1,
+        { callback ->
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(stringResource(R.string.select_address))
+                addresses.forEachIndexed { index, address ->
+                    AddressDisplay(address, Modifier.clickable() {
+                        callback(address)
+                    })
+                    if(index != addresses.size -1) {
+                        Spacer(modifier = Modifier.fillMaxWidth().background(Color.Black).height(2.dp))
+                    }
+                }
             }
-        }
-    }
+        },
+        onSelection
+    )
 }
 
 @Composable
