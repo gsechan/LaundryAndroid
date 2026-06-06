@@ -52,8 +52,8 @@ fun AddressPicker(
 }
 
 @Composable
-fun AddressDisplay(address: Address) {
-    Column {
+fun AddressDisplay(address: Address, modifier: Modifier= Modifier) {
+    Column(modifier = modifier) {
         Text(address.street1)
         if (address.street2 != null) {
             Text(address.street2)

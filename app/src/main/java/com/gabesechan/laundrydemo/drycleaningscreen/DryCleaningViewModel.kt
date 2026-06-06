@@ -14,6 +14,7 @@ import androidx.lifecycle.viewModelScope
 import com.gabesechan.laundrydemo.laundromatinfo.DryCleanItemsResponse
 import com.gabesechan.laundrydemo.laundromatinfo.JSONDryCleanItem
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerValues
+import com.gabesechan.laundrydemo.user.Address
 import com.gabesechan.laundrydemo.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -32,8 +33,8 @@ class DryCleaningViewModel @Inject constructor(
 ): ViewModel() {
     val addresses = userRepository.current.map { it.addresses }
 
-    private val _selectedAddressIndex = MutableStateFlow(0)
-    val selectedAddressIndex = _selectedAddressIndex.asStateFlow()
+    private val _selectedAddress = MutableStateFlow(userRepository.current.value.addresses[0])
+    val selectedAddressIndex = _selectedAddress.asStateFlow()
 
 
     private val _dataLoaded = MutableStateFlow(false)
@@ -84,8 +85,8 @@ class DryCleaningViewModel @Inject constructor(
         }
     }
 
-    fun selectAddress(index: Int) {
-        _selectedAddressIndex.value = index
+    fun selectAddress(address: Address) {
+        _selectedAddress.value = address
     }
 
     private class SelectableDeliveryDates(
