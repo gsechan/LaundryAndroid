@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.gabesechan.laundrydemo.R
@@ -80,7 +82,8 @@ fun DryCleaningComposableInner(
 ) {
     val formatter = NumberFormat.getCurrencyInstance()
 
-    Column(Modifier.fillMaxHeight().padding(12.dp)) {
+    Column(Modifier.fillMaxHeight().padding(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)) {
         var totalCost = BigDecimal(0)
         items.forEach { item->
             val cost = BigDecimal(item.price) * BigDecimal(itemCounts[item.id]!!)
@@ -108,8 +111,6 @@ fun DryCleaningComposableInner(
             Text(formatter.format(totalCost))
         }
 
-        Spacer(Modifier.height(12.dp))
-
         AddressPicker(addresses, selectedAddress, onAddressSelected)
 
         DateTimePicker(
@@ -118,19 +119,16 @@ fun DryCleaningComposableInner(
             dateTimeValues = pickup,
             callbacks = pickupCallbacks
         )
-        Spacer(Modifier.height(12.dp))
         if(pickup.curSelectedTime != null) {
             DateTimePicker(
                 label =stringResource(R.string.dropoff_select),
                 dateTimeValues = dropoff,
-                callbacks = dropoffCallbacks
+                callbacks = dropoffCallbacks,
+                forcePlaceholderText = dropoff.curSelectedDate == null
             )
         }
-        if(dropoff.curSelectedTime != null) {
-            Spacer(Modifier.height(12.dp))
-            Button(onBook) {
-                Text(stringResource(R.string.book_now))
-            }
+        Button(onBook, enabled = dropoff.curSelectedTime!= null, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(0.dp)) {
+            Text(stringResource(R.string.book_now), textAlign = TextAlign.Center)
         }
     }
 }

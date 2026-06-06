@@ -99,7 +99,8 @@ fun WashFoldScreenInner(
             DateTimePicker(
                 label = stringResource(R.string.dropoff_select),
                 dateTimeValues = dropoff,
-                callbacks = dropoffCallbacks
+                callbacks = dropoffCallbacks,
+                forcePlaceholderText = dropoff.curSelectedDate == null
             )
         }
         Button(onBook, enabled = dropoff.curSelectedTime!= null, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(0.dp)) {

@@ -52,6 +52,7 @@ import java.util.TimeZone
 @Composable
 fun DatePickerTextfield(
     placeholder: String? = null,
+    forcePlaceholderText: Boolean = false,
     label: String? = null,
     selectableDates: SelectableDates = DatePickerDefaults.AllDates,
     onDateSelected: (Long) -> Unit
@@ -60,9 +61,9 @@ fun DatePickerTextfield(
     val datePickerState = rememberDatePickerState(
         selectableDates = selectableDates
     )
-    val selectedDate = datePickerState.selectedDateMillis?.let {
-        convertMillisToDate(it)
-    } ?: ""
+    val selectedDate = if(!forcePlaceholderText && datePickerState.selectedDateMillis != null) {
+        convertMillisToDate(datePickerState.selectedDateMillis!!)
+    } else ""
 
     //When the state updates, hide the dialog and notify the callback.  This is how we get away
     //without ok and cancel dialog buttons
@@ -84,69 +85,7 @@ fun DatePickerTextfield(
         icon = R.drawable.date_range,
         showDialogState = showDialog
     )
-/*
-    Box(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        OutlinedTextField(
-            value = selectedDate,
-            onValueChange = { },
-            label = { Text(placeholder) },
-            readOnly = true,
-            trailingIcon = {
-                IconButton(onClick = { showDatePicker = !showDatePicker }) {
-                    Icon(
-                        painterResource( R.drawable.date_range),
-                        tint = MaterialTheme.colorScheme.onSurface,
-                        contentDescription = "Select date"
-                    )
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(64.dp)
-                .pointerInput(selectedDate) {
-                    awaitEachGesture {
-                        // Modifier.clickable doesn't work for text fields, so we use Modifier.pointerInput
-                        // in the Initial pass to observe events before the text field consumes them
-                        // in the Main pass.
-                        awaitFirstDown(pass = PointerEventPass.Initial)
-                        val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
-                        if (upEvent != null) {
-                            showDatePicker = true
-                        }
-                    }
-                }
 
-        )
-
-        if (showDatePicker) {
-            Popup(
-                onDismissRequest = { showDatePicker = false },
-                alignment = Alignment.TopStart
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .offset(y = 64.dp)
-                        .shadow(elevation = 4.dp)
-                        .background(MaterialTheme.colorScheme.surface)
-                        .padding(16.dp)
-                ) {
-
-                    DatePickerDialog(
-                        onDismissRequest = { showDatePicker = false },
-                        confirmButton = {
-                        },
-                        dismissButton = {
-                        },
-                    ) {
-                        DatePicker(state = datePickerState)
-                    }
-                }
-            }
-        }
-    }*/
 }
 
 fun convertMillisToDate(millis: Long): String {
