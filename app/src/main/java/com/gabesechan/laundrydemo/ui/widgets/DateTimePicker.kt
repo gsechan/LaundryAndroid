@@ -23,14 +23,16 @@ data class DateTimePickerCallbacks(
 
 @Composable
 fun DateTimePicker(
-    datePickerLabel: String,
+    label: String? = null,
+    placeholder: String? = null,
     dateTimeValues: DateTimePickerValues,
     callbacks: DateTimePickerCallbacks,
 ) {
     DatePickerTextfield(
-        datePickerLabel,
-        dateTimeValues.selectableDates,
-        callbacks.onDateSelected
+        label = label,
+        placeholder = placeholder,
+        selectableDates =  dateTimeValues.selectableDates,
+        onDateSelected = callbacks.onDateSelected
     )
     if(dateTimeValues.curSelectedDate != null) {
         Spacer(Modifier.height(12.dp))

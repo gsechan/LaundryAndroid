@@ -1,8 +1,5 @@
 package com.gabesechan.laundrydemo.drycleaningscreen
 
-import androidx.annotation.DrawableRes
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,19 +15,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.gabesechan.laundrydemo.R
 import com.gabesechan.laundrydemo.laundromatinfo.JSONDryCleanItem
-import com.gabesechan.laundrydemo.ui.widgets.AddressDisplay
 import com.gabesechan.laundrydemo.ui.widgets.AddressPicker
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePicker
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerCallbacks
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerValues
 import com.gabesechan.laundrydemo.ui.widgets.NumberPicker
-import com.gabesechan.laundrydemo.ui.widgets.TextFieldPicker
 import com.gabesechan.laundrydemo.user.Address
 import java.math.BigDecimal
 import java.text.NumberFormat
@@ -119,16 +113,17 @@ fun DryCleaningComposableInner(
         AddressPicker(addresses, selectedAddress, onAddressSelected)
 
         DateTimePicker(
-            stringResource(R.string.pickup_select),
-            pickup,
-            pickupCallbacks
+            label = stringResource(R.string.pickup_select),
+
+            dateTimeValues = pickup,
+            callbacks = pickupCallbacks
         )
         Spacer(Modifier.height(12.dp))
         if(pickup.curSelectedTime != null) {
             DateTimePicker(
-                stringResource(R.string.dropoff_select),
-                dropoff,
-                dropoffCallbacks
+                label =stringResource(R.string.dropoff_select),
+                dateTimeValues = dropoff,
+                callbacks = dropoffCallbacks
             )
         }
         if(dropoff.curSelectedTime != null) {

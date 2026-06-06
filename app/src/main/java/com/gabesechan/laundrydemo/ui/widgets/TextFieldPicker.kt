@@ -17,6 +17,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldLabelPosition
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -37,28 +38,28 @@ import androidx.compose.ui.unit.dp
  */
 @Composable
 fun <T> TextFieldPicker(
-    label: String?,
+    label: String?= null,
     value: String,
     dialogContent: @Composable ((T)->Unit)->Unit,
     onSelected: (T) -> Unit,
+    placeholder: String? = null,
     @DrawableRes icon: Int? = null,
+    showDialogState: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) }
 ) {
-    var showDialog by rememberSaveable { mutableStateOf(false) }
+    var showDialog by showDialogState
 
     Box(
         modifier = Modifier.fillMaxWidth()
     ) {
         OutlinedTextField(
             state = TextFieldState(initialText = value),
-            label = {
-                if(label != null)
-                    Text(label)
-            },
+            label = { label?.let {  Text(label) }},
+            placeholder = { placeholder?.let { Text(placeholder) }},
             labelPosition = TextFieldLabelPosition.Above(),
             lineLimits = TextFieldLineLimits.SingleLine,
             readOnly = true,
             trailingIcon = {
-                if(icon != null) {
+                icon?.let {
                     IconButton(onClick = { showDialog = !showDialog }) {
                         Icon(
                             painterResource(icon),

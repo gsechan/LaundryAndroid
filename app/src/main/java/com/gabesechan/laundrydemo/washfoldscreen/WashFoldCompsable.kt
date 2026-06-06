@@ -76,16 +76,16 @@ fun WashFoldScreenInner(
 
 
         DateTimePicker(
-            stringResource(R.string.pickup_select),
-            pickup,
-            pickupCallbacks
+            label =stringResource(R.string.pickup_select),
+            dateTimeValues = pickup,
+            callbacks = pickupCallbacks
         )
         Spacer(Modifier.height(12.dp))
         if(pickup.curSelectedTime != null) {
             DateTimePicker(
-                stringResource(R.string.dropoff_select),
-                dropoff,
-                dropoffCallbacks
+                label = stringResource(R.string.dropoff_select),
+                dateTimeValues = dropoff,
+                callbacks = dropoffCallbacks
             )
         }
         if(dropoff.curSelectedTime != null) {

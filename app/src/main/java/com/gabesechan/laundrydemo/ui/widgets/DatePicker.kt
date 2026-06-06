@@ -1,5 +1,6 @@
 package com.gabesechan.laundrydemo.ui.widgets
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -50,11 +51,12 @@ import java.util.TimeZone
  */
 @Composable
 fun DatePickerTextfield(
-    placeholder: String,
+    placeholder: String? = null,
+    label: String? = null,
     selectableDates: SelectableDates = DatePickerDefaults.AllDates,
     onDateSelected: (Long) -> Unit
 ) {
-    var showDatePicker by rememberSaveable { mutableStateOf(false) }
+    var showDialog =  rememberSaveable { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState(
         selectableDates = selectableDates
     )
@@ -66,11 +68,23 @@ fun DatePickerTextfield(
     //without ok and cancel dialog buttons
     LaunchedEffect(datePickerState.selectedDateMillis) {
         datePickerState.selectedDateMillis?.let { millis ->
-            showDatePicker = false
+            showDialog.value = false
             onDateSelected(millis)
         }
     }
 
+    TextFieldPicker(
+        placeholder = placeholder,
+        label = label,
+        value = selectedDate,
+        dialogContent = {
+            DatePicker(state = datePickerState)
+        },
+        onSelected = onDateSelected,
+        icon = R.drawable.date_range,
+        showDialogState = showDialog
+    )
+/*
     Box(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -132,7 +146,7 @@ fun DatePickerTextfield(
                 }
             }
         }
-    }
+    }*/
 }
 
 fun convertMillisToDate(millis: Long): String {
