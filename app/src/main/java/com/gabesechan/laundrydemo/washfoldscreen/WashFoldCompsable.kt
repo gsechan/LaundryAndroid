@@ -1,10 +1,13 @@
 package com.gabesechan.laundrydemo.washfoldscreen
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.gabesechan.laundrydemo.R
@@ -69,8 +73,19 @@ fun WashFoldScreenInner(
     avgWeight: BigDecimal,
     onBook: ()->Unit
 ) {
-    Column(Modifier.fillMaxHeight().padding(horizontal = 12.dp)) {
-        Text(stringResource(R.string.wash_fold))
+    Column(
+        Modifier.fillMaxHeight().padding(horizontal = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        val formatter = NumberFormat.getCurrencyInstance()
+        val totalPrice = washFoldPrice.times(avgWeight)
+        Text(
+            stringResource(
+                R.string.expected_wash_price,
+                formatter.format(washFoldPrice),
+                formatter.format(totalPrice)
+            )
+        )
 
         AddressPicker(addresses, selectedAddress, onAddressSelected)
 
@@ -80,7 +95,6 @@ fun WashFoldScreenInner(
             dateTimeValues = pickup,
             callbacks = pickupCallbacks
         )
-        Spacer(Modifier.height(12.dp))
         if(pickup.curSelectedTime != null) {
             DateTimePicker(
                 label = stringResource(R.string.dropoff_select),
@@ -88,21 +102,8 @@ fun WashFoldScreenInner(
                 callbacks = dropoffCallbacks
             )
         }
-        if(dropoff.curSelectedTime != null) {
-            Spacer(Modifier.height(12.dp))
-            val formatter = NumberFormat.getCurrencyInstance()
-            val totalPrice = washFoldPrice.times(avgWeight)
-            Text(
-                stringResource(
-                    R.string.expected_wash_price,
-                    formatter.format(washFoldPrice),
-                    formatter.format(totalPrice)
-                    )
-            )
-            Spacer(Modifier.height(12.dp))
-            Button(onBook) {
-                Text(stringResource(R.string.book_now))
-            }
+        Button(onBook, enabled = dropoff.curSelectedTime!= null, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(0.dp)) {
+            Text(stringResource(R.string.book_now), textAlign = TextAlign.Center)
         }
     }
 }

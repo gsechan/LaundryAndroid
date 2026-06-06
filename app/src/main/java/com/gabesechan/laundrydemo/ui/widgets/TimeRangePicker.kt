@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,20 +34,20 @@ fun DisplayTimes(times: List<TimeRange>, selected: TimeRange?, onTimeSelected: (
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        val unselectedModifier = Modifier.width(120.dp).height(32.dp).background(Color.Blue)
-        val selectedModifier = Modifier.width(120.dp).height(32.dp).border(width = 4.dp, color = Color.Black)
-            .background(Color.Blue)
-        times.forEach{
-            val startTime = dateFormat.format(it.startTime)
-            val endTime = dateFormat.format(it.endTime)
+        val unselectedModifier = Modifier.width(120.dp).height(32.dp).background(MaterialTheme.colorScheme.primary)
+        val selectedModifier = Modifier.width(120.dp).height(32.dp).border(width = 2.dp, color = Color.Black)
+            .background(MaterialTheme.colorScheme.secondaryContainer)
+        times.forEach{ time->
+            val startTime = dateFormat.format(time.startTime)
+            val endTime = dateFormat.format(time.endTime)
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
-                modifier = (if(selected == it) selectedModifier else unselectedModifier).clickable { onTimeSelected(it) }
+                modifier = (if(selected == time) selectedModifier else unselectedModifier).clickable { onTimeSelected(time) }
             ) {
                 Text(
                     text= stringResource(R.string.time_range_format, startTime, endTime),
-                    color = Color.White,
+                    color = if(selected==time) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onPrimary,
                     fontSize = 8.sp,
                 )
             }
