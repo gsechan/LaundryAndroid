@@ -3,10 +3,8 @@ package com.gabesechan.laundrydemo.drycleaningscreen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -42,7 +40,9 @@ fun DryCleaningComposable(viewModel: DryCleaningViewModel = hiltViewModel()) {
     val itemCounts by viewModel.itemCounts.collectAsState()
 
     if(isBooked) {
-        Text(stringResource(R.string.order_booked))
+        Column(Modifier.fillMaxHeight().padding(12.dp)) {
+            Text(stringResource(R.string.order_booked))
+        }
     }
     else if(isLoaded) {
 
@@ -61,7 +61,8 @@ fun DryCleaningComposable(viewModel: DryCleaningViewModel = hiltViewModel()) {
             viewModel::book,
             itemCounts,
             viewModel::onCountChanged,
-            viewModel.getItems()
+            viewModel.getItems(),
+            viewModel.bookEnabled()
         )
     }
 }
@@ -78,7 +79,8 @@ fun DryCleaningComposableInner(
     onBook: ()->Unit,
     itemCounts: Map<String, Int>,
     onCountChanged: (String, Int)->Unit,
-    items:List<JSONDryCleanItem>
+    items:List<JSONDryCleanItem>,
+    buttonEnabled: Boolean,
 ) {
     val formatter = NumberFormat.getCurrencyInstance()
 
@@ -127,7 +129,7 @@ fun DryCleaningComposableInner(
                 forcePlaceholderText = dropoff.curSelectedDate == null
             )
         }
-        Button(onBook, enabled = dropoff.curSelectedTime!= null, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(0.dp)) {
+        Button(onBook, enabled = buttonEnabled, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(0.dp)) {
             Text(stringResource(R.string.book_now), textAlign = TextAlign.Center)
         }
     }

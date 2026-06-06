@@ -173,4 +173,10 @@ class DryCleaningViewModel @Inject constructor(
     fun getItems(): List<JSONDryCleanItem> {
         return dryCleanItemsResponse.items
     }
+
+    fun bookEnabled(): Boolean {
+        return _dropoffDateValues.value.curSelectedTime!= null && _itemCounts.value.any() { entry->
+            entry.value != 0
+        }
+    }
 }

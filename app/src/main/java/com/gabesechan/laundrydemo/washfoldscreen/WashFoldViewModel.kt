@@ -158,5 +158,7 @@ class WashFoldViewModel @Inject constructor(
         _isBooked.value = true
     }
 
-
+    fun bookEnabled(): Boolean {
+        return _dropoffDateValues.value.curSelectedTime!= null
+    }
 }

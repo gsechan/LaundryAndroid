@@ -2,10 +2,8 @@ package com.gabesechan.laundrydemo.washfoldscreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -37,7 +35,9 @@ fun WashFoldScreen(viewModel: WashFoldViewModel = hiltViewModel()) {
     val addresses by viewModel.addresses.collectAsState(emptyList())
 
     if(isBooked) {
-        Text(stringResource(R.string.order_booked))
+        Column(Modifier.fillMaxHeight().padding(12.dp)) {
+            Text(stringResource(R.string.order_booked))
+        }
     }
     else if(isLoaded) {
 
@@ -55,7 +55,9 @@ fun WashFoldScreen(viewModel: WashFoldViewModel = hiltViewModel()) {
              ),
             viewModel.washPrice(),
             viewModel.avgWeight(),
-            viewModel::book
+            viewModel::book,
+            viewModel.bookEnabled()
+
         )
     }
 }
@@ -71,7 +73,8 @@ fun WashFoldScreenInner(
     dropoffCallbacks: DateTimePickerCallbacks,
     washFoldPrice: BigDecimal,
     avgWeight: BigDecimal,
-    onBook: ()->Unit
+    onBook: ()->Unit,
+    bookEnabled: Boolean
 ) {
     Column(
         Modifier.fillMaxHeight().padding(horizontal = 12.dp),
@@ -103,7 +106,7 @@ fun WashFoldScreenInner(
                 forcePlaceholderText = dropoff.curSelectedDate == null
             )
         }
-        Button(onBook, enabled = dropoff.curSelectedTime!= null, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(0.dp)) {
+        Button(onBook, enabled = bookEnabled, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(0.dp)) {
             Text(stringResource(R.string.book_now), textAlign = TextAlign.Center)
         }
     }
