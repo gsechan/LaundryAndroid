@@ -28,4 +28,9 @@
     <string name="order_booked">Congratulations, your order is booked.</string>
 
     <string name="total_price">Total Price:</string>
+
+    <string name="order_num">Order #: %1$s</string>
+    <string name="status">Status: %1$s</string>
+    <string name="order_line_with_quantity">%1$s x %2$s @ %3$s = %4$s</string>
+    <string name="order_line_without_quantity">TBD x %1$s @ %2$s = TBD</string>
 </resources>

@@ -19,6 +19,7 @@ import com.gabesechan.laundrydemo.homescreen.HomeScreen
 import com.gabesechan.laundrydemo.user.UserRepository
 import com.gabesechan.laundrydemo.login.Login
 import com.gabesechan.laundrydemo.login.LoginAPI
+import com.gabesechan.laundrydemo.orders.OrderScreen
 import com.gabesechan.laundrydemo.ui.theme.LaundryDemoTheme
 import com.gabesechan.laundrydemo.ui.widgets.DestinationScreen
 import com.gabesechan.laundrydemo.ui.widgets.NavMenuScreen
@@ -98,16 +99,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-@Composable
-fun OrderScreen() {
-    Column {
-        Text(
-            text = "Orders",
-        )
-        Text(
-            text = "This screen would have prior and current orders info- status, pricing, etc",
-        )
-    }
-}
-
