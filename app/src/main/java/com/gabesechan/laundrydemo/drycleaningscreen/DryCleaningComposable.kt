@@ -100,7 +100,7 @@ fun DryCleaningComposableInner(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(item.name, modifier = Modifier.alignByBaseline())
+                Text(item.name, modifier = Modifier.alignByBaseline().fillMaxWidth(.2f))
                 NumberPicker(
                     itemCounts[item.id]!!,
                     {onCountChanged(item.id, it)},

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Laundry Demo</string>
+    <string name="network_error">Could not connect to server</string>
+    <string name="bad_auth">Username or password invalid</string>
+    <string name="login_button">Login</string>
+    <string name= "username">Enter phone number</string>
+    <string name= "password">Enter password</string>
+
+    <string name= "home">Home</string>
+    <string name= "wash_fold">Wash and Fold</string>
+    <string name= "dry_clean">Dry Cleaning</string>
+    <string name= "orders">Orders</string>
+    <string name= "account">Account</string>
+
+    <string name = "logout">Cerrar sesión</string>
+    <string name = "phone_label">Teléfono: %1$s</string>
+    <string name = "email_label">Correo electrónico: %1$s</string>
+
+    <string name="addresses">Direcciones</string>
+    <string name="address_format">%1$s, %2$s %3$s</string>
+    <string name="select_address">seleccionar una dirección</string>
+
+    <string name="pickup_select">Seleccione la fecha de recogida</string>
+    <string name="dropoff_select">Seleccione la fecha de entrega</string>
+    <string name="time_range_format">%1$s - %2$s</string>
+    <string name="expected_wash_price">El precio de este pedido depende del peso. El precio es de %1$s por libra. El costo promedio es de %2$s.</string>
+    <string name="book_now">Reservar ahora</string>
+    <string name="order_booked">Felicidades, su pedido ha sido reservado.</string>
+
+    <string name="total_price">Precio total:</string>
+
+    <string name="order_num">Pedido n.º: %1$s</string>
+    <string name="status">Estado: %1$s</string>
+    <string name="order_line_with_quantity">%1$s x %2$s @ %3$s = %4$s</string>
+    <string name="order_line_without_quantity">Por determinar x %1$s @ %2$s = Por determinar</string>
+</resources>
