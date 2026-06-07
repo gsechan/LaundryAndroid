@@ -74,7 +74,7 @@ class WashFoldViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            availableTimesResponse = laundromatInfoServer.availableTimes()
+            availableTimesResponse = laundromatInfoServer.availableTimes().process()
             pricesResponse = laundromatInfoServer.washFold()
             _pickupDateValues.value = _pickupDateValues.value.copy(
                 selectableDates = SelectableDeliveryDates(availableTimesResponse.pickup, 0)

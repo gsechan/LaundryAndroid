@@ -1,4 +1,4 @@
-package com.gabesechan.laundrydemo
+package com.gabesechan.laundrydemo.network
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

@@ -1,4 +1,4 @@
-package com.gabesechan.laundrydemo
+package com.gabesechan.laundrydemo.network
 
 import android.content.Context
 import okhttp3.Interceptor

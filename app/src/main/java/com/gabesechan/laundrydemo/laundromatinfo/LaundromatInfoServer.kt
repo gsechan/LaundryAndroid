@@ -1,5 +1,6 @@
 package com.gabesechan.laundrydemo.laundromatinfo
 
+import com.gabesechan.laundrydemo.network.NetworkResponse
 import kotlinx.serialization.Serializable
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -46,7 +47,7 @@ interface LaundromatInfoServer {
 
     @Headers("Content-Type: application/json")
     @GET("availableTimes")
-    suspend fun availableTimes(): AvailableTimesResponse
+    suspend fun availableTimes(): NetworkResponse<AvailableTimesResponse>
 
     @Headers("Content-Type: application/json")
     @GET("washFold")

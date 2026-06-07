@@ -1,5 +1,6 @@
 package com.gabesechan.laundrydemo.login
 
+import com.gabesechan.laundrydemo.network.BadAuthException
 import com.gabesechan.laundrydemo.user.Address
 import com.gabesechan.laundrydemo.user.User
 import com.gabesechan.laundrydemo.user.UserRepository
@@ -18,48 +19,50 @@ class LoginAPI @Inject constructor(
         class LoginSuccess(val user: User): LoginResult()
         object  LoginFailed: LoginResult()
         object NetworkError: LoginResult()
-
-        fun isSuccess(): Boolean = this is LoginSuccess
     }
 
     suspend fun login(username: String, password: String): LoginResult {
         try {
-            val response = loginServer.login(LoginRequest(username, password, "eaf6aefc-33ef-4245-8ef9-fd87827f0000"))
-            if(response.success && response.user!= null && response.session != null) {
-                val user = User(
-                    response.user.name,
-                    response.user.email,
-                    response.user.phone,
-                    response.user.addresses.toAddress()
+            val response = loginServer.login(
+                LoginRequest(
+                    username,
+                    password,
+                    "eaf6aefc-33ef-4245-8ef9-fd87827f0000"
                 )
-                userRepository.setUser(user, response.session)
-                return LoginResult.LoginSuccess(user)
-            }
-            return LoginResult.LoginFailed
+            ).process()
+            val user = User(
+                response.user.name,
+                response.user.email,
+                response.user.phone,
+                response.user.addresses.toAddress()
+            )
+            userRepository.setUser(user, response.session)
+            return LoginResult.LoginSuccess(user)
         }
-        catch(ex: IOException){
+        catch(ex: Exception){
             ex.printStackTrace()
-            return LoginResult.NetworkError
+            when(ex) {
+                is IOException -> return LoginResult.NetworkError
+                is IllegalArgumentException, is BadAuthException -> return LoginResult.LoginFailed
+            }
+            throw ex
         }
     }
 
     suspend fun checkAuth(token: String): User {
         try {
-            val response = loginServer.checkAuth(CheckAuthRequest(token))
-            if(response.success && response.user!= null) {
-                val user = User(
-                    response.user.name,
-                    response.user.email,
-                    response.user.phone,
-                    response.user.addresses.toAddress()
-                )
-                userRepository.setUser(user, token)
-                return user
-            }
-            logout()
-            return User.NoUser
+            val response = loginServer.checkAuth(CheckAuthRequest(token)).process()
+            val user = User(
+                response.name,
+                response.email,
+                response.phone,
+                response.addresses.toAddress()
+            )
+            userRepository.setUser(user, token)
+            return user
         }
-        catch (ex: IOException) {
+        catch (ex: Exception) {
+            ex.printStackTrace()
             logout()
             return User.NoUser
         }

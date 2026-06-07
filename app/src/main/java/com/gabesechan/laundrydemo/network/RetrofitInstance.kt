@@ -1,4 +1,4 @@
-package com.gabesechan.laundrydemo
+package com.gabesechan.laundrydemo.network
 
 import android.content.Context
 import com.gabesechan.laundrydemo.user.UserRepository
@@ -8,10 +8,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
-import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
-import okhttp3.Response
 import javax.inject.Singleton
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory

@@ -1,5 +1,6 @@
 package com.gabesechan.laundrydemo.login
 
+import com.gabesechan.laundrydemo.network.NetworkResponse
 import kotlinx.serialization.Serializable
 import retrofit2.http.Body
 import retrofit2.http.Headers
@@ -10,9 +11,8 @@ data class LoginRequest(val phone: String, val password: String, val organizatio
 
 @Serializable
 data class LoginResponse(
-    val success: Boolean,
-    val session: String?,
-    val user: LoginUser?
+    val session: String,
+    val user: LoginUser
 )
 @Serializable
 data class LoginUser(
@@ -35,8 +35,6 @@ data class LoginAddress(
 @Serializable
 data class CheckAuthRequest(val token: String)
 
-@Serializable
-data class CheckAuthResponse(val success: Boolean, val user: LoginUser?)
 
 
 interface LoginServer {
@@ -44,10 +42,10 @@ interface LoginServer {
 
     @Headers("Content-Type: application/json")
     @POST("login")
-    suspend fun login(@Body request: LoginRequest): LoginResponse
+    suspend fun login(@Body request: LoginRequest): NetworkResponse<LoginResponse>
 
     @Headers("Content-Type: application/json")
     @POST("checkAuth")
-    suspend fun checkAuth(@Body request: CheckAuthRequest): CheckAuthResponse
+    suspend fun checkAuth(@Body request: CheckAuthRequest): NetworkResponse<LoginUser>
 
 }

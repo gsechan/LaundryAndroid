@@ -1,4 +1,4 @@
-package com.gabesechan.laundrydemo
+package com.gabesechan.laundrydemo.network
 
 import com.gabesechan.laundrydemo.user.UserRepository
 import okhttp3.Interceptor
