@@ -72,6 +72,7 @@ class LoginAPI @Inject constructor(
 private fun List<LoginAddress>.toAddress(): List<Address> {
     return map {
         Address(
+            it.id,
             it.street1,
             it.street2,
             it.city,

@@ -24,6 +24,7 @@ data class LoginUser(
 
 @Serializable
 data class LoginAddress(
+    val id: String,
     val street1: String,
     val street2: String?,
     val city: String,

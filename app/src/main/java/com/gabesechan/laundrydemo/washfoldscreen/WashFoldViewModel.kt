@@ -174,6 +174,8 @@ class WashFoldViewModel @Inject constructor(
                     ),
                     _pickupDateValues.value.toUtcTime(),
                     _dropoffDateValues.value.toUtcTime(),
+                    _selectedAddress.value.id,
+                    _selectedAddress.value.id
                 )
             )
             _orderPosting.value = false

@@ -12,6 +12,8 @@ data class PostOrderRequest(
     val lines: List<PostOrderLine>,
     val scheduledPickup: Long,
     val scheduledDropoff: Long,
+    val pickupAddress: String,
+    val dropoffAddress: String,
 
 )
 
@@ -37,6 +39,8 @@ data class GetOrder(
     val submitted: Long,
     val scheduledPickup: Long,
     val scheduledDropoff: Long,
+    val pickupAddressId: String,
+    val dropoffAddressId: String,
     val lines: List<GetOrderLine>
 )
 
