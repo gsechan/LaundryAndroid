@@ -32,7 +32,7 @@ import javax.inject.Inject
 @HiltViewModel
 class WashFoldViewModel @Inject constructor(
     private val laundromatInfoServer: LaundromatInfoServer,
-    private val userRepository: UserRepository,
+    userRepository: UserRepository,
     private val orderServer: OrdersServer,
 ): ViewModel() {
 
@@ -75,7 +75,7 @@ class WashFoldViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             availableTimesResponse = laundromatInfoServer.availableTimes().process()
-            pricesResponse = laundromatInfoServer.washFold()
+            pricesResponse = laundromatInfoServer.washFold().process()
             _pickupDateValues.value = _pickupDateValues.value.copy(
                 selectableDates = SelectableDeliveryDates(availableTimesResponse.pickup, 0)
             )

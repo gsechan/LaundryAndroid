@@ -1,5 +1,6 @@
 package com.gabesechan.laundrydemo.orders
 
+import com.gabesechan.laundrydemo.network.NetworkResponse
 import kotlinx.serialization.Serializable
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -53,11 +54,11 @@ interface OrdersServer {
 
     @Headers("Content-Type: application/json")
     @POST("orders")
-    suspend fun postOrder(@Body request: PostOrderRequest): PostOrderResponse
+    suspend fun postOrder(@Body request: PostOrderRequest): NetworkResponse<PostOrderResponse>
 
     @Headers("Content-Type: application/json")
     @GET("orders")
-    suspend fun getAll(): GetOrderResponse
+    suspend fun getAll(): NetworkResponse<GetOrderResponse>
 
 
 }

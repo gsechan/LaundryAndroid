@@ -51,9 +51,9 @@ interface LaundromatInfoServer {
 
     @Headers("Content-Type: application/json")
     @GET("washFold")
-    suspend fun washFold(): WashFoldResponse
+    suspend fun washFold(): NetworkResponse<WashFoldResponse>
 
     @Headers("Content-Type: application/json")
     @GET("dryCleanItem")
-    suspend fun dryCleanItems(): DryCleanItemsResponse
+    suspend fun dryCleanItems(): NetworkResponse<DryCleanItemsResponse>
 }

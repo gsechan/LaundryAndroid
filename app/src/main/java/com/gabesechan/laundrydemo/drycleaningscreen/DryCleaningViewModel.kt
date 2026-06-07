@@ -80,7 +80,7 @@ class DryCleaningViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             availableTimesResponse = laundromatInfoServer.availableTimes().process()
-            dryCleanItemsResponse = laundromatInfoServer.dryCleanItems()
+            dryCleanItemsResponse = laundromatInfoServer.dryCleanItems().process()
             val initCounts = dryCleanItemsResponse.items.associate {
                 it.id to 0
             }

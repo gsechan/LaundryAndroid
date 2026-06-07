@@ -21,7 +21,7 @@ class OrderViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val orders = ordersServer.getAll().orders
+            val orders = ordersServer.getAll().process().orders
             _isLoaded.value = true
             sortedOrders = orders.sortedWith(
                 compareBy<GetOrder> { it.state != "COMPLETED" }
