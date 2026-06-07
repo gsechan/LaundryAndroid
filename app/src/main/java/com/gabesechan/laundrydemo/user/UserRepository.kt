@@ -19,20 +19,17 @@ class UserRepository @Inject constructor( private val datastore: DataStore<Prefe
        private set
 
 
-    private val userKey = stringPreferencesKey("json")
     private val tokenKey = stringPreferencesKey("token")
 
-    data class UserSession(val user: User, val token: String)
-    suspend fun initFromDisk(): UserSession {
+
+    suspend fun initFromDisk(): String? {
         val stored = datastore.data.first()
-        val json = stored[userKey]
         val token = stored[tokenKey]
-        if(json != null && token!= null) {
-            val user = Json.decodeFromString<User>(json)
-            return UserSession(user, token)
+        if(token!= null) {
+            return token
         }
         else {
-            return UserSession(User.NoUser, "")
+            return null
         }
     }
 
@@ -43,7 +40,6 @@ class UserRepository @Inject constructor( private val datastore: DataStore<Prefe
         _current.value = user
         authToken = session
         datastore.edit {
-            it[userKey] = Json.encodeToString(user)
             it[tokenKey] = session
         }
     }
@@ -52,7 +48,6 @@ class UserRepository @Inject constructor( private val datastore: DataStore<Prefe
         _current.value = User.NoUser
 
         datastore.edit {
-            it.remove(userKey)
             it.remove(tokenKey)
         }
     }

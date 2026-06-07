@@ -36,7 +36,7 @@ data class LoginAddress(
 data class CheckAuthRequest(val token: String)
 
 @Serializable
-data class CheckAuthResponse(val success: Boolean)
+data class CheckAuthResponse(val success: Boolean, val user: LoginUser?)
 
 
 interface LoginServer {

@@ -43,12 +43,25 @@ class LoginAPI @Inject constructor(
         }
     }
 
-    suspend fun checkAuth(token: String): Boolean {
+    suspend fun checkAuth(token: String): User {
         try {
-            return loginServer.checkAuth(CheckAuthRequest(token)).success
+            val response = loginServer.checkAuth(CheckAuthRequest(token))
+            if(response.success && response.user!= null) {
+                val user = User(
+                    response.user.name,
+                    response.user.email,
+                    response.user.phone,
+                    response.user.addresses.toAddress()
+                )
+                userRepository.setUser(user, token)
+                return user
+            }
+            logout()
+            return User.NoUser
         }
         catch (ex: IOException) {
-            return false
+            logout()
+            return User.NoUser
         }
     }
 }

@@ -55,15 +55,10 @@ class MainActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
         splashScreen.setKeepOnScreenCondition { !isReady.value }
         lifecycleScope.launch(Dispatchers.IO) {
-            val login = userRepository.initFromDisk()
+            val token = userRepository.initFromDisk()
             //If we're logged in, check the auth with the server for expiry issues
-            if(login.user!= User.NoUser) {
-                if (loginAPI.checkAuth(login.token)) {
-                    userRepository.setUser(login.user,login.token)
-                }
-                else {
-                    loginAPI.logout()
-                }
+            if(token != null) {
+                loginAPI.checkAuth(token)
             }
             else {
                 loginAPI.logout()
