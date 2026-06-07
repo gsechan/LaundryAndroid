@@ -25,14 +25,14 @@ data class DateTimePickerCallbacks(
 fun DateTimePicker(
     label: String? = null,
     placeholder: String? = null,
-    forcePlaceholderText: Boolean = false,
+    text: String = "",
     dateTimeValues: DateTimePickerValues,
     callbacks: DateTimePickerCallbacks,
 ) {
     DatePickerTextfield(
         label = label,
         placeholder = placeholder,
-        forcePlaceholderText = forcePlaceholderText,
+        value = text,
         selectableDates =  dateTimeValues.selectableDates,
         onDateSelected = callbacks.onDateSelected
     )

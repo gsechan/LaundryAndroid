@@ -52,7 +52,7 @@ import java.util.TimeZone
 @Composable
 fun DatePickerTextfield(
     placeholder: String? = null,
-    forcePlaceholderText: Boolean = false,
+    value: String = "",
     label: String? = null,
     selectableDates: SelectableDates = DatePickerDefaults.AllDates,
     onDateSelected: (Long) -> Unit
@@ -61,9 +61,6 @@ fun DatePickerTextfield(
     val datePickerState = rememberDatePickerState(
         selectableDates = selectableDates
     )
-    val selectedDate = if(!forcePlaceholderText && datePickerState.selectedDateMillis != null) {
-        convertMillisToDate(datePickerState.selectedDateMillis!!)
-    } else ""
 
     //When the state updates, hide the dialog and notify the callback.  This is how we get away
     //without ok and cancel dialog buttons
@@ -77,7 +74,7 @@ fun DatePickerTextfield(
     TextFieldPicker(
         placeholder = placeholder,
         label = label,
-        value = selectedDate,
+        value = value,
         dialogContent = {
             DatePicker(state = datePickerState)
         },

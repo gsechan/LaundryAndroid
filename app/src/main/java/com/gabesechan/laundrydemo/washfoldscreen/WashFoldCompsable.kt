@@ -22,6 +22,7 @@ import com.gabesechan.laundrydemo.ui.widgets.DateTimePicker
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerCallbacks
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerValues
 import com.gabesechan.laundrydemo.ui.widgets.LoadingButton
+import com.gabesechan.laundrydemo.ui.widgets.convertMillisToDate
 import com.gabesechan.laundrydemo.user.Address
 import java.math.BigDecimal
 import java.text.NumberFormat
@@ -97,18 +98,23 @@ fun WashFoldScreenInner(
 
         AddressPicker(addresses, selectedAddress, onAddressSelected)
 
+        val pickupDateText = pickup.curSelectedDate?.let {
+            convertMillisToDate(it) } ?: ""
 
         DateTimePicker(
             label =stringResource(R.string.pickup_select),
+            text = pickupDateText,
             dateTimeValues = pickup,
             callbacks = pickupCallbacks
         )
         if(pickup.curSelectedTime != null) {
+            val dropoffDateText = dropoff.curSelectedDate?.let {
+                convertMillisToDate(it) } ?: ""
             DateTimePicker(
                 label = stringResource(R.string.dropoff_select),
+                text = dropoffDateText,
                 dateTimeValues = dropoff,
                 callbacks = dropoffCallbacks,
-                forcePlaceholderText = dropoff.curSelectedDate == null
             )
         }
         LoadingButton(onBook, stringResource(R.string.book_now), bookEnabled, showBookingSpinner)
