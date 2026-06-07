@@ -24,6 +24,7 @@ import com.gabesechan.laundrydemo.ui.widgets.AddressPicker
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePicker
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerCallbacks
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerValues
+import com.gabesechan.laundrydemo.ui.widgets.LoadingButton
 import com.gabesechan.laundrydemo.ui.widgets.NumberPicker
 import com.gabesechan.laundrydemo.user.Address
 import java.math.BigDecimal
@@ -39,6 +40,7 @@ fun DryCleaningComposable(viewModel: DryCleaningViewModel = hiltViewModel()) {
     val addresses by viewModel.addresses.collectAsState(emptyList())
     val itemCounts by viewModel.itemCounts.collectAsState()
     val bookEnabled by viewModel.bookEnabled.collectAsState()
+    val showBookingSpinner by viewModel.showBookingSpinner.collectAsState()
 
     if(isBooked) {
         Column(Modifier.fillMaxHeight().padding(12.dp)) {
@@ -63,7 +65,8 @@ fun DryCleaningComposable(viewModel: DryCleaningViewModel = hiltViewModel()) {
             itemCounts,
             viewModel::onCountChanged,
             viewModel.getItems(),
-            bookEnabled
+            bookEnabled,
+            showBookingSpinner
         )
     }
 }
@@ -82,6 +85,7 @@ fun DryCleaningComposableInner(
     onCountChanged: (String, Int)->Unit,
     items:List<JSONDryCleanItem>,
     buttonEnabled: Boolean,
+    showBookingSpinner: Boolean,
 ) {
     val formatter = NumberFormat.getCurrencyInstance()
 
@@ -130,9 +134,7 @@ fun DryCleaningComposableInner(
                 forcePlaceholderText = dropoff.curSelectedDate == null
             )
         }
-        Button(onBook, enabled = buttonEnabled, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(0.dp)) {
-            Text(stringResource(R.string.book_now), textAlign = TextAlign.Center)
-        }
+        LoadingButton(onBook, stringResource(R.string.book_now), buttonEnabled, showBookingSpinner)
     }
 }
 

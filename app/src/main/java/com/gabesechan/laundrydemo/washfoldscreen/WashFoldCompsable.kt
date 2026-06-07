@@ -21,6 +21,7 @@ import com.gabesechan.laundrydemo.ui.widgets.AddressPicker
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePicker
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerCallbacks
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerValues
+import com.gabesechan.laundrydemo.ui.widgets.LoadingButton
 import com.gabesechan.laundrydemo.user.Address
 import java.math.BigDecimal
 import java.text.NumberFormat
@@ -34,6 +35,7 @@ fun WashFoldScreen(viewModel: WashFoldViewModel = hiltViewModel()) {
     val selectedAddress by viewModel.selectedAddress.collectAsState()
     val addresses by viewModel.addresses.collectAsState(emptyList())
     val bookEnabled by viewModel.bookEnabled.collectAsState()
+    val showBookingSpinner by viewModel.showBookingSpinner.collectAsState()
 
     if(isBooked) {
         Column(Modifier.fillMaxHeight().padding(12.dp)) {
@@ -57,7 +59,8 @@ fun WashFoldScreen(viewModel: WashFoldViewModel = hiltViewModel()) {
             viewModel.washPrice(),
             viewModel.avgWeight(),
             viewModel::book,
-            bookEnabled
+            bookEnabled,
+            showBookingSpinner
 
         )
     }
@@ -75,7 +78,8 @@ fun WashFoldScreenInner(
     washFoldPrice: BigDecimal,
     avgWeight: BigDecimal,
     onBook: ()->Unit,
-    bookEnabled: Boolean
+    bookEnabled: Boolean,
+    showBookingSpinner: Boolean
 ) {
     Column(
         Modifier.fillMaxHeight().padding(horizontal = 12.dp),
@@ -107,9 +111,7 @@ fun WashFoldScreenInner(
                 forcePlaceholderText = dropoff.curSelectedDate == null
             )
         }
-        Button(onBook, enabled = bookEnabled, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(0.dp)) {
-            Text(stringResource(R.string.book_now), textAlign = TextAlign.Center)
-        }
+        LoadingButton(onBook, stringResource(R.string.book_now), bookEnabled, showBookingSpinner)
     }
 }
 

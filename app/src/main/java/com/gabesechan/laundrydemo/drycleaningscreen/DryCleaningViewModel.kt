@@ -168,6 +168,8 @@ class DryCleaningViewModel @Inject constructor(
     }
 
     private val _orderPosting = MutableStateFlow(false)
+    val showBookingSpinner = _orderPosting.asStateFlow()
+
     fun book() {
         _orderPosting.value = true
         viewModelScope.launch {
