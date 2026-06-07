@@ -38,6 +38,7 @@ fun DryCleaningComposable(viewModel: DryCleaningViewModel = hiltViewModel()) {
     val selectedAddressIndex by viewModel.selectedAddressIndex.collectAsState()
     val addresses by viewModel.addresses.collectAsState(emptyList())
     val itemCounts by viewModel.itemCounts.collectAsState()
+    val bookEnabled by viewModel.bookEnabled.collectAsState()
 
     if(isBooked) {
         Column(Modifier.fillMaxHeight().padding(12.dp)) {
@@ -62,7 +63,7 @@ fun DryCleaningComposable(viewModel: DryCleaningViewModel = hiltViewModel()) {
             itemCounts,
             viewModel::onCountChanged,
             viewModel.getItems(),
-            viewModel.bookEnabled()
+            bookEnabled
         )
     }
 }

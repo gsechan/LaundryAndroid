@@ -33,6 +33,7 @@ fun WashFoldScreen(viewModel: WashFoldViewModel = hiltViewModel()) {
     val dropoffDateValues by viewModel.dropoffDateValues.collectAsState()
     val selectedAddress by viewModel.selectedAddress.collectAsState()
     val addresses by viewModel.addresses.collectAsState(emptyList())
+    val bookEnabled by viewModel.bookEnabled.collectAsState()
 
     if(isBooked) {
         Column(Modifier.fillMaxHeight().padding(12.dp)) {
@@ -56,7 +57,7 @@ fun WashFoldScreen(viewModel: WashFoldViewModel = hiltViewModel()) {
             viewModel.washPrice(),
             viewModel.avgWeight(),
             viewModel::book,
-            viewModel.bookEnabled()
+            bookEnabled
 
         )
     }

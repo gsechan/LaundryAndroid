@@ -13,14 +13,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gabesechan.laundrydemo.laundromatinfo.DryCleanItemsResponse
 import com.gabesechan.laundrydemo.laundromatinfo.JSONDryCleanItem
+import com.gabesechan.laundrydemo.orders.OrdersServer
+import com.gabesechan.laundrydemo.orders.PostOrderLine
+import com.gabesechan.laundrydemo.orders.PostOrderRequest
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerValues
 import com.gabesechan.laundrydemo.user.Address
 import com.gabesechan.laundrydemo.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.ZoneId
@@ -28,8 +34,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DryCleaningViewModel @Inject constructor(
-    laundromatInfoServer: LaundromatInfoServer,
-    userRepository: UserRepository
+    private val laundromatInfoServer: LaundromatInfoServer,
+    private val userRepository: UserRepository,
+    private val orderServer: OrdersServer,
 ): ViewModel() {
     val addresses = userRepository.current.map { it.addresses }
 
@@ -160,8 +167,22 @@ class DryCleaningViewModel @Inject constructor(
         )
     }
 
+    private val _orderPosting = MutableStateFlow(false)
     fun book() {
-        _isBooked.value = true
+        _orderPosting.value = true
+        viewModelScope.launch {
+            orderServer.postOrder(
+                PostOrderRequest(
+                    _itemCounts.value.map { entry ->
+                        PostOrderLine(entry.key, entry.value.toString(), "DRY_CLEANING")
+                    },
+                    _pickupDateValues.value.toUtcTime(),
+                    _dropoffDateValues.value.toUtcTime(),
+                )
+            )
+            _orderPosting.value = false
+            _isBooked.value = true
+        }
     }
 
     fun onCountChanged(item:String, value: Int) {
@@ -174,9 +195,8 @@ class DryCleaningViewModel @Inject constructor(
         return dryCleanItemsResponse.items
     }
 
-    fun bookEnabled(): Boolean {
-        return _dropoffDateValues.value.curSelectedTime!= null && _itemCounts.value.any() { entry->
-            entry.value != 0
-        }
-    }
+    val bookEnabled = combine(_dropoffDateValues, _itemCounts, _orderPosting) {
+        dropoff, counts, posting ->
+        dropoff.curSelectedTime != null && counts.any() {entry-> entry.value != 0} && !posting
+    }.stateIn(viewModelScope, SharingStarted.Lazily, false)
 }

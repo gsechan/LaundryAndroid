@@ -28,7 +28,6 @@ import kotlin.collections.forEach
 @Composable
 fun DisplayTimes(times: List<TimeRange>, selected: TimeRange?, onTimeSelected: (TimeRange)->Unit) {
     val dateFormat = SimpleDateFormat("hh:mma")
-    dateFormat.timeZone = TimeZone.getTimeZone("UTC")
     FlowRow(
         modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp, horizontal = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),

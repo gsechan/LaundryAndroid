@@ -10,7 +10,11 @@ data class DateTimePickerValues(
     val curSelectedDate: Long?,
     val selectableTimes: List<TimeRange>,
     val curSelectedTime: TimeRange?,
-)
+) {
+    fun toUtcTime(): Long {
+        return curSelectedDate!!+curSelectedTime!!.startTime
+    }
+}
 
 data class DateTimePickerCallbacks(
     val onDateSelected: (Long) -> Unit,

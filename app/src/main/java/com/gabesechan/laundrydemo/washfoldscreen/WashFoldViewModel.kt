@@ -9,14 +9,20 @@ import com.gabesechan.laundrydemo.laundromatinfo.AvailableTimesResponse
 import com.gabesechan.laundrydemo.laundromatinfo.LaundromatInfoServer
 import com.gabesechan.laundrydemo.laundromatinfo.TimeRange
 import com.gabesechan.laundrydemo.laundromatinfo.WashFoldResponse
+import com.gabesechan.laundrydemo.orders.OrdersServer
+import com.gabesechan.laundrydemo.orders.PostOrderLine
+import com.gabesechan.laundrydemo.orders.PostOrderRequest
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerValues
 import com.gabesechan.laundrydemo.user.Address
 import com.gabesechan.laundrydemo.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.time.Instant
@@ -25,8 +31,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WashFoldViewModel @Inject constructor(
-    laundromatInfoServer: LaundromatInfoServer,
-    userRepository: UserRepository
+    private val laundromatInfoServer: LaundromatInfoServer,
+    private val userRepository: UserRepository,
+    private val orderServer: OrdersServer,
 ): ViewModel() {
 
     val addresses = userRepository.current.map { it.addresses }
@@ -154,11 +161,26 @@ class WashFoldViewModel @Inject constructor(
         )
     }
 
-    fun book() {
-        _isBooked.value = true
-    }
+    private val _orderPosting = MutableStateFlow(false)
 
-    fun bookEnabled(): Boolean {
-        return _dropoffDateValues.value.curSelectedTime!= null
-    }
+    fun book() {
+        _orderPosting.value = true
+        viewModelScope.launch {
+            orderServer.postOrder(
+                PostOrderRequest(
+                    listOf(
+                        PostOrderLine("wf", null, "WASH_AND_FOLD"),
+                    ),
+                    _pickupDateValues.value.toUtcTime(),
+                    _dropoffDateValues.value.toUtcTime(),
+                )
+            )
+            _orderPosting.value = false
+            _isBooked.value = true
+        }    }
+
+    val bookEnabled = combine(_dropoffDateValues, _orderPosting) {
+            dropoff, posting ->
+        dropoff.curSelectedTime != null && !posting
+    }.stateIn(viewModelScope, SharingStarted.Lazily, false)
 }
