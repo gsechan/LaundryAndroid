@@ -1,4 +1,4 @@
 package com.gabesechan.laundrydemo.network
 
-class APISpecificException(error: String): RuntimeException(error) {
+class APISpecificException(errors: List<String>): RuntimeException(errors.joinToString("\n")) {
 }

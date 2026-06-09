@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 class NetworkResponse<T>(
     val success: Boolean,
     val errorType: String?,
-    val error: String?,
+    val errors: List<String>,
     val data: T?,
 ) {
     fun process(): T {
@@ -17,14 +17,15 @@ class NetworkResponse<T>(
             throw IllegalArgumentException("Null data on success from server.")
         }
         if(errorType == "API_SPECIFIC_ERROR") {
-            throw APISpecificException(error!!)
+            throw APISpecificException(errors)
         }
         if(errorType == "BAD_AUTH") {
             throw BadAuthException()
         }
 
         //Handle different generic error cases.  For example, I think we want to handle logout here.
-        throw IllegalArgumentException("Unknown error type:  ${errorType?:"null"}.  Error is ${error?:"null"}")
+        val errStr = errors.joinToString("\n")
+        throw IllegalArgumentException("Unknown error type:  ${errorType?:"null"}.  Error is ${errors}")
     }
 }
 

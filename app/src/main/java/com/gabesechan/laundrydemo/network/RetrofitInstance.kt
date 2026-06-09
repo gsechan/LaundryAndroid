@@ -28,7 +28,7 @@ object AppModule {
             .build()
         val networkJson = Json { ignoreUnknownKeys = true }
         return  Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8080")
+            .baseUrl("http://18.188.76.18:8080")
             .client(okHttpClient)
             .addConverterFactory(networkJson.asConverterFactory("application/json; charset=utf-8".toMediaType())).build()
     }
