@@ -61,7 +61,7 @@ class MainActivity : ComponentActivity() {
                 loginAPI.checkAuth(token)
             }
             else {
-                loginAPI.logout()
+                loginAPI.logout(false)
             }
             isReady.value = true
         }

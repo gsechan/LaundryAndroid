@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Laundry Demo</string>
-    <string name="network_error">Could not connect to server</string>
-    <string name="bad_auth">Username or password invalid</string>
-    <string name="login_button">Login</string>
-    <string name= "username">Enter phone number</string>
-    <string name= "password">Enter password</string>
+    <string name="network_error">No se pudo conectar al servidor</string>
+    <string name="bad_auth">Nombre de usuario o contraseña no válidos</string>
+    <string name="login_button">Acceso</string>
+    <string name= "username">Introduce el número de teléfono</string>
+    <string name= "password">Introduce la contraseña</string>
 
-    <string name= "home">Home</string>
-    <string name= "wash_fold">Wash and Fold</string>
-    <string name= "dry_clean">Dry Cleaning</string>
-    <string name= "orders">Orders</string>
-    <string name= "account">Account</string>
+    <string name= "home">Pantalla de inicio</string>
+    <string name= "wash_fold">Lavado y doblado</string>
+    <string name= "dry_clean">Tintorería</string>
+    <string name= "orders">Pedidos</string>
+    <string name= "account">Cuenta</string>
 
     <string name = "logout">Cerrar sesión</string>
     <string name = "phone_label">Teléfono: %1$s</string>

@@ -11,8 +11,15 @@ class LoginAPI @Inject constructor(
     private var userRepository: UserRepository,
     private var loginServer: LoginServer
 ) {
-    suspend fun logout() {
-        loginServer.logout()
+    suspend fun logout(serverLogout: Boolean = true) {
+        if(serverLogout) {
+            try {
+                loginServer.logout()
+            }
+            catch(ex: Exception) {
+                ex.printStackTrace()
+            }
+        }
         userRepository.clearUser()
     }
 
@@ -64,7 +71,7 @@ class LoginAPI @Inject constructor(
         }
         catch (ex: Exception) {
             ex.printStackTrace()
-            logout()
+            logout(false)
             return User.NoUser
         }
     }
