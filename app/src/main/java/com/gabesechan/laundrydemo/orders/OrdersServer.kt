@@ -9,12 +9,16 @@ import retrofit2.http.POST
 
 @Serializable
 data class PostOrderRequest(
+    val order: PostOrder
+)
+
+@Serializable
+data class PostOrder(
     val lines: List<PostOrderLine>,
     val scheduledPickup: Long,
     val scheduledDropoff: Long,
     val pickupAddress: String,
     val dropoffAddress: String,
-
 )
 
 @Serializable
@@ -62,7 +66,7 @@ interface OrdersServer {
 
     @Headers("Content-Type: application/json")
     @GET("orders")
-    suspend fun getAll(): NetworkResponse<GetOrderResponse>
+    suspend fun getAll(): NetworkResponse<List<GetOrder>>
 
 
 }

@@ -10,6 +10,7 @@ import com.gabesechan.laundrydemo.laundromatinfo.LaundromatInfoServer
 import com.gabesechan.laundrydemo.laundromatinfo.TimeRange
 import com.gabesechan.laundrydemo.laundromatinfo.WashFoldResponse
 import com.gabesechan.laundrydemo.orders.OrdersServer
+import com.gabesechan.laundrydemo.orders.PostOrder
 import com.gabesechan.laundrydemo.orders.PostOrderLine
 import com.gabesechan.laundrydemo.orders.PostOrderRequest
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerValues
@@ -169,18 +170,21 @@ class WashFoldViewModel @Inject constructor(
         viewModelScope.launch {
             orderServer.postOrder(
                 PostOrderRequest(
-                    listOf(
-                        PostOrderLine("wf", null, "WASH_AND_FOLD"),
-                    ),
-                    _pickupDateValues.value.toUtcTime(),
-                    _dropoffDateValues.value.toUtcTime(),
-                    _selectedAddress.value.id,
-                    _selectedAddress.value.id
+                    PostOrder(
+                        listOf(
+                            PostOrderLine("wf", null, "WASH_AND_FOLD"),
+                        ),
+                        _pickupDateValues.value.toUtcTime(),
+                        _dropoffDateValues.value.toUtcTime(),
+                        _selectedAddress.value.id,
+                        _selectedAddress.value.id
+                    )
                 )
             )
             _orderPosting.value = false
             _isBooked.value = true
-        }    }
+        }
+    }
 
     val bookEnabled = combine(_dropoffDateValues, _orderPosting) {
             dropoff, posting ->

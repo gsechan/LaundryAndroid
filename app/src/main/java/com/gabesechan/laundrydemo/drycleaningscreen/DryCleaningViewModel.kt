@@ -14,6 +14,7 @@ import androidx.lifecycle.viewModelScope
 import com.gabesechan.laundrydemo.laundromatinfo.DryCleanItemsResponse
 import com.gabesechan.laundrydemo.laundromatinfo.JSONDryCleanItem
 import com.gabesechan.laundrydemo.orders.OrdersServer
+import com.gabesechan.laundrydemo.orders.PostOrder
 import com.gabesechan.laundrydemo.orders.PostOrderLine
 import com.gabesechan.laundrydemo.orders.PostOrderRequest
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerValues
@@ -175,6 +176,7 @@ class DryCleaningViewModel @Inject constructor(
         viewModelScope.launch {
             orderServer.postOrder(
                 PostOrderRequest(
+                    PostOrder(
                     _itemCounts.value.map { entry ->
                         PostOrderLine(entry.key, entry.value.toString(), "DRY_CLEANING")
                     },
@@ -182,6 +184,7 @@ class DryCleaningViewModel @Inject constructor(
                     _dropoffDateValues.value.toUtcTime(),
                     _selectedAddress.value.id,
                     _selectedAddress.value.id
+                    )
                 )
             )
             _orderPosting.value = false
