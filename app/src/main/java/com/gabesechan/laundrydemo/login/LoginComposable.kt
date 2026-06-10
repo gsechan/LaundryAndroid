@@ -18,16 +18,18 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.gabesechan.laundrydemo.R
 import com.gabesechan.laundrydemo.ui.widgets.LoadingButton
 
 @Composable
-fun Login(viewModel: LoginViewModel = hiltViewModel()) {
+fun Login(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
     val loginButtonEnabled = viewModel.loginButtonEnabled.collectAsState().value
     val showSpinner = viewModel.showSpinner.collectAsState().value
     val errorTextId = viewModel.errorTextId.collectAsState().value
@@ -35,7 +37,8 @@ fun Login(viewModel: LoginViewModel = hiltViewModel()) {
         viewModel::onLoginClicked,
         loginButtonEnabled,
         showSpinner,
-        errorTextId
+        errorTextId,
+        navController,
     )
 }
 
@@ -44,14 +47,18 @@ fun LoginInner(
     loginFunc: (CharSequence, CharSequence)->Unit,
     loginEnabled: Boolean,
     showSpinner: Boolean,
-    errorTextId: Int
+    errorTextId: Int,
+    navController: NavController,
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
     ) { innerPadding ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(innerPadding).padding(16.dp).fillMaxSize()
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(16.dp)
+                .fillMaxSize()
         ) {
             Image(painterResource(R.drawable.logo), null, modifier = Modifier.size(320.dp))
             val usernameState = rememberTextFieldState("")
@@ -81,6 +88,12 @@ fun LoginInner(
                         loginEnabled && usernameState.text.isNotEmpty() && passwordState.text.isNotEmpty(),
                         showSpinner
                     )
+                    LoadingButton(
+                        { navController.navigate("createAccount") },
+                        stringResource(R.string.create_account),
+                        true,
+                        false
+                    )
                     if (errorTextId != 0) {
                         Text(text = stringResource(errorTextId), color = Color.Red)
                     }
@@ -95,13 +108,25 @@ fun LoginInner(
 @Preview
 @Composable
 fun LoginEnabled() {
-    LoginInner({_,_ -> }, loginEnabled = true, showSpinner = false, errorTextId = 0)
+    LoginInner(
+        {_,_ -> },
+        loginEnabled = true,
+        showSpinner = false,
+        errorTextId = 0,
+        NavController(LocalContext.current)
+    )
 }
 
 @Preview
 @Composable
 fun LoginSpinner() {
-    LoginInner({_,_ -> }, loginEnabled = false, showSpinner = true, errorTextId = 0)
+    LoginInner(
+        {_,_ -> },
+        loginEnabled = false,
+        showSpinner = true,
+        errorTextId = 0,
+        NavController(LocalContext.current)
+    )
 }
 
 
@@ -111,6 +136,8 @@ fun LoginErrorText() {
     LoginInner({_,_ -> },
         loginEnabled = true,
         showSpinner = false,
-        errorTextId = R.string.network_error
+        errorTextId = R.string.network_error,
+        NavController(LocalContext.current)
+
     )
 }

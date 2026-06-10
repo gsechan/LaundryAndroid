@@ -70,7 +70,7 @@ fun WashFoldScreen(viewModel: WashFoldViewModel = hiltViewModel()) {
 @Composable
 fun WashFoldScreenInner(
     addresses: List<Address>,
-    selectedAddress: Address,
+    selectedAddress: Address?,
     onAddressSelected: (Address)->Unit,
     pickup: DateTimePickerValues,
     pickupCallbacks: DateTimePickerCallbacks,

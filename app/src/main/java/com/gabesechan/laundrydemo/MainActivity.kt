@@ -16,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import com.gabesechan.laundrydemo.accountscreen.AccountScreen
 import com.gabesechan.laundrydemo.drycleaningscreen.DryCleaningComposable
 import com.gabesechan.laundrydemo.homescreen.HomeScreen
+import com.gabesechan.laundrydemo.login.CreateAccountScreen
 import com.gabesechan.laundrydemo.user.UserRepository
 import com.gabesechan.laundrydemo.login.Login
 import com.gabesechan.laundrydemo.login.LoginAPI
@@ -43,7 +44,6 @@ class MainActivity : ComponentActivity() {
     private var isReady = MutableStateFlow(false)
 
     private var navItems = listOf(
-        DestinationScreen("home", R.string.home, R.drawable.home, ::HomeScreen),
         DestinationScreen("wash", R.string.wash_fold, R.drawable.washer, ::WashFoldScreen),
         DestinationScreen("dryclean", R.string.dry_clean, R.drawable.dry_cleaning, ::DryCleaningComposable),
         DestinationScreen("orders", R.string.orders, R.drawable.order, ::OrderScreen),
@@ -74,7 +74,7 @@ class MainActivity : ComponentActivity() {
                     NavMenuScreen(navController, navItems) {
                         NavHost(
                             navController = navController,
-                            startDestination = "home",
+                            startDestination = "wash",
                         ) {
                             navItems.forEach { item->
                                 composable(item.route){ item.screen() }
@@ -86,7 +86,10 @@ class MainActivity : ComponentActivity() {
                 else {
                     NavHost(navController = navController, startDestination = "login") {
                         composable("login") {
-                            Login()
+                            Login(navController)
+                        }
+                        composable("createAccount") {
+                            CreateAccountScreen()
                         }
                     }
                 }

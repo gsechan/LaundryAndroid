@@ -75,6 +75,29 @@ class LoginAPI @Inject constructor(
             return User.NoUser
         }
     }
+
+    suspend fun createAccount(): LoginResult {
+        val request = CreateUserRequest(
+            LoginUser(
+                "Nobody",
+                "boo@email.com",
+                "(312)588-2302",
+                emptyList()
+            ),
+            "Hahahahahahaha",
+            "eaf6aefc-33ef-4245-8ef9-fd87827f0000"
+        )
+        val response = loginServer.createAccount(request)
+        val user = User(
+            response.data!!.user.name,
+            response.data!!.user.email,
+            response.data!!.user.phone,
+            response.data!!.user.addresses.toAddress()
+        )
+        userRepository.setUser(user, response.data.session)
+        return LoginResult.LoginSuccess(user)
+
+    }
 }
 
 private fun List<LoginAddress>.toAddress(): List<Address> {

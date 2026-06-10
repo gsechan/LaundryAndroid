@@ -19,13 +19,13 @@ import com.gabesechan.laundrydemo.user.Address
 @Composable
 fun AddressPicker(
     addresses: List<Address>,
-    selectedAddress: Address,
+    selectedAddress: Address?,
     onSelection: (Address)->Unit,
 ) {
 
     TextFieldPicker(
         stringResource(R.string.select_address),
-        selectedAddress.street1,
+        selectedAddress?.street1 ?: "",
         { callback ->
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(stringResource(R.string.select_address))

@@ -39,7 +39,7 @@ class WashFoldViewModel @Inject constructor(
 
     val addresses = userRepository.current.map { it.addresses }
 
-    private val _selectedAddress = MutableStateFlow(userRepository.current.value.addresses[0])
+    private val _selectedAddress = MutableStateFlow(userRepository.current.value.addresses.getOrNull(0))
     val selectedAddress = _selectedAddress.asStateFlow()
 
 
@@ -176,8 +176,8 @@ class WashFoldViewModel @Inject constructor(
                         ),
                         _pickupDateValues.value.toUtcTime(),
                         _dropoffDateValues.value.toUtcTime(),
-                        _selectedAddress.value.id,
-                        _selectedAddress.value.id
+                        _selectedAddress.value!!.id,
+                        _selectedAddress.value!!.id
                     )
                 )
             )
@@ -186,8 +186,8 @@ class WashFoldViewModel @Inject constructor(
         }
     }
 
-    val bookEnabled = combine(_dropoffDateValues, _orderPosting) {
-            dropoff, posting ->
-        dropoff.curSelectedTime != null && !posting
+    val bookEnabled = combine(_dropoffDateValues, _orderPosting, _selectedAddress) {
+            dropoff, posting, address ->
+        dropoff.curSelectedTime != null && !posting && address != null
     }.stateIn(viewModelScope, SharingStarted.Lazily, false)
 }

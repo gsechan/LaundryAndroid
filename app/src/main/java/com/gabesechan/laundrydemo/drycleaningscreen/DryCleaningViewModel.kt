@@ -4,7 +4,6 @@ import androidx.compose.material3.DatePickerDefaults.AllDates
 import com.gabesechan.laundrydemo.laundromatinfo.AvailableDateTime
 import com.gabesechan.laundrydemo.laundromatinfo.AvailableTimesResponse
 import com.gabesechan.laundrydemo.laundromatinfo.LaundromatInfoServer
-import com.gabesechan.laundrydemo.laundromatinfo.PricesResponse
 import com.gabesechan.laundrydemo.laundromatinfo.TimeRange
 import kotlin.collections.forEach
 
@@ -41,8 +40,8 @@ class DryCleaningViewModel @Inject constructor(
 ): ViewModel() {
     val addresses = userRepository.current.map { it.addresses }
 
-    private val _selectedAddress = MutableStateFlow(userRepository.current.value.addresses[0])
-    val selectedAddressIndex = _selectedAddress.asStateFlow()
+    private val _selectedAddress = MutableStateFlow(userRepository.current.value.addresses.getOrNull(0))
+    val selectedAddress = _selectedAddress.asStateFlow()
 
 
     private val _dataLoaded = MutableStateFlow(false)
@@ -182,8 +181,8 @@ class DryCleaningViewModel @Inject constructor(
                     },
                     _pickupDateValues.value.toUtcTime(),
                     _dropoffDateValues.value.toUtcTime(),
-                    _selectedAddress.value.id,
-                    _selectedAddress.value.id
+                    _selectedAddress.value!!.id,
+                    _selectedAddress.value!!.id
                     )
                 )
             )
@@ -202,8 +201,8 @@ class DryCleaningViewModel @Inject constructor(
         return dryCleanItemsResponse.items
     }
 
-    val bookEnabled = combine(_dropoffDateValues, _itemCounts, _orderPosting) {
-        dropoff, counts, posting ->
-        dropoff.curSelectedTime != null && counts.any() {entry-> entry.value != 0} && !posting
+    val bookEnabled = combine(_dropoffDateValues, _itemCounts, _orderPosting, _selectedAddress) {
+        dropoff, counts, posting, address ->
+        dropoff.curSelectedTime != null && counts.any{ entry-> entry.value != 0} && !posting && address != null
     }.stateIn(viewModelScope, SharingStarted.Lazily, false)
 }

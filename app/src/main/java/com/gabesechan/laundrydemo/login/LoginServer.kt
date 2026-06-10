@@ -37,6 +37,18 @@ data class LoginAddress(
 @Serializable
 data class CheckAuthRequest(val token: String)
 
+@Serializable
+data class CreateUserRequest(
+    val user: LoginUser,
+    val password: String,
+    val org: String,
+)
+
+@Serializable
+data class CreateUserResponse(
+    val session: String,
+    val user: LoginUser
+)
 
 
 interface LoginServer {
@@ -53,4 +65,9 @@ interface LoginServer {
     @Headers("Content-Type: application/json")
     @GET("logout")
     suspend fun logout(): NetworkResponse<Unit>
+
+    @Headers("Content-Type: application/json")
+    @POST("users")
+    suspend fun createAccount(@Body request: CreateUserRequest): NetworkResponse<CreateUserResponse>
+
 }
