@@ -12,6 +12,7 @@ class LoginAPI @Inject constructor(
     private var loginServer: LoginServer
 ) {
     suspend fun logout() {
+        loginServer.logout()
         userRepository.clearUser()
     }
 

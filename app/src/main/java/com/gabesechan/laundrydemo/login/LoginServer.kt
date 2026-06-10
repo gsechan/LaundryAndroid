@@ -3,6 +3,7 @@ package com.gabesechan.laundrydemo.login
 import com.gabesechan.laundrydemo.network.NetworkResponse
 import kotlinx.serialization.Serializable
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
 
@@ -49,4 +50,7 @@ interface LoginServer {
     @POST("checkAuth")
     suspend fun checkAuth(@Body request: CheckAuthRequest): NetworkResponse<LoginUser>
 
+    @Headers("Content-Type: application/json")
+    @GET("logout")
+    suspend fun logout(): NetworkResponse<Unit>
 }
