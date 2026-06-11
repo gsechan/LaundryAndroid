@@ -46,6 +46,11 @@ fun DryCleaningComposable(navController: NavController, viewModel: DryCleaningVi
             Text(stringResource(R.string.order_booked))
         }
     }
+    else if(viewModel.dataError) {
+        Column(Modifier.fillMaxHeight().padding(12.dp)) {
+            Text(stringResource(R.string.network_error))
+        }
+    }
     else if(isLoaded) {
 
         DryCleaningComposableInner(

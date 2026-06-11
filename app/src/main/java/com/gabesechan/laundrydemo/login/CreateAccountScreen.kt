@@ -3,6 +3,7 @@ package com.gabesechan.laundrydemo.login
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,27 +24,35 @@ import androidx.compose.ui.graphics.Color
 
 @Composable
 fun CreateAccountScreen(viewModel: CreateAccountViewModel = hiltViewModel()) {
-    val createEnabled by viewModel.createEnabled.collectAsState()
-    val createSpinner by viewModel.createRunning.collectAsState()
-    val pasword1SupportText by viewModel.passWordSuppotingText.collectAsState()
-    val pasword2SupportText by viewModel.passWordSuppotingText2.collectAsState()
-    val phoneSupportText by viewModel.phoneSupportingText.collectAsState()
-    val emailSupportText by viewModel.emailSupportingText.collectAsState()
 
-    CreateAccountScreenInner(
-        viewModel.name,
-        viewModel.password1,
-        pasword1SupportText,
-        viewModel.password2,
-        pasword2SupportText,
-        viewModel.phone,
-        phoneSupportText,
-        viewModel.email,
-        emailSupportText,
-        viewModel::createAccountClicked,
-        createEnabled,
-        createSpinner,
-    )
+    if(viewModel.neworkError) {
+        Column(Modifier.fillMaxHeight().padding(12.dp)) {
+            Text(stringResource(R.string.network_error))
+        }
+    }
+    else {
+        val createEnabled by viewModel.createEnabled.collectAsState()
+        val createSpinner by viewModel.createRunning.collectAsState()
+        val pasword1SupportText by viewModel.passWordSuppotingText.collectAsState()
+        val pasword2SupportText by viewModel.passWordSuppotingText2.collectAsState()
+        val phoneSupportText by viewModel.phoneSupportingText.collectAsState()
+        val emailSupportText by viewModel.emailSupportingText.collectAsState()
+
+        CreateAccountScreenInner(
+            viewModel.name,
+            viewModel.password1,
+            pasword1SupportText,
+            viewModel.password2,
+            pasword2SupportText,
+            viewModel.phone,
+            phoneSupportText,
+            viewModel.email,
+            emailSupportText,
+            viewModel::createAccountClicked,
+            createEnabled,
+            createSpinner,
+        )
+    }
 }
 
 @Composable

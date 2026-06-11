@@ -25,7 +25,7 @@ class NetworkResponse<T>(
 
         //Handle different generic error cases.  For example, I think we want to handle logout here.
         val errStr = errors.joinToString("\n")
-        throw IllegalArgumentException("Unknown error type:  ${errorType?:"null"}.  Error is ${errors}")
+        throw IllegalArgumentException("Unknown error type:  ${errorType?:"null"}.  Error is ${errStr}")
     }
 }
 

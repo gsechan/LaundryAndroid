@@ -2,6 +2,7 @@ package com.gabesechan.laundrydemo.user
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -32,17 +33,24 @@ fun AddAddressScreen(navController: NavController, viewModel: AddAddressViewMode
         }
     }
 
-    CreateAccountScreenInner(
-        viewModel.street1,
-        viewModel.street2,
-        viewModel.city,
-        viewModel.state,
-        viewModel.country,
-        viewModel.postcode,
-        viewModel::addAccountClicked,
-        addEnabled,
-        addSpinner,
-    )
+    if(viewModel.networkError) {
+        Column(Modifier.fillMaxHeight().padding(12.dp)) {
+            Text(stringResource(R.string.network_error))
+        }
+    }
+    else {
+        CreateAccountScreenInner(
+            viewModel.street1,
+            viewModel.street2,
+            viewModel.city,
+            viewModel.state,
+            viewModel.country,
+            viewModel.postcode,
+            viewModel::addAccountClicked,
+            addEnabled,
+            addSpinner,
+        )
+    }
 }
 
 @Composable

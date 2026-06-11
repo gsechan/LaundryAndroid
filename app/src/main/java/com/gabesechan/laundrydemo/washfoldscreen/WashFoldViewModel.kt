@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import okio.IOException
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.ZoneId
@@ -38,6 +39,7 @@ class WashFoldViewModel @Inject constructor(
 ): ViewModel() {
 
     val addresses = userRepository.current.map { it.addresses }
+    var networkError = false
 
     private val _selectedAddress = MutableStateFlow(userRepository.current.value.addresses.getOrNull(0))
     val selectedAddress = _selectedAddress.asStateFlow()
@@ -75,11 +77,16 @@ class WashFoldViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            availableTimesResponse = laundromatInfoServer.availableTimes().process()
-            pricesResponse = laundromatInfoServer.washFold().process()
-            _pickupDateValues.value = _pickupDateValues.value.copy(
-                selectableDates = SelectableDeliveryDates(availableTimesResponse.pickup, 0)
-            )
+            try {
+                availableTimesResponse = laundromatInfoServer.availableTimes().process()
+                pricesResponse = laundromatInfoServer.washFold().process()
+                _pickupDateValues.value = _pickupDateValues.value.copy(
+                    selectableDates = SelectableDeliveryDates(availableTimesResponse.pickup, 0)
+                )
+            }
+            catch (ex: IOException) {
+                networkError = true
+            }
             _dataLoaded.value = true
         }
     }
@@ -168,21 +175,26 @@ class WashFoldViewModel @Inject constructor(
     fun book() {
         _orderPosting.value = true
         viewModelScope.launch {
-            orderServer.postOrder(
-                PostOrderRequest(
-                    PostOrder(
-                        listOf(
-                            PostOrderLine("wf", null, "WASH_AND_FOLD"),
-                        ),
-                        _pickupDateValues.value.toUtcTime(),
-                        _dropoffDateValues.value.toUtcTime(),
-                        _selectedAddress.value!!.id,
-                        _selectedAddress.value!!.id
+            try {
+                orderServer.postOrder(
+                    PostOrderRequest(
+                        PostOrder(
+                            listOf(
+                                PostOrderLine("wf", null, "WASH_AND_FOLD"),
+                            ),
+                            _pickupDateValues.value.toUtcTime(),
+                            _dropoffDateValues.value.toUtcTime(),
+                            _selectedAddress.value!!.id,
+                            _selectedAddress.value!!.id
+                        )
                     )
                 )
-            )
+                _isBooked.value = true
+            }
+            catch (ex: IOException) {
+                networkError = true
+            }
             _orderPosting.value = false
-            _isBooked.value = true
         }
     }
 

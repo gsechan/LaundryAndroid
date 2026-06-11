@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import okio.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,6 +30,8 @@ class AddAddressViewModel @Inject constructor(
 
     private val _addRunning = MutableStateFlow(false)
     val addRunning = _addRunning.asStateFlow()
+
+    var networkError = false
 
     var street1 by mutableStateOf(TextFieldState())
         private set
@@ -70,15 +73,21 @@ class AddAddressViewModel @Inject constructor(
                     postcode.text.toString(),
                 )
             )
-            val response = userServer.addAddress(request).process()
-            val user = User(
-                response.user.name,
-                response.user.email,
-                response.user.phone,
-                response.user.addresses.toAddress()
-            )
-            userRepository.setUser(user, userRepository.authToken)
-            _navEvents.emit(Unit)
+            try {
+
+                val response = userServer.addAddress(request).process()
+                val user = User(
+                    response.user.name,
+                    response.user.email,
+                    response.user.phone,
+                    response.user.addresses.toAddress()
+                )
+                userRepository.setUser(user, userRepository.authToken)
+                _navEvents.emit(Unit)
+            }
+            catch (ex: IOException) {
+                networkError = true
+            }
             _addRunning.value = false
         }
     }

@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import okio.IOException
 import java.time.Instant
 import java.time.ZoneId
 import javax.inject.Inject
@@ -39,6 +40,8 @@ class DryCleaningViewModel @Inject constructor(
     private val orderServer: OrdersServer,
 ): ViewModel() {
     val addresses = userRepository.current.map { it.addresses }
+
+    var dataError: Boolean = false
 
     private val _selectedAddress = MutableStateFlow(userRepository.current.value.addresses.getOrNull(0))
     val selectedAddress = _selectedAddress.asStateFlow()
@@ -79,15 +82,20 @@ class DryCleaningViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            availableTimesResponse = laundromatInfoServer.availableTimes().process()
-            dryCleanItemsResponse = laundromatInfoServer.dryCleanItems().process()
-            val initCounts = dryCleanItemsResponse.items.associate {
-                it.id to 0
+            try {
+                availableTimesResponse = laundromatInfoServer.availableTimes().process()
+                dryCleanItemsResponse = laundromatInfoServer.dryCleanItems().process()
+                val initCounts = dryCleanItemsResponse.items.associate {
+                    it.id to 0
+                }
+                _itemCounts.value = initCounts
+                _pickupDateValues.value = _pickupDateValues.value.copy(
+                    selectableDates = SelectableDeliveryDates(availableTimesResponse.pickup, 0)
+                )
             }
-            _itemCounts.value = initCounts
-            _pickupDateValues.value = _pickupDateValues.value.copy(
-                selectableDates = SelectableDeliveryDates(availableTimesResponse.pickup, 0)
-            )
+            catch (ex: IOException) {
+                dataError = true
+            }
             _dataLoaded.value = true
         }
     }
@@ -173,21 +181,26 @@ class DryCleaningViewModel @Inject constructor(
     fun book() {
         _orderPosting.value = true
         viewModelScope.launch {
-            orderServer.postOrder(
-                PostOrderRequest(
-                    PostOrder(
-                    _itemCounts.value.map { entry ->
-                        PostOrderLine(entry.key, entry.value.toString(), "DRY_CLEANING")
-                    },
-                    _pickupDateValues.value.toUtcTime(),
-                    _dropoffDateValues.value.toUtcTime(),
-                    _selectedAddress.value!!.id,
-                    _selectedAddress.value!!.id
+            try {
+                orderServer.postOrder(
+                    PostOrderRequest(
+                        PostOrder(
+                            _itemCounts.value.map { entry ->
+                                PostOrderLine(entry.key, entry.value.toString(), "DRY_CLEANING")
+                            },
+                            _pickupDateValues.value.toUtcTime(),
+                            _dropoffDateValues.value.toUtcTime(),
+                            _selectedAddress.value!!.id,
+                            _selectedAddress.value!!.id
+                        )
                     )
                 )
-            )
+                _isBooked.value = true
+            }
+            catch(ex: IOException) {
+                dataError = true
+            }
             _orderPosting.value = false
-            _isBooked.value = true
         }
     }
 

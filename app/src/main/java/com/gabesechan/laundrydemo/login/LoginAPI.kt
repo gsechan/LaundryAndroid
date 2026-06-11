@@ -94,16 +94,23 @@ class LoginAPI @Inject constructor(
             password,
             org
         )
-        val response = loginServer.createAccount(request)
-        val user = User(
-            response.data!!.user.name,
-            response.data.user.email,
-            response.data.user.phone,
-            response.data.user.addresses.toAddress()
-        )
-        userRepository.setUser(user, response.data.session)
-        return LoginResult.LoginSuccess(user)
-
+        try {
+            val response = loginServer.createAccount(request).process()
+            val user = User(
+                response.user.name,
+                response.user.email,
+                response.user.phone,
+                response.user.addresses.toAddress()
+            )
+            userRepository.setUser(user, response.session)
+            return LoginResult.LoginSuccess(user)
+        }
+        catch (ex: IOException) {
+            return LoginResult.NetworkError
+        }
+        catch (ex: BadAuthException) {
+            return LoginResult.NetworkError
+        }
     }
 }
 

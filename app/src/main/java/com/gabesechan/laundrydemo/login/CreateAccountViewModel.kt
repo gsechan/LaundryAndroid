@@ -33,6 +33,8 @@ class CreateAccountViewModel @Inject constructor(
     private val _createRunning = MutableStateFlow(false)
     val createRunning = _createRunning.asStateFlow()
 
+    val neworkError = false
+
     var name by mutableStateOf(TextFieldState())
         private set
 
@@ -118,12 +120,15 @@ class CreateAccountViewModel @Inject constructor(
     fun createAccountClicked() {
         _createRunning.value = true
         viewModelScope.launch(Dispatchers.IO) {
-            loginAPI.createAccount(
+            val response = loginAPI.createAccount(
                 name.text.toString(),
                 password1.text.toString(),
                 phone.text.toString(),
                 email.text.toString()
             )
+            if(response == LoginAPI.LoginResult.NetworkError) {
+
+            }
             _createRunning.value = false
         }
     }
