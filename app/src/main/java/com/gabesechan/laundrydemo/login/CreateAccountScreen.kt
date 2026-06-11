@@ -7,6 +7,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.OutputTransformation
+import androidx.compose.foundation.text.input.TextFieldBuffer
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -21,6 +24,9 @@ import com.gabesechan.laundrydemo.R
 import com.gabesechan.laundrydemo.ui.widgets.LoadingButton
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 
 @Composable
 fun CreateAccountScreen(viewModel: CreateAccountViewModel = hiltViewModel()) {
@@ -52,6 +58,12 @@ fun CreateAccountScreen(viewModel: CreateAccountViewModel = hiltViewModel()) {
             createEnabled,
             createSpinner,
         )
+    }
+}
+
+object PasswordOutputTransformation : OutputTransformation {
+    override fun TextFieldBuffer.transformOutput() {
+        replace(0, length, "•".repeat(length))
     }
 }
 
@@ -87,12 +99,16 @@ fun CreateAccountScreenInner(
             )
             TextField(
                 password1,
+                outputTransformation  = PasswordOutputTransformation,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 placeholder = { Text(stringResource(R.string.password)) },
                 supportingText = { Text(stringResource(password1SupportText), color= Color.Red)},
                 modifier = Modifier.fillMaxWidth()
             )
             TextField(
                 password2,
+                outputTransformation  = PasswordOutputTransformation,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 placeholder = { Text(stringResource(R.string.repeat_password)) },
                 supportingText = { Text(stringResource(password2SupportText), color= Color.Red)},
                 modifier = Modifier.fillMaxWidth()
