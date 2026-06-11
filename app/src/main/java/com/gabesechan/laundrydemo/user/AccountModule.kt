@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
+import com.gabesechan.laundrydemo.orders.OrdersServer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,6 +16,7 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import retrofit2.Retrofit
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -42,4 +44,11 @@ object LoginModule {
             produceFile = { appContext.preferencesDataStoreFile("account_storage") }
         )
     }
+
+    @Provides
+    @Singleton
+    fun provideUsersServer(retrofit: Retrofit): UserServer {
+        return retrofit.create(UserServer::class.java)
+    }
+
 }

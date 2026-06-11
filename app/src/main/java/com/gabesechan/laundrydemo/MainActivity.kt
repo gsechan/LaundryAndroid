@@ -24,6 +24,7 @@ import com.gabesechan.laundrydemo.orders.OrderScreen
 import com.gabesechan.laundrydemo.ui.theme.LaundryDemoTheme
 import com.gabesechan.laundrydemo.ui.widgets.DestinationScreen
 import com.gabesechan.laundrydemo.ui.widgets.NavMenuScreen
+import com.gabesechan.laundrydemo.user.AddAddressScreen
 import com.gabesechan.laundrydemo.user.User
 import com.gabesechan.laundrydemo.washfoldscreen.WashFoldScreen
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,6 +49,7 @@ class MainActivity : ComponentActivity() {
         DestinationScreen("dryclean", R.string.dry_clean, R.drawable.dry_cleaning, ::DryCleaningComposable),
         DestinationScreen("orders", R.string.orders, R.drawable.order, ::OrderScreen),
         DestinationScreen("account", R.string.account, R.drawable.account, ::AccountScreen),
+        DestinationScreen("addAddress", R.string.add_new_address, R.drawable.account, ::AddAddressScreen),
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
