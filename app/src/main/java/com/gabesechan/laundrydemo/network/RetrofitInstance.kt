@@ -17,8 +17,10 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+    val PROD = "http://18.188.76.18:8080"
+    val DEV = "http://10.0.2.2:8080"
 
-    @Provides
+        @Provides
     @Singleton
     fun provideRetrofit(userRepo: UserRepository,
                         @ApplicationContext context: Context): Retrofit {
@@ -28,7 +30,7 @@ object AppModule {
             .build()
         val networkJson = Json { ignoreUnknownKeys = true }
         return  Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8080")
+            .baseUrl(PROD)
             .client(okHttpClient)
             .addConverterFactory(networkJson.asConverterFactory("application/json; charset=utf-8".toMediaType())).build()
     }
