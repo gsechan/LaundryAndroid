@@ -11,6 +11,10 @@
     <string name="repeat_password">Enter password again</string>
     <string name="enter_phone">Enter phone</string>
     <string name="enter_email">Enter email</string>
+    <string name="invalid_password_length">Passwords must be 8 characters</string>
+    <string name="passwords_must_match">Passwords must match</string>
+    <string name="invalid_phone_number">Invalid phone number</string>
+    <string name="invalid_email">Invalid email</string>
 
 
     <string name= "home">Home</string>
@@ -40,4 +44,6 @@
     <string name="status">Status: %1$s</string>
     <string name="order_line_with_quantity">%1$s x %2$s @ %3$s = %4$s</string>
     <string name="order_line_without_quantity">TBD x %1$s @ %2$s = TBD</string>
+
+    <string name="empty"></string>
 </resources>

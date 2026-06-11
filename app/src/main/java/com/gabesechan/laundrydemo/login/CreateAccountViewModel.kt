@@ -7,6 +7,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gabesechan.laundrydemo.R
+import com.google.i18n.phonenumbers.PhoneNumberUtil
+import com.google.i18n.phonenumbers.Phonenumber
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -14,13 +17,17 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import org.apache.commons.validator.routines.EmailValidator
 
 @HiltViewModel
 class CreateAccountViewModel @Inject constructor(
-    val loginAPI: LoginAPI
+    private val loginAPI: LoginAPI,
+    private val phoneNumberUtil: PhoneNumberUtil,
+    private val validator: EmailValidator
 ): ViewModel() {
 
     private val _createRunning = MutableStateFlow(false)
@@ -52,6 +59,61 @@ class CreateAccountViewModel @Inject constructor(
                 password1 == password2
     }.stateIn(viewModelScope, SharingStarted.Lazily, false)
 
+    val passWordSuppotingText = password1.asFlow().map {
+        if(it.length >0 && it.length < 8) {
+            R.string.invalid_password_length
+        }
+        else {
+            R.string.empty
+        }
+    }.stateIn(viewModelScope, SharingStarted.Lazily, R.string.empty)
+
+    val passWordSuppotingText2 = combine(password1.asFlow(), password2.asFlow()) { password1, password2 ->
+        if(password1 != password2) {
+            R.string.passwords_must_match
+        }
+        else {
+            R.string.empty
+
+        }
+    }.stateIn(viewModelScope, SharingStarted.Lazily, R.string.empty)
+
+    val phoneSupportingText = phone.asFlow().map {
+        if(it.length == 0) {
+            R.string.empty
+        }
+        else {
+            try {
+                val number: Phonenumber.PhoneNumber? = phoneNumberUtil.parse(it, "US")
+                if (!phoneNumberUtil.isValidNumber(number)) {
+                    R.string.invalid_phone_number
+                }
+                else {
+                    R.string.empty
+                }
+            } catch (ex: Exception) {
+                R.string.invalid_phone_number
+            }
+        }
+    }.stateIn(viewModelScope, SharingStarted.Lazily, R.string.empty)
+
+    val emailSupportingText = email.asFlow().map {
+        if(it.length == 0) {
+            R.string.empty
+        }
+        else {
+            try {
+                if(!validator.isValid(it)) {
+                    R.string.invalid_email
+                }
+                else {
+                    R.string.empty
+                }
+            } catch (ex: Exception) {
+                R.string.invalid_email
+            }
+        }
+    }.stateIn(viewModelScope, SharingStarted.Lazily, R.string.empty)
 
     fun createAccountClicked() {
         _createRunning.value = true

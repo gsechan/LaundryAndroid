@@ -1,5 +1,6 @@
 package com.gabesechan.laundrydemo.login
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,22 +19,30 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.gabesechan.laundrydemo.R
 import com.gabesechan.laundrydemo.ui.widgets.LoadingButton
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun CreateAccountScreen(viewModel: CreateAccountViewModel = hiltViewModel()) {
     val createEnabled by viewModel.createEnabled.collectAsState()
     val createSpinner by viewModel.createRunning.collectAsState()
+    val pasword1SupportText by viewModel.passWordSuppotingText.collectAsState()
+    val pasword2SupportText by viewModel.passWordSuppotingText2.collectAsState()
+    val phoneSupportText by viewModel.phoneSupportingText.collectAsState()
+    val emailSupportText by viewModel.emailSupportingText.collectAsState()
 
     CreateAccountScreenInner(
         viewModel.name,
         viewModel.password1,
+        pasword1SupportText,
         viewModel.password2,
+        pasword2SupportText,
         viewModel.phone,
+        phoneSupportText,
         viewModel.email,
+        emailSupportText,
         viewModel::createAccountClicked,
         createEnabled,
-        createSpinner
+        createSpinner,
     )
 }
 
@@ -41,9 +50,13 @@ fun CreateAccountScreen(viewModel: CreateAccountViewModel = hiltViewModel()) {
 fun CreateAccountScreenInner(
     nameState: TextFieldState,
     password1: TextFieldState,
+    @StringRes password1SupportText: Int,
     password2: TextFieldState,
+    @StringRes password2SupportText: Int,
     phoneState: TextFieldState,
+    @StringRes phoneSupportText: Int,
     emailState: TextFieldState,
+    @StringRes emailSupportText: Int,
     onCreateClicked: ()->Unit,
     createEnabled: Boolean,
     createSpinner: Boolean
@@ -66,21 +79,25 @@ fun CreateAccountScreenInner(
             TextField(
                 password1,
                 placeholder = { Text(stringResource(R.string.password)) },
+                supportingText = { Text(stringResource(password1SupportText), color= Color.Red)},
                 modifier = Modifier.fillMaxWidth()
             )
             TextField(
                 password2,
                 placeholder = { Text(stringResource(R.string.repeat_password)) },
+                supportingText = { Text(stringResource(password2SupportText), color= Color.Red)},
                 modifier = Modifier.fillMaxWidth()
             )
             TextField(
                 phoneState,
                 placeholder = { Text(stringResource(R.string.enter_phone)) },
+                supportingText = { Text(stringResource(phoneSupportText), color= Color.Red)},
                 modifier = Modifier.fillMaxWidth()
             )
             TextField(
                 emailState,
                 placeholder = { Text(stringResource(R.string.enter_email)) },
+                supportingText = { Text(stringResource(emailSupportText), color= Color.Red)},
                 modifier = Modifier.fillMaxWidth()
             )
             //Add all textfields
