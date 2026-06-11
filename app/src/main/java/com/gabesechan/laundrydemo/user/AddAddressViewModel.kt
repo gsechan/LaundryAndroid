@@ -12,8 +12,10 @@ import com.gabesechan.laundrydemo.login.combine
 import com.gabesechan.laundrydemo.login.toAddress
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -76,7 +78,12 @@ class AddAddressViewModel @Inject constructor(
                 response.user.addresses.toAddress()
             )
             userRepository.setUser(user, userRepository.authToken)
+            _navEvents.emit(Unit)
             _addRunning.value = false
         }
     }
+
+
+    private val _navEvents = MutableSharedFlow<Unit>(1)
+    val navEvent = _navEvents.asSharedFlow()
 }

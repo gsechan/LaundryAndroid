@@ -16,13 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.gabesechan.laundrydemo.R
 import com.gabesechan.laundrydemo.ui.widgets.AddressDisplay
 import com.gabesechan.laundrydemo.user.Address
 import com.gabesechan.laundrydemo.user.User
 
 @Composable
-fun AccountScreen(viewModel: AccountScreenViewModel = hiltViewModel()) {
+fun AccountScreen(navController: NavController, viewModel: AccountScreenViewModel = hiltViewModel()) {
     val user = viewModel.user.collectAsState().value
     AccountScreenInner(user, viewModel::onLogoutClicked)
 

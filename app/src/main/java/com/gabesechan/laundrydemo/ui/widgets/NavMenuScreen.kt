@@ -27,7 +27,7 @@ data class DestinationScreen(
     val route: String,
     @StringRes val text: Int,
     @DrawableRes val icon: Int,
-    val screen: @Composable ()-> Unit
+    val screen: @Composable (NavController)-> Unit
 )
 
 @Composable

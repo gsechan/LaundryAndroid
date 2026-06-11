@@ -1,6 +1,5 @@
 package com.gabesechan.laundrydemo.user
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,20 +10,27 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.gabesechan.laundrydemo.R
 import com.gabesechan.laundrydemo.ui.widgets.LoadingButton
 
 @Composable
-fun AddAddressScreen(viewModel: AddAddressViewModel = hiltViewModel()) {
+fun AddAddressScreen(navController: NavController, viewModel: AddAddressViewModel = hiltViewModel()) {
     val addEnabled by viewModel.createEnabled.collectAsState()
     val addSpinner by viewModel.addRunning.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.navEvent.collect { event ->
+            navController.popBackStack()
+        }
+    }
 
     CreateAccountScreenInner(
         viewModel.street1,

@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.gabesechan.laundrydemo.R
 import com.gabesechan.laundrydemo.laundromatinfo.JSONDryCleanItem
 import com.gabesechan.laundrydemo.ui.widgets.AddressPicker
@@ -29,7 +30,7 @@ import java.math.BigDecimal
 import java.text.NumberFormat
 
 @Composable
-fun DryCleaningComposable(viewModel: DryCleaningViewModel = hiltViewModel()) {
+fun DryCleaningComposable(navController: NavController, viewModel: DryCleaningViewModel = hiltViewModel()) {
     val isLoaded by viewModel.dataLoaded.collectAsState()
     val isBooked by viewModel.isBooked.collectAsState()
     val pickupDateValues by viewModel.pickupDateValues.collectAsState()
@@ -64,7 +65,8 @@ fun DryCleaningComposable(viewModel: DryCleaningViewModel = hiltViewModel()) {
             viewModel::onCountChanged,
             viewModel.getItems(),
             bookEnabled,
-            showBookingSpinner
+            showBookingSpinner,
+            navController
         )
     }
 }
@@ -84,6 +86,7 @@ fun DryCleaningComposableInner(
     items:List<JSONDryCleanItem>,
     buttonEnabled: Boolean,
     showBookingSpinner: Boolean,
+    navController: NavController
 ) {
     val formatter = NumberFormat.getCurrencyInstance()
 
@@ -116,7 +119,7 @@ fun DryCleaningComposableInner(
             Text(formatter.format(totalCost))
         }
 
-        AddressPicker(addresses, selectedAddress, onAddressSelected)
+        AddressPicker(addresses, selectedAddress, onAddressSelected, navController)
         val pickupDateText = pickup.curSelectedDate?.let {
             convertMillisToDate(it) } ?: ""
 

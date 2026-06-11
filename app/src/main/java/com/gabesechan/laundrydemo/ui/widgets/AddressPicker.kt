@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.gabesechan.laundrydemo.R
 import com.gabesechan.laundrydemo.user.Address
 
@@ -21,6 +22,7 @@ fun AddressPicker(
     addresses: List<Address>,
     selectedAddress: Address?,
     onSelection: (Address)->Unit,
+    navController: NavController,
 ) {
 
     TextFieldPicker(
@@ -29,14 +31,13 @@ fun AddressPicker(
         { callback ->
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(stringResource(R.string.select_address))
-                addresses.forEachIndexed { index, address ->
+                addresses.forEach { address ->
                     AddressDisplay(address, Modifier.clickable() {
                         callback(address)
                     })
-                    if(index != addresses.size -1) {
-                        Spacer(modifier = Modifier.fillMaxWidth().background(Color.Black).height(2.dp))
-                    }
+                    Spacer(modifier = Modifier.fillMaxWidth().background(Color.Black).height(2.dp))
                 }
+                Text("Add an Address", modifier = Modifier.clickable {navController.navigate("addAddress")})
             }
         },
         onSelection

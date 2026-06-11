@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.gabesechan.laundrydemo.R
 import com.gabesechan.laundrydemo.ui.widgets.AddressPicker
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePicker
@@ -28,7 +29,7 @@ import java.math.BigDecimal
 import java.text.NumberFormat
 
 @Composable
-fun WashFoldScreen(viewModel: WashFoldViewModel = hiltViewModel()) {
+fun WashFoldScreen(navController: NavController, viewModel: WashFoldViewModel = hiltViewModel()) {
     val isLoaded by viewModel.dataLoaded.collectAsState()
     val isBooked by viewModel.isBooked.collectAsState()
     val pickupDateValues by viewModel.pickupDateValues.collectAsState()
@@ -61,7 +62,8 @@ fun WashFoldScreen(viewModel: WashFoldViewModel = hiltViewModel()) {
             viewModel.avgWeight(),
             viewModel::book,
             bookEnabled,
-            showBookingSpinner
+            showBookingSpinner,
+            navController
 
         )
     }
@@ -80,7 +82,8 @@ fun WashFoldScreenInner(
     avgWeight: BigDecimal,
     onBook: ()->Unit,
     bookEnabled: Boolean,
-    showBookingSpinner: Boolean
+    showBookingSpinner: Boolean,
+    navController: NavController
 ) {
     Column(
         Modifier.fillMaxHeight().padding(horizontal = 12.dp),
@@ -96,7 +99,7 @@ fun WashFoldScreenInner(
             )
         )
 
-        AddressPicker(addresses, selectedAddress, onAddressSelected)
+        AddressPicker(addresses, selectedAddress, onAddressSelected, navController)
 
         val pickupDateText = pickup.curSelectedDate?.let {
             convertMillisToDate(it) } ?: ""
