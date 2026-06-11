@@ -34,4 +34,23 @@
     <string name="status">Estado: %1$s</string>
     <string name="order_line_with_quantity">%1$s x %2$s @ %3$s = %4$s</string>
     <string name="order_line_without_quantity">Por determinar x %1$s @ %2$s = Por determinar</string>
+
+    <string name="create_account">Crear cuenta</string>
+
+    <string name="enter_name">Introduce tu nombre</string>
+    <string name="repeat_password">Introduce la contraseña de nuevo</string>
+    <string name="enter_phone">Introduce tu número de teléfono</string>
+    <string name="enter_email">Introduce tu correo electrónico</string>
+    <string name="invalid_password_length">La contraseña debe tener 8 caracteres</string>
+    <string name="passwords_must_match">Las contraseñas deben coincidir</string>
+    <string name="invalid_phone_number">Número de teléfono no válido</string>
+    <string name="invalid_email">Correo electrónico no válido</string>
+
+    <string name="add_new_address">Añadir nueva dirección</string>
+    <string name="enter_street1">Calle</string>
+    <string name="enter_street2">Calle</string>
+    <string name="enter_country">País</string>
+    <string name="enter_city">Ciudad</string>
+    <string name="enter_state">Estado/Provincia</string>
+    <string name="enter_postcode">Código postal</string>
 </resources>

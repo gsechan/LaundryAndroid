@@ -37,7 +37,7 @@ fun AddressPicker(
                     })
                     Spacer(modifier = Modifier.fillMaxWidth().background(Color.Black).height(2.dp))
                 }
-                Text("Add an Address", modifier = Modifier.clickable {navController.navigate("addAddress")})
+                Text(stringResource(R.string.add_new_address), modifier = Modifier.clickable {navController.navigate("addAddress")})
             }
         },
         onSelection
