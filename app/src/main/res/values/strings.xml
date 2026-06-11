@@ -7,6 +7,12 @@
     <string name= "password">Enter password</string>
     <string name="create_account">Create Account</string>
 
+    <string name="enter_name">Enter name</string>
+    <string name="repeat_password">Enter password again</string>
+    <string name="enter_phone">Enter phone</string>
+    <string name="enter_email">Enter email</string>
+
+
     <string name= "home">Home</string>
     <string name= "wash_fold">Wash and Fold</string>
     <string name= "dry_clean">Dry Cleaning</string>

@@ -11,6 +11,8 @@ class LoginAPI @Inject constructor(
     private var userRepository: UserRepository,
     private var loginServer: LoginServer
 ) {
+    private val org = "eaf6aefc-33ef-4245-8ef9-fd87827f0000"
+
     suspend fun logout(serverLogout: Boolean = true) {
         if(serverLogout) {
             try {
@@ -35,7 +37,7 @@ class LoginAPI @Inject constructor(
                 LoginRequest(
                     username,
                     password,
-                    "eaf6aefc-33ef-4245-8ef9-fd87827f0000"
+                    org
                 )
             ).process()
             val user = User(
@@ -76,23 +78,28 @@ class LoginAPI @Inject constructor(
         }
     }
 
-    suspend fun createAccount(): LoginResult {
+    suspend fun createAccount(
+        name: String,
+        password: String,
+        phone: String,
+        email: String,
+    ): LoginResult {
         val request = CreateUserRequest(
             LoginUser(
-                "Nobody",
-                "boo@email.com",
-                "(312)588-2302",
+                name,
+                email,
+                phone,
                 emptyList()
             ),
-            "Hahahahahahaha",
-            "eaf6aefc-33ef-4245-8ef9-fd87827f0000"
+            password,
+            org
         )
         val response = loginServer.createAccount(request)
         val user = User(
             response.data!!.user.name,
-            response.data!!.user.email,
-            response.data!!.user.phone,
-            response.data!!.user.addresses.toAddress()
+            response.data.user.email,
+            response.data.user.phone,
+            response.data.user.addresses.toAddress()
         )
         userRepository.setUser(user, response.data.session)
         return LoginResult.LoginSuccess(user)
