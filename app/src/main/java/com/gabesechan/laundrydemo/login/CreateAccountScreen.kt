@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.OutputTransformation
 import androidx.compose.foundation.text.input.TextFieldBuffer
+import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -25,6 +26,7 @@ import com.gabesechan.laundrydemo.ui.widgets.LoadingButton
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 
@@ -95,32 +97,49 @@ fun CreateAccountScreenInner(
             TextField(
                 nameState,
                 placeholder = { Text(stringResource(R.string.enter_name)) },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Next
+                ),
+                lineLimits = TextFieldLineLimits.SingleLine,
                 modifier = Modifier.fillMaxWidth()
             )
             TextField(
                 password1,
                 outputTransformation  = PasswordOutputTransformation,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Next
+                ),
+                lineLimits = TextFieldLineLimits.SingleLine,
                 placeholder = { Text(stringResource(R.string.password)) },
                 supportingText = { Text(stringResource(password1SupportText), color= Color.Red)},
                 modifier = Modifier.fillMaxWidth()
             )
             TextField(
                 password2,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Next
+                ),
+                lineLimits = TextFieldLineLimits.SingleLine,
                 outputTransformation  = PasswordOutputTransformation,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 placeholder = { Text(stringResource(R.string.repeat_password)) },
                 supportingText = { Text(stringResource(password2SupportText), color= Color.Red)},
                 modifier = Modifier.fillMaxWidth()
             )
             TextField(
                 phoneState,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                lineLimits = TextFieldLineLimits.SingleLine,
                 placeholder = { Text(stringResource(R.string.enter_phone)) },
                 supportingText = { Text(stringResource(phoneSupportText), color= Color.Red)},
                 modifier = Modifier.fillMaxWidth()
             )
             TextField(
                 emailState,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                lineLimits = TextFieldLineLimits.SingleLine,
                 placeholder = { Text(stringResource(R.string.enter_email)) },
                 supportingText = { Text(stringResource(emailSupportText), color= Color.Red)},
                 modifier = Modifier.fillMaxWidth()

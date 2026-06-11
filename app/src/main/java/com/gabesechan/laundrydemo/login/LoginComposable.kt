@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SecureTextField
@@ -21,6 +23,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -74,11 +78,18 @@ fun LoginInner(
                 ) {
                     TextField(
                         usernameState,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        lineLimits = TextFieldLineLimits.SingleLine,
+
                         placeholder = { Text(stringResource(R.string.username)) },
                         modifier = Modifier.fillMaxWidth()
                     )
                     SecureTextField(
                         passwordState,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Done
+                        ),
                         placeholder = { Text(stringResource(R.string.password)) },
                         modifier = Modifier.fillMaxWidth()
                     )
