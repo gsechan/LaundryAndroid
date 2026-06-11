@@ -25,10 +25,8 @@ import com.gabesechan.laundrydemo.R
 import com.gabesechan.laundrydemo.ui.widgets.LoadingButton
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 
 @Composable
 fun CreateAccountScreen(viewModel: CreateAccountViewModel = hiltViewModel()) {
@@ -41,17 +39,17 @@ fun CreateAccountScreen(viewModel: CreateAccountViewModel = hiltViewModel()) {
     else {
         val createEnabled by viewModel.createEnabled.collectAsState()
         val createSpinner by viewModel.createRunning.collectAsState()
-        val pasword1SupportText by viewModel.passWordSuppotingText.collectAsState()
-        val pasword2SupportText by viewModel.passWordSuppotingText2.collectAsState()
+        val password1SupportText by viewModel.passWordSuppotingText.collectAsState()
+        val password2SupportText by viewModel.passWordSuppotingText2.collectAsState()
         val phoneSupportText by viewModel.phoneSupportingText.collectAsState()
         val emailSupportText by viewModel.emailSupportingText.collectAsState()
 
         CreateAccountScreenInner(
             viewModel.name,
             viewModel.password1,
-            pasword1SupportText,
+            password1SupportText,
             viewModel.password2,
-            pasword2SupportText,
+            password2SupportText,
             viewModel.phone,
             phoneSupportText,
             viewModel.email,
@@ -96,6 +94,7 @@ fun CreateAccountScreenInner(
 
             TextField(
                 nameState,
+                supportingText = { Text("") },
                 placeholder = { Text(stringResource(R.string.enter_name)) },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password,
@@ -144,7 +143,6 @@ fun CreateAccountScreenInner(
                 supportingText = { Text(stringResource(emailSupportText), color= Color.Red)},
                 modifier = Modifier.fillMaxWidth()
             )
-            //Add all textfields
             LoadingButton(onCreateClicked, stringResource(R.string.create_account), createEnabled,createSpinner)
         }
     }
