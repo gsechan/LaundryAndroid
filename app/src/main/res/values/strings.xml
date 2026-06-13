@@ -41,7 +41,7 @@
     <string name="pickup_select">Select Pickup Date</string>
     <string name="dropoff_select">Select Delivery Date</string>
     <string name="time_range_format">%1$s - %2$s</string>
-    <string name="expected_wash_price">The price of this order depends on weight.  The price is %1$s per pound.  The average cost is %2$s</string>
+    <string name="expected_wash_price">The price of this order depends on weight.  The price is %1$s per pound.</string>
     <string name="book_now">Book Now</string>
     <string name="order_booked">Congratulations, your order is booked.</string>
 

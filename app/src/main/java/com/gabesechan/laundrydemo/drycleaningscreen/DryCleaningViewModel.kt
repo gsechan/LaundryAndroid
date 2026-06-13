@@ -10,8 +10,7 @@ import kotlin.collections.forEach
 import androidx.compose.material3.SelectableDates
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gabesechan.laundrydemo.laundromatinfo.DryCleanItemsResponse
-import com.gabesechan.laundrydemo.laundromatinfo.JSONDryCleanItem
+import com.gabesechan.laundrydemo.laundromatinfo.JSONItem
 import com.gabesechan.laundrydemo.orders.OrdersServer
 import com.gabesechan.laundrydemo.orders.PostOrder
 import com.gabesechan.laundrydemo.orders.PostOrderLine
@@ -50,8 +49,8 @@ class DryCleaningViewModel @Inject constructor(
     private val _dataLoaded = MutableStateFlow(false)
     val dataLoaded = _dataLoaded.asStateFlow()
 
-    lateinit var availableTimesResponse: AvailableTimesResponse
-    lateinit var dryCleanItemsResponse: DryCleanItemsResponse
+    private lateinit var availableTimesResponse: AvailableTimesResponse
+    private lateinit var items: List<JSONItem>
 
 
     private val _pickupDateValues = MutableStateFlow(
@@ -84,8 +83,8 @@ class DryCleaningViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 availableTimesResponse = laundromatInfoServer.availableTimes().process()
-                dryCleanItemsResponse = laundromatInfoServer.dryCleanItems().process()
-                val initCounts = dryCleanItemsResponse.items.associate {
+                items = laundromatInfoServer.items().process().items.filter { it.itemType == "DRY_CLEANING" }
+                val initCounts = items.associate {
                     it.id to 0
                 }
                 _itemCounts.value = initCounts
@@ -210,8 +209,8 @@ class DryCleaningViewModel @Inject constructor(
         _itemCounts.value = counts
     }
 
-    fun getItems(): List<JSONDryCleanItem> {
-        return dryCleanItemsResponse.items
+    fun getItems(): List<JSONItem> {
+        return items
     }
 
     val bookEnabled = combine(_dropoffDateValues, _itemCounts, _orderPosting, _selectedAddress) {

@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gabesechan.laundrydemo.laundromatinfo.AvailableDateTime
 import com.gabesechan.laundrydemo.laundromatinfo.AvailableTimesResponse
+import com.gabesechan.laundrydemo.laundromatinfo.ItemsResponse
+import com.gabesechan.laundrydemo.laundromatinfo.JSONItem
 import com.gabesechan.laundrydemo.laundromatinfo.LaundromatInfoServer
 import com.gabesechan.laundrydemo.laundromatinfo.TimeRange
 import com.gabesechan.laundrydemo.laundromatinfo.WashFoldResponse
@@ -48,8 +50,9 @@ class WashFoldViewModel @Inject constructor(
     private val _dataLoaded = MutableStateFlow(false)
     val dataLoaded = _dataLoaded.asStateFlow()
 
-    lateinit var availableTimesResponse: AvailableTimesResponse
-    lateinit var pricesResponse: WashFoldResponse
+    private lateinit var availableTimesResponse: AvailableTimesResponse
+    private lateinit var pricesResponse: ItemsResponse
+    private lateinit var items: List<JSONItem>
 
 
     private val _pickupDateValues = MutableStateFlow(
@@ -79,7 +82,8 @@ class WashFoldViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 availableTimesResponse = laundromatInfoServer.availableTimes().process()
-                pricesResponse = laundromatInfoServer.washFold().process()
+                pricesResponse = laundromatInfoServer.items().process()
+                items = laundromatInfoServer.items().process().items.filter { it.itemType == "WASH_AND_FOLD" }
                 _pickupDateValues.value = _pickupDateValues.value.copy(
                     selectableDates = SelectableDeliveryDates(availableTimesResponse.pickup, 0)
                 )
@@ -95,8 +99,7 @@ class WashFoldViewModel @Inject constructor(
         _selectedAddress.value = address
     }
 
-    fun washPrice(): BigDecimal = BigDecimal(pricesResponse.price)
-    fun avgWeight(): BigDecimal = BigDecimal(pricesResponse.avgWeight)
+    fun washPrice(): BigDecimal = BigDecimal(items[0].price)
 
     private class SelectableDeliveryDates(
         dates: List<AvailableDateTime>,
@@ -180,7 +183,7 @@ class WashFoldViewModel @Inject constructor(
                     PostOrderRequest(
                         PostOrder(
                             listOf(
-                                PostOrderLine("wf", null, "WASH_AND_FOLD"),
+                                PostOrderLine(items[0].id, null, "WASH_AND_FOLD"),
                             ),
                             _pickupDateValues.value.toUtcTime(),
                             _dropoffDateValues.value.toUtcTime(),

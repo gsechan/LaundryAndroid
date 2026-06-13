@@ -64,7 +64,6 @@ fun WashFoldScreen(navController: NavController, viewModel: WashFoldViewModel = 
             viewModel::setDropoffDate, viewModel::setDropoffTime
              ),
             viewModel.washPrice(),
-            viewModel.avgWeight(),
             viewModel::book,
             bookEnabled,
             showBookingSpinner,
@@ -84,7 +83,6 @@ fun WashFoldScreenInner(
     dropoff: DateTimePickerValues,
     dropoffCallbacks: DateTimePickerCallbacks,
     washFoldPrice: BigDecimal,
-    avgWeight: BigDecimal,
     onBook: ()->Unit,
     bookEnabled: Boolean,
     showBookingSpinner: Boolean,
@@ -95,12 +93,10 @@ fun WashFoldScreenInner(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         val formatter = NumberFormat.getCurrencyInstance()
-        val totalPrice = washFoldPrice.times(avgWeight)
         Text(
             stringResource(
                 R.string.expected_wash_price,
                 formatter.format(washFoldPrice),
-                formatter.format(totalPrice)
             )
         )
 

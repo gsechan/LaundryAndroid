@@ -24,7 +24,7 @@
     <string name="pickup_select">Seleccione la fecha de recogida</string>
     <string name="dropoff_select">Seleccione la fecha de entrega</string>
     <string name="time_range_format">%1$s - %2$s</string>
-    <string name="expected_wash_price">El precio de este pedido depende del peso. El precio es de %1$s por libra. El costo promedio es de %2$s.</string>
+    <string name="expected_wash_price">El precio de este pedido depende del peso. El precio es de %1$s por libra.</string>
     <string name="book_now">Reservar ahora</string>
     <string name="order_booked">Felicidades, su pedido ha sido reservado.</string>
 
