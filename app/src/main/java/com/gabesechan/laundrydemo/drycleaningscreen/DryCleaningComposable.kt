@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.gabesechan.laundrydemo.R
-import com.gabesechan.laundrydemo.laundromatinfo.JSONDryCleanItem
+import com.gabesechan.laundrydemo.laundromatinfo.JSONItem
 import com.gabesechan.laundrydemo.ui.widgets.AddressPicker
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePicker
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerCallbacks
@@ -88,7 +88,7 @@ fun DryCleaningComposableInner(
     onBook: ()->Unit,
     itemCounts: Map<String, Int>,
     onCountChanged: (String, Int)->Unit,
-    items:List<JSONDryCleanItem>,
+    items:List<JSONItem>,
     buttonEnabled: Boolean,
     showBookingSpinner: Boolean,
     navController: NavController

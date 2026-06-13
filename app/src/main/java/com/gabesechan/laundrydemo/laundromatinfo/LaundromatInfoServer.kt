@@ -30,15 +30,16 @@ data class PricesResponse(val washFold: Int, val shirts: Int, val pants: Int, va
 data class WashFoldResponse(val price: String, val avgWeight: String, val name: String)
 
 @Serializable
-data class DryCleanItemsResponse(
-    val items: List<JSONDryCleanItem>
+data class ItemsResponse(
+    val items: List<JSONItem>
 )
 
 @Serializable
-data class JSONDryCleanItem(
+data class JSONItem(
     val id: String,
     val name: String,
-    val price: String
+    val price: String,
+    val itemType: String
 )
 
 
@@ -54,6 +55,6 @@ interface LaundromatInfoServer {
     suspend fun washFold(): NetworkResponse<WashFoldResponse>
 
     @Headers("Content-Type: application/json")
-    @GET("dryCleanItem")
-    suspend fun dryCleanItems(): NetworkResponse<DryCleanItemsResponse>
+    @GET("items")
+    suspend fun items(): NetworkResponse<ItemsResponse>
 }
