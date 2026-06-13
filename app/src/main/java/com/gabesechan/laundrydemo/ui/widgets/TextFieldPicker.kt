@@ -7,6 +7,8 @@ import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.DatePickerDialog
@@ -96,7 +98,7 @@ fun <T> TextFieldPicker(
                 dismissButton = {
                 },
             ) {
-                Box(modifier = Modifier.padding(12.dp)) {
+                Box(modifier = Modifier.verticalScroll(rememberScrollState()).padding(12.dp)) {
                     dialogContent { selected ->
                         showDialog = false
                         onSelected(selected)

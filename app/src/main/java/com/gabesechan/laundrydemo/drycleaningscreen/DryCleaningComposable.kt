@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -95,7 +97,7 @@ fun DryCleaningComposableInner(
 ) {
     val formatter = NumberFormat.getCurrencyInstance()
 
-    Column(Modifier.fillMaxHeight().padding(12.dp),
+    Column(Modifier.fillMaxHeight().verticalScroll(rememberScrollState()).padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)) {
         var totalCost = BigDecimal(0)
         items.forEach { item->

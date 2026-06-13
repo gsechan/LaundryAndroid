@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -32,7 +34,7 @@ fun AccountScreen(navController: NavController, viewModel: AccountScreenViewMode
 @Composable
 fun AccountScreenInner(user: User, logoutClicked: ()->Unit) {
     Column(
-        Modifier.fillMaxHeight().padding(horizontal = 12.dp),
+        Modifier.fillMaxHeight().verticalScroll(rememberScrollState()).padding(horizontal = 12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Column(
