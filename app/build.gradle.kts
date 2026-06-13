@@ -45,6 +45,11 @@ android {
         unitTests {
             isIncludeAndroidResources = true
             isReturnDefaultValues = true
+            shortUserHomeForRobolectric()?.let { shortHome ->
+                all {
+                    it.systemProperty("user.home", shortHome)
+                }
+            }
         }
     }
 }
@@ -75,6 +80,7 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.coroutineTest)
     testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.test.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -85,6 +91,22 @@ dependencies {
 
 jacoco {
     toolVersion = "0.8.12"
+}
+
+// Robolectric fails to resolve android-all jars from ~/.m2/repository when user.home
+// contains a space (https://github.com/robolectric/robolectric/issues/5453). Work around
+// it on Windows by pointing user.home at the 8.3 short path for the test JVM.
+fun shortUserHomeForRobolectric(): String? {
+    val home = System.getProperty("user.home")
+    val isWindows = System.getProperty("os.name").startsWith("Windows")
+    if (!isWindows || !home.contains(" ")) return null
+
+    val process = ProcessBuilder("cmd", "/c", "for %I in (\"$home\") do @echo %~sI")
+        .redirectErrorStream(true)
+        .start()
+    val shortPath = process.inputStream.bufferedReader().readText().trim()
+    process.waitFor()
+    return shortPath.takeIf { it.isNotEmpty() && !it.contains(" ") }
 }
 
 tasks.withType<Test> {
