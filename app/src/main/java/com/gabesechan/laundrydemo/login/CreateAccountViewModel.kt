@@ -33,7 +33,7 @@ class CreateAccountViewModel @Inject constructor(
     private val _createRunning = MutableStateFlow(false)
     val createRunning = _createRunning.asStateFlow()
 
-    val neworkError = false
+    var neworkError = false
 
     var name by mutableStateOf(TextFieldState())
         private set
@@ -62,7 +62,7 @@ class CreateAccountViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Lazily, false)
 
     val passWordSuppotingText = password1.asFlow().map {
-        if(it.length >0 && it.length < 8) {
+        if(it.isNotEmpty() && it.length < 8) {
             R.string.invalid_password_length
         }
         else {
@@ -81,7 +81,7 @@ class CreateAccountViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Lazily, R.string.empty)
 
     val phoneSupportingText = phone.asFlow().map {
-        if(it.length == 0) {
+        if(it.isEmpty()) {
             R.string.empty
         }
         else {
@@ -93,14 +93,14 @@ class CreateAccountViewModel @Inject constructor(
                 else {
                     R.string.empty
                 }
-            } catch (ex: Exception) {
+            } catch (_: Exception) {
                 R.string.invalid_phone_number
             }
         }
     }.stateIn(viewModelScope, SharingStarted.Lazily, R.string.empty)
 
     val emailSupportingText = email.asFlow().map {
-        if(it.length == 0) {
+        if(it.isEmpty()) {
             R.string.empty
         }
         else {
@@ -111,7 +111,7 @@ class CreateAccountViewModel @Inject constructor(
                 else {
                     R.string.empty
                 }
-            } catch (ex: Exception) {
+            } catch (_: Exception) {
                 R.string.invalid_email
             }
         }
@@ -127,7 +127,7 @@ class CreateAccountViewModel @Inject constructor(
                 email.text.toString()
             )
             if(response == LoginAPI.LoginResult.NetworkError) {
-
+                neworkError = true
             }
             _createRunning.value = false
         }
