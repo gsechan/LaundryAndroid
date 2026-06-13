@@ -185,7 +185,7 @@ class DryCleaningViewModel @Inject constructor(
                     PostOrderRequest(
                         PostOrder(
                             _itemCounts.value.map { entry ->
-                                PostOrderLine(entry.key, entry.value.toString(), "DRY_CLEANING")
+                                PostOrderLine(entry.key, entry.value.toString())
                             },
                             _pickupDateValues.value.toUtcTime(),
                             _dropoffDateValues.value.toUtcTime(),

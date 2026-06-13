@@ -25,7 +25,6 @@ data class PostOrder(
 data class PostOrderLine(
     val itemId: String,
     val quantity: String?,
-    val itemType: String,
 )
 
 @Serializable

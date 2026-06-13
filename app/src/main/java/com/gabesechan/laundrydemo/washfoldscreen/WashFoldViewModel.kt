@@ -183,7 +183,7 @@ class WashFoldViewModel @Inject constructor(
                     PostOrderRequest(
                         PostOrder(
                             listOf(
-                                PostOrderLine(items[0].id, null, "WASH_AND_FOLD"),
+                                PostOrderLine(items[0].id, null),
                             ),
                             _pickupDateValues.value.toUtcTime(),
                             _dropoffDateValues.value.toUtcTime(),
