@@ -176,7 +176,7 @@ class WashFoldViewModel @Inject constructor(
         _orderPosting.value = true
         viewModelScope.launch {
             try {
-                orderServer.postOrder(
+                val result = orderServer.postOrder(
                     PostOrderRequest(
                         PostOrder(
                             listOf(

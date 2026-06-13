@@ -29,7 +29,7 @@ data class PostOrderLine(
 )
 
 @Serializable
-data class PostOrderResponse(val success: Boolean, val orderId: String)
+data class PostOrderResponse(val order: GetOrder)
 
 @Serializable
 data class GetOrderResponse(val orders:List<GetOrder>)
@@ -50,12 +50,11 @@ data class GetOrder(
 
 @Serializable
 data class GetOrderLine(
-    val id: String,
     val itemType: String,
     val name: String,
-    val price_per_unit: String,
+    val pricePerUnit: String,
     val quantity: String?,
-    val total_cost: String?,
+    val totalCost: String?,
 )
 
 interface OrdersServer {

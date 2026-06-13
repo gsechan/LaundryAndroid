@@ -2,10 +2,8 @@ package com.gabesechan.laundrydemo.orders
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -45,11 +43,11 @@ fun OrderDisplay(order: GetOrder) {
         Text(stringResource(R.string.order_num, order.id))
         Text(stringResource(R.string.status, order.state))
         order.lines.forEach { line->
-            if(line.quantity != null && line.total_cost != null) {
-                Text(stringResource(R.string.order_line_with_quantity, line.quantity, line.name, line.price_per_unit, line.total_cost))
+            if(line.quantity != null && line.totalCost != null) {
+                Text(stringResource(R.string.order_line_with_quantity, line.quantity, line.name, line.pricePerUnit, line.totalCost))
             }
             else {
-                Text(stringResource(R.string.order_line_without_quantity,  line.name, line.price_per_unit))
+                Text(stringResource(R.string.order_line_without_quantity,  line.name, line.pricePerUnit))
             }
 
         }

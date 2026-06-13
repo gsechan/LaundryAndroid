@@ -76,11 +76,17 @@ class AddAddressViewModel @Inject constructor(
             try {
 
                 val response = userServer.addAddress(request).process()
-                val user = User(
-                    response.user.name,
-                    response.user.email,
-                    response.user.phone,
-                    response.user.addresses.toAddress()
+                val address = Address(
+                    response.address.id,
+                    response.address.street1,
+                    response.address.street2,
+                    response.address.city,
+                    response.address.state,
+                    response.address.country,
+                    response.address.postcode
+                )
+                val user =userRepository.current.value.copy(
+                    addresses = userRepository.current.value.addresses + address
                 )
                 userRepository.setUser(user, userRepository.authToken)
                 _navEvents.emit(Unit)

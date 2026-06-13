@@ -44,7 +44,7 @@ fun WashFoldScreen(navController: NavController, viewModel: WashFoldViewModel = 
             Text(stringResource(R.string.order_booked))
         }
     }
-    if(viewModel.networkError) {
+    else if(viewModel.networkError) {
         Column(Modifier.fillMaxHeight().padding(12.dp)) {
             Text(stringResource(R.string.network_error))
         }

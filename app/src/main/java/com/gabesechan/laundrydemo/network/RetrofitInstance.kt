@@ -30,7 +30,7 @@ object AppModule {
             .build()
         val networkJson = Json { ignoreUnknownKeys = true }
         return  Retrofit.Builder()
-            .baseUrl(PROD)
+            .baseUrl(DEV)
             .client(okHttpClient)
             .addConverterFactory(networkJson.asConverterFactory("application/json; charset=utf-8".toMediaType())).build()
     }

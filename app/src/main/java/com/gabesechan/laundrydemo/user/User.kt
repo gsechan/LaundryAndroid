@@ -3,7 +3,7 @@ package com.gabesechan.laundrydemo.user
 import kotlinx.serialization.Serializable
 
 @Serializable
-class User(
+data class User(
    val name: String,
    val email: String?,
    val phone: String?,

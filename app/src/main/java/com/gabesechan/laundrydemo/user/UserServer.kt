@@ -10,7 +10,7 @@ import retrofit2.http.POST
 
 
 @Serializable data class PostAddressRequest(val address: LoginAddress)
-@Serializable data class PostAddressResponse(val user: LoginUser)
+@Serializable data class PostAddressResponse(val address: LoginAddress)
 
 
 interface UserServer {
