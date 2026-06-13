@@ -1,13 +1,10 @@
 package com.gabesechan.laundrydemo.drycleaningscreen
 
 import androidx.compose.material3.DatePickerDefaults.AllDates
-import com.gabesechan.laundrydemo.laundromatinfo.AvailableDateTime
 import com.gabesechan.laundrydemo.laundromatinfo.AvailableTimesResponse
 import com.gabesechan.laundrydemo.laundromatinfo.LaundromatInfoServer
 import com.gabesechan.laundrydemo.laundromatinfo.TimeRange
-import kotlin.collections.forEach
 
-import androidx.compose.material3.SelectableDates
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gabesechan.laundrydemo.laundromatinfo.JSONItem
@@ -16,6 +13,7 @@ import com.gabesechan.laundrydemo.orders.PostOrder
 import com.gabesechan.laundrydemo.orders.PostOrderLine
 import com.gabesechan.laundrydemo.orders.PostOrderRequest
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerValues
+import com.gabesechan.laundrydemo.ui.widgets.SelectableDeliveryDates
 import com.gabesechan.laundrydemo.user.Address
 import com.gabesechan.laundrydemo.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,14 +26,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import okio.IOException
-import java.time.Instant
-import java.time.ZoneId
 import javax.inject.Inject
 
 @HiltViewModel
 class DryCleaningViewModel @Inject constructor(
     private val laundromatInfoServer: LaundromatInfoServer,
-    private val userRepository: UserRepository,
+    userRepository: UserRepository,
     private val orderServer: OrdersServer,
 ): ViewModel() {
     val addresses = userRepository.current.map { it.addresses }
@@ -92,7 +88,7 @@ class DryCleaningViewModel @Inject constructor(
                     selectableDates = SelectableDeliveryDates(availableTimesResponse.pickup, 0)
                 )
             }
-            catch (ex: IOException) {
+            catch (_: IOException) {
                 dataError = true
             }
             _dataLoaded.value = true
@@ -102,37 +98,6 @@ class DryCleaningViewModel @Inject constructor(
     fun selectAddress(address: Address) {
         _selectedAddress.value = address
     }
-
-    private class SelectableDeliveryDates(
-        dates: List<AvailableDateTime>,
-        earliestDay: Long
-    ): SelectableDates {
-        val allowedYears = mutableSetOf<Int>()
-        val allowedDates = mutableSetOf<Long>()
-
-        init {
-            dates.forEach {
-                if(it.date >= earliestDay) {
-                    allowedYears.add(
-                        Instant.ofEpochMilli(it.date)
-                            .atZone(ZoneId.of("UTC"))
-                            .toLocalDate().year
-                    )
-                    allowedDates.add(it.date)
-                }
-            }
-        }
-
-        override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-            return allowedDates.contains(utcTimeMillis)
-        }
-
-        override fun isSelectableYear(year: Int): Boolean {
-            return allowedYears.contains(year)
-        }
-
-    }
-
 
     fun setPickupDate(date: Long?) {
         _pickupDateValues.value = _pickupDateValues.value.copy(
@@ -196,7 +161,7 @@ class DryCleaningViewModel @Inject constructor(
                 )
                 _isBooked.value = true
             }
-            catch(ex: IOException) {
+            catch(_: IOException) {
                 dataError = true
             }
             _orderPosting.value = false
@@ -213,8 +178,10 @@ class DryCleaningViewModel @Inject constructor(
         return items
     }
 
-    val bookEnabled = combine(_dropoffDateValues, _itemCounts, _orderPosting, _selectedAddress) {
-        dropoff, counts, posting, address ->
-        dropoff.curSelectedTime != null && counts.any{ entry-> entry.value != 0} && !posting && address != null
+    val bookEnabled = combine(_dropoffDateValues, _itemCounts, _orderPosting, _selectedAddress, _pickupDateValues) {
+        dropoff, counts, posting, address, pickup ->
+        pickup.curSelectedDate != null && pickup.curSelectedTime!= null &&
+            dropoff.curSelectedDate != null && dropoff.curSelectedTime != null &&
+            counts.any{ entry-> entry.value != 0} && !posting && address != null
     }.stateIn(viewModelScope, SharingStarted.Lazily, false)
 }

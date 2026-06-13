@@ -1,10 +1,8 @@
 package com.gabesechan.laundrydemo.washfoldscreen
 
 import androidx.compose.material3.DatePickerDefaults.AllDates
-import androidx.compose.material3.SelectableDates
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gabesechan.laundrydemo.laundromatinfo.AvailableDateTime
 import com.gabesechan.laundrydemo.laundromatinfo.AvailableTimesResponse
 import com.gabesechan.laundrydemo.laundromatinfo.ItemsResponse
 import com.gabesechan.laundrydemo.laundromatinfo.JSONItem
@@ -16,6 +14,7 @@ import com.gabesechan.laundrydemo.orders.PostOrder
 import com.gabesechan.laundrydemo.orders.PostOrderLine
 import com.gabesechan.laundrydemo.orders.PostOrderRequest
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerValues
+import com.gabesechan.laundrydemo.ui.widgets.SelectableDeliveryDates
 import com.gabesechan.laundrydemo.user.Address
 import com.gabesechan.laundrydemo.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,8 +28,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import okio.IOException
 import java.math.BigDecimal
-import java.time.Instant
-import java.time.ZoneId
 import javax.inject.Inject
 
 @HiltViewModel
@@ -100,37 +97,6 @@ class WashFoldViewModel @Inject constructor(
     }
 
     fun washPrice(): BigDecimal = BigDecimal(items[0].price)
-
-    private class SelectableDeliveryDates(
-        dates: List<AvailableDateTime>,
-        earliestDay: Long
-    ): SelectableDates {
-        val allowedYears = mutableSetOf<Int>()
-        val allowedDates = mutableSetOf<Long>()
-
-        init {
-            dates.forEach {
-                if(it.date >= earliestDay) {
-                    allowedYears.add(
-                        Instant.ofEpochMilli(it.date)
-                            .atZone(ZoneId.of("UTC"))
-                            .toLocalDate().year
-                    )
-                    allowedDates.add(it.date)
-                }
-            }
-        }
-
-        override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-            return allowedDates.contains(utcTimeMillis)
-        }
-
-        override fun isSelectableYear(year: Int): Boolean {
-            return allowedYears.contains(year)
-        }
-
-    }
-
 
     fun setPickupDate(date: Long?) {
         _pickupDateValues.value = _pickupDateValues.value.copy(

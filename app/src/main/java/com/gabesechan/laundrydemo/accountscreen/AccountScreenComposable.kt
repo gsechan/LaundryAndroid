@@ -21,10 +21,10 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.gabesechan.laundrydemo.R
 import com.gabesechan.laundrydemo.ui.widgets.AddressDisplay
-import com.gabesechan.laundrydemo.user.Address
 import com.gabesechan.laundrydemo.user.User
 
 @Composable
+@Suppress("unused")
 fun AccountScreen(navController: NavController, viewModel: AccountScreenViewModel = hiltViewModel()) {
     val user = viewModel.user.collectAsState().value
     AccountScreenInner(user, viewModel::onLogoutClicked)
