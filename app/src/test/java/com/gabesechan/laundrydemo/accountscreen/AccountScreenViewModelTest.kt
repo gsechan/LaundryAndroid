@@ -16,6 +16,7 @@ import io.mockk.verify
 import junit.framework.TestCase.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import okio.IOException
 import org.junit.Test
@@ -70,6 +71,7 @@ class AccountScreenViewModelTest {
 
         val viewModel = AccountScreenViewModel(loginAPI, userRepository, userServer)
         viewModel.deleteAddress(address1)
+        viewModel.deleteAddressRunning.first { !it }
 
         coVerify(exactly = 1) { userServer.deleteAddress("1") }
         verify(exactly = 1) { userRepository.setUser(updatedUser) }
@@ -89,6 +91,7 @@ class AccountScreenViewModelTest {
 
         val viewModel = AccountScreenViewModel(loginAPI, userRepository, userServer)
         viewModel.deleteAddress(address1)
+        viewModel.deleteAddressRunning.first { !it }
 
         assertTrue(viewModel.networkError)
     }

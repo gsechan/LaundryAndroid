@@ -9,15 +9,16 @@ import com.gabesechan.laundrydemo.laundromatinfo.LaundromatInfoServer
 import com.gabesechan.laundrydemo.laundromatinfo.TimeRange
 import com.gabesechan.laundrydemo.network.NetworkResponse
 import com.gabesechan.laundrydemo.models.Order
+import com.gabesechan.laundrydemo.models.OrderAddress
 import com.gabesechan.laundrydemo.orders.OrdersServer
 import com.gabesechan.laundrydemo.orders.PostOrderResponse
 import com.gabesechan.laundrydemo.models.Address
 import com.gabesechan.laundrydemo.models.User
+import com.gabesechan.laundrydemo.orders.PostOrderLine
 import com.gabesechan.laundrydemo.user.UserRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
-import io.mockk.match
 import io.mockk.mockk
 import junit.framework.TestCase.*
 import kotlinx.coroutines.Dispatchers
@@ -47,6 +48,7 @@ class SchedulePickupViewModelTest {
 
     private val address = Address("addr1", "123 Main St", null, "Anytown", "ST", "US", "00000")
     private val user = User("gabe", "gabe@example.com", "1234567890", listOf(address))
+    private val orderAddress = OrderAddress("123 Main St", null, "Anytown", "ST", "US", "00000")
 
     private val dryCleanItem = Item("1", "Shirt", BigDecimal("5.00"), "DRY_CLEANING")
     private val dryCleanItem2 = Item("3", "Pants", BigDecimal("7.00"), "DRY_CLEANING")
@@ -196,7 +198,7 @@ class SchedulePickupViewModelTest {
     }
 
     @Test
-    fun testBookSuccessSetsIsBooked() = runTest {
+    fun testBookSuccessSetsIsBeooked() = runTest {
         val laundromatInfoServer = mockk<LaundromatInfoServer> {
             coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
             coEvery { items() } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
@@ -206,7 +208,7 @@ class SchedulePickupViewModelTest {
             "order1", "PENDING", null, epoch, epoch,
             OffsetDateTime.ofInstant(Instant.ofEpochMilli(1000L), ZoneOffset.UTC),
             OffsetDateTime.ofInstant(Instant.ofEpochMilli(2000L), ZoneOffset.UTC),
-            "addr1", "addr1", emptyList()
+            orderAddress, orderAddress, emptyList()
         )
         val orderServer = mockk<OrdersServer> {
             coEvery { postOrder(any()) } returns NetworkResponse(true, null, emptyList(), PostOrderResponse(order))
@@ -520,7 +522,7 @@ class SchedulePickupViewModelTest {
             "order1", "PENDING", null, epoch, epoch,
             OffsetDateTime.ofInstant(Instant.ofEpochMilli(1000L), ZoneOffset.UTC),
             OffsetDateTime.ofInstant(Instant.ofEpochMilli(2000L), ZoneOffset.UTC),
-            "addr1", "addr1", emptyList()
+            orderAddress, orderAddress, emptyList()
         )
         val orderServer = mockk<OrdersServer> {
             coEvery { postOrder(any()) } returns NetworkResponse(true, null, emptyList(), PostOrderResponse(order))
@@ -552,7 +554,7 @@ class SchedulePickupViewModelTest {
             "order1", "PENDING", null, epoch, epoch,
             OffsetDateTime.ofInstant(Instant.ofEpochMilli(1000L), ZoneOffset.UTC),
             OffsetDateTime.ofInstant(Instant.ofEpochMilli(2000L), ZoneOffset.UTC),
-            "addr1", "addr1", emptyList()
+            orderAddress, orderAddress, emptyList()
         )
         val orderServer = mockk<OrdersServer> {
             coEvery { postOrder(any()) } returns NetworkResponse(true, null, emptyList(), PostOrderResponse(order))
@@ -584,7 +586,7 @@ class SchedulePickupViewModelTest {
             "order1", "PENDING", null, epoch, epoch,
             OffsetDateTime.ofInstant(Instant.ofEpochMilli(1000L), ZoneOffset.UTC),
             OffsetDateTime.ofInstant(Instant.ofEpochMilli(2000L), ZoneOffset.UTC),
-            "addr1", "addr1", emptyList()
+            orderAddress, orderAddress, emptyList()
         )
         val orderServer = mockk<OrdersServer> {
             coEvery { postOrder(any()) } returns NetworkResponse(true, null, emptyList(), PostOrderResponse(order))

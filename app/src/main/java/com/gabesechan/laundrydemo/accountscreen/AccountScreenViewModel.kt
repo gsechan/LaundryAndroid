@@ -8,6 +8,8 @@ import com.gabesechan.laundrydemo.user.UserRepository
 import com.gabesechan.laundrydemo.user.UserServer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import okio.IOException
 import javax.inject.Inject
@@ -23,11 +25,15 @@ class AccountScreenViewModel @Inject constructor(
 
     var networkError = false
 
+    private val _deleteAddressRunning = MutableStateFlow(false)
+    val deleteAddressRunning = _deleteAddressRunning.asStateFlow()
+
     fun onLogoutClicked(){
         viewModelScope.launch(Dispatchers.IO) { loginAPI.logout() }
     }
 
     fun deleteAddress(address: Address) {
+        _deleteAddressRunning.value = true
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 userServer.deleteAddress(address.id).process()
@@ -39,6 +45,7 @@ class AccountScreenViewModel @Inject constructor(
             catch (_: IOException) {
                 networkError = true
             }
+            _deleteAddressRunning.value = false
         }
     }
 }

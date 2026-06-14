@@ -65,7 +65,7 @@ class AccountScreenComposableTest {
         val userWithoutEmail = userWithAddresses.copy(email = null)
 
         composeTestRule.setContent {
-            AccountScreenInner(userWithoutEmail) {}
+            AccountScreenInner(userWithoutEmail, {}, {})
         }
 
         composeTestRule.onNodeWithText(string(R.string.email_label, "")).assertIsDisplayed()

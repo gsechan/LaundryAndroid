@@ -1,6 +1,7 @@
 package com.gabesechan.laundrydemo.orders
 
 import com.gabesechan.laundrydemo.models.Order
+import com.gabesechan.laundrydemo.models.OrderAddress
 import com.gabesechan.laundrydemo.network.NetworkResponse
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -16,6 +17,8 @@ class OrderViewModelTest {
 
     private val epoch = OffsetDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC)
 
+    private val address = OrderAddress("123 Main St", null, "Anytown", "ST", "US", "00000")
+
     private fun order(
         id: String,
         state: String,
@@ -23,7 +26,7 @@ class OrderViewModelTest {
     ): Order {
         val submittedTime = OffsetDateTime.ofInstant(Instant.ofEpochMilli(submitted), ZoneOffset.UTC)
         return Order(
-            id, state, null, submittedTime, submittedTime, epoch, epoch, "addr1", "addr1", emptyList()
+            id, state, null, submittedTime, submittedTime, epoch, epoch, address, address, emptyList()
         )
     }
 

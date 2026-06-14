@@ -6,6 +6,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.test.core.app.ApplicationProvider
 import com.gabesechan.laundrydemo.R
 import com.gabesechan.laundrydemo.models.Order
+import com.gabesechan.laundrydemo.models.OrderAddress
 import com.gabesechan.laundrydemo.models.OrderLine
 import org.junit.Rule
 import org.junit.Test
@@ -32,6 +33,8 @@ class OrdersScreenComposableTest {
 
     private val epoch = OffsetDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC)
 
+    private val address = OrderAddress("123 Main St", null, "Anytown", "ST", "US", "00000")
+
     private fun order(id: String, state: String, lines: List<OrderLine>) = Order(
         id = id,
         state = state,
@@ -40,8 +43,8 @@ class OrdersScreenComposableTest {
         submitted = epoch,
         scheduledPickup = epoch,
         scheduledDropoff = epoch,
-        pickupAddressId = "pickup",
-        dropoffAddressId = "dropoff",
+        pickupAddress = address,
+        dropoffAddress = address,
         lines = lines,
     )
 

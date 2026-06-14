@@ -92,6 +92,6 @@ class AddressPickerTest {
         composeTestRule.onNodeWithTag("PickerTextField").performClick()
         composeTestRule.onNodeWithText("Add new address").performClick()
 
-        verify(exactly = 1) { navController.navigate("addAddress") }
+        verify(exactly = 1) { navController.navigate("editAddress/new") }
     }
 }
