@@ -205,6 +205,54 @@ class LoginAPITest {
     }
 
     @Test
+    fun testUseSavedLoginWithTokenChecksAuthAndSetsUser() = runTest {
+        val userRepo = mockk<UserRepository> {
+            coEvery { initFromDisk() } returns "token"
+            coEvery { setUser(any(), any()) } returns Unit
+        }
+        val loginServer = mockk<LoginServer> {
+            coEvery { checkAuth(any()) } returns NetworkResponse(true, null, emptyList(), loginUser)
+        }
+        val api = LoginAPI(userRepo, loginServer)
+        api.useSavedLogin()
+        coVerify(exactly = 1) { loginServer.checkAuth(CheckAuthRequest("token")) }
+        coVerify(exactly = 1) {
+            userRepo.setUser(
+                match { it.name == "gabe" },
+                "token"
+            )
+        }
+    }
+
+    @Test
+    fun testUseSavedLoginWithNoTokenLogsOutWithoutServerCall() = runTest {
+        val userRepo = mockk<UserRepository> {
+            coEvery { initFromDisk() } returns null
+            coEvery { clearUser() } returns Unit
+        }
+        val loginServer = mockk<LoginServer>()
+        val api = LoginAPI(userRepo, loginServer)
+        api.useSavedLogin()
+        coVerify(exactly = 0) { loginServer.checkAuth(any()) }
+        coVerify(exactly = 0) { loginServer.logout() }
+        coVerify(exactly = 1) { userRepo.clearUser() }
+    }
+
+    @Test
+    fun testUseSavedLoginWithTokenButCheckAuthFailsLogsOut() = runTest {
+        val userRepo = mockk<UserRepository> {
+            coEvery { initFromDisk() } returns "token"
+            coEvery { clearUser() } returns Unit
+        }
+        val loginServer = mockk<LoginServer> {
+            coEvery { checkAuth(any()) } returns NetworkResponse(false, "BAD_AUTH", emptyList(), null)
+        }
+        val api = LoginAPI(userRepo, loginServer)
+        api.useSavedLogin()
+        coVerify(exactly = 1) { userRepo.clearUser() }
+    }
+
+    @Test
     fun testCreateAccountBadAuthReturnsNetworkError() = runTest {
         val userRepo = mockk<UserRepository>()
         val loginServer = mockk<LoginServer> {

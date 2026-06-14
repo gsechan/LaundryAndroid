@@ -51,14 +51,7 @@ class MainActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
         splashScreen.setKeepOnScreenCondition { !isReady.value }
         lifecycleScope.launch(Dispatchers.IO) {
-            val token = userRepository.initFromDisk()
-            //If we're logged in, check the auth with the server for expiry issues
-            if(token != null) {
-                loginAPI.checkAuth(token)
-            }
-            else {
-                loginAPI.logout(false)
-            }
+            loginAPI.useSavedLogin()
             isReady.value = true
         }
         enableEdgeToEdge()

@@ -78,6 +78,18 @@ class LoginAPI @Inject constructor(
         }
     }
 
+    suspend fun useSavedLogin() {
+        val token = userRepository.initFromDisk()
+        //If we're logged in, check the auth with the server for expiry issues
+        if(token != null) {
+            checkAuth(token)
+        }
+        else {
+            logout(false)
+        }
+
+    }
+
     suspend fun createAccount(
         name: String,
         password: String,
