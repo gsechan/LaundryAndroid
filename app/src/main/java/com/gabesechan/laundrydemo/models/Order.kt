@@ -21,9 +21,19 @@ data class Order(
     val scheduledPickup: OffsetDateTime,
     @Serializable(with = OffsetDateTimeSerializer::class)
     val scheduledDropoff: OffsetDateTime,
-    val pickupAddressId: String,
-    val dropoffAddressId: String,
+    val pickupAddress: OrderAddress,
+    val dropoffAddress: OrderAddress,
     val lines: List<OrderLine>
+)
+
+@Serializable
+data class OrderAddress(
+    val street1: String?,
+    val street2: String?,
+    val city: String?,
+    val state: String?,
+    val country: String?,
+    val postcode: String?,
 )
 
 @Serializable
