@@ -8,7 +8,6 @@ import com.gabesechan.laundrydemo.laundromatinfo.ItemsResponse
 import com.gabesechan.laundrydemo.laundromatinfo.JSONItem
 import com.gabesechan.laundrydemo.laundromatinfo.LaundromatInfoServer
 import com.gabesechan.laundrydemo.laundromatinfo.TimeRange
-import com.gabesechan.laundrydemo.laundromatinfo.WashFoldResponse
 import com.gabesechan.laundrydemo.orders.OrdersServer
 import com.gabesechan.laundrydemo.orders.PostOrder
 import com.gabesechan.laundrydemo.orders.PostOrderLine

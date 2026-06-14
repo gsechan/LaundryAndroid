@@ -34,6 +34,9 @@ import okio.IOException
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import java.time.Instant
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DryCleaningViewModelTest {
@@ -85,7 +88,7 @@ class DryCleaningViewModelTest {
         awaitDataLoaded(viewModel)
 
         assertFalse(viewModel.dataError)
-        assertEquals(listOf(dryCleanItem), viewModel.getItems())
+        assertEquals(listOf(dryCleanItem), viewModel.items)
         assertEquals(mapOf("1" to 0), viewModel.itemCounts.value)
         assertTrue(viewModel.pickupDateValues.value.selectableDates.isSelectableDate(1000L))
         assertFalse(viewModel.pickupDateValues.value.selectableDates.isSelectableDate(999L))
@@ -188,8 +191,12 @@ class DryCleaningViewModelTest {
             coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
             coEvery { items() } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
         }
+        val epoch = OffsetDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC)
         val order = Order(
-            "order1", "PENDING", null, 0L, 0L, 1000L, 2000L, "addr1", "addr1", emptyList()
+            "order1", "PENDING", null, epoch, epoch,
+            OffsetDateTime.ofInstant(Instant.ofEpochMilli(1000L), ZoneOffset.UTC),
+            OffsetDateTime.ofInstant(Instant.ofEpochMilli(2000L), ZoneOffset.UTC),
+            "addr1", "addr1", emptyList()
         )
         val orderServer = mockk<OrdersServer> {
             coEvery { postOrder(any()) } returns NetworkResponse(true, null, emptyList(), PostOrderResponse(order))

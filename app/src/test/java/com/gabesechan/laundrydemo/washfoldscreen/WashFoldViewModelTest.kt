@@ -34,6 +34,9 @@ import okio.IOException
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import java.time.Instant
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import java.math.BigDecimal
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -172,8 +175,12 @@ class WashFoldViewModelTest {
             coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
             coEvery { items() } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(washFoldItem)))
         }
+        val epoch = OffsetDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC)
         val order = Order(
-            "order1", "PENDING", null, 0L, 0L, 1000L, 2000L, "addr1", "addr1", emptyList()
+            "order1", "PENDING", null, epoch, epoch,
+            OffsetDateTime.ofInstant(Instant.ofEpochMilli(1000L), ZoneOffset.UTC),
+            OffsetDateTime.ofInstant(Instant.ofEpochMilli(2000L), ZoneOffset.UTC),
+            "addr1", "addr1", emptyList()
         )
         val orderServer = mockk<OrdersServer> {
             coEvery { postOrder(any()) } returns NetworkResponse(true, null, emptyList(), PostOrderResponse(order))

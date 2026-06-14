@@ -18,7 +18,7 @@ class OrderViewModel @Inject constructor(
     private val _isLoaded = MutableStateFlow(false)
     val isLoaded = _isLoaded.asStateFlow()
 
-    lateinit var sortedOrders: List<Order>
+    var sortedOrders: List<Order> = emptyList()
 
     init {
         viewModelScope.launch(Dispatchers.IO) {

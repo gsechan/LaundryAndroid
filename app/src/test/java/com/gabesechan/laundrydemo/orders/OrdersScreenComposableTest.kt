@@ -13,6 +13,9 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
+import java.time.Instant
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
@@ -26,14 +29,16 @@ class OrdersScreenComposableTest {
         return ApplicationProvider.getApplicationContext<android.content.Context>().getString(resId, *formatArgs)
     }
 
+    private val epoch = OffsetDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC)
+
     private fun order(id: String, state: String, lines: List<OrderLine>) = Order(
         id = id,
         state = state,
         completed = null,
-        lastChange = 0L,
-        submitted = 0L,
-        scheduledPickup = 0L,
-        scheduledDropoff = 0L,
+        lastChange = epoch,
+        submitted = epoch,
+        scheduledPickup = epoch,
+        scheduledDropoff = epoch,
         pickupAddressId = "pickup",
         dropoffAddressId = "dropoff",
         lines = lines,

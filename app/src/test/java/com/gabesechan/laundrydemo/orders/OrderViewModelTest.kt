@@ -8,16 +8,24 @@ import junit.framework.TestCase.*
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
+import java.time.Instant
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
 class OrderViewModelTest {
+
+    private val epoch = OffsetDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC)
 
     private fun order(
         id: String,
         state: String,
         submitted: Long
-    ) = Order(
-        id, state, null, submitted, submitted, 0L, 0L, "addr1", "addr1", emptyList()
-    )
+    ): Order {
+        val submittedTime = OffsetDateTime.ofInstant(Instant.ofEpochMilli(submitted), ZoneOffset.UTC)
+        return Order(
+            id, state, null, submittedTime, submittedTime, epoch, epoch, "addr1", "addr1", emptyList()
+        )
+    }
 
     private fun awaitLoaded(viewModel: OrderViewModel) = runBlocking {
         viewModel.isLoaded.first { it }

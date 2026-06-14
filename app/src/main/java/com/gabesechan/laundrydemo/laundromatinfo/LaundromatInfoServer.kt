@@ -24,12 +24,6 @@ data class AvailableDateTime(
 data class TimeRange(val startTime: Long, val endTime:Long) //Start and end of a range, in ms from midnight
 
 @Serializable
-data class PricesResponse(val washFold: Int, val shirts: Int, val pants: Int, val dress: Int, val suit: Int)
-
-@Serializable
-data class WashFoldResponse(val price: String, val avgWeight: String, val name: String)
-
-@Serializable
 data class ItemsResponse(
     val items: List<JSONItem>
 )
@@ -49,10 +43,6 @@ interface LaundromatInfoServer {
     @Headers("Content-Type: application/json")
     @GET("availableTimes")
     suspend fun availableTimes(): NetworkResponse<AvailableTimesResponse>
-
-    @Headers("Content-Type: application/json")
-    @GET("washFold")
-    suspend fun washFold(): NetworkResponse<WashFoldResponse>
 
     @Headers("Content-Type: application/json")
     @GET("items")

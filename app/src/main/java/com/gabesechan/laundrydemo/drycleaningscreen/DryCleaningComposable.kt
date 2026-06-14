@@ -61,7 +61,7 @@ fun DryCleaningComposable(navController: NavController, viewModel: DryCleaningVi
         viewModel::book,
         itemCounts,
         viewModel::onCountChanged,
-        viewModel.getItems(),
+        viewModel.items,
         bookEnabled,
         showBookingSpinner,
         navController

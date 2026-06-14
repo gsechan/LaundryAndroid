@@ -46,7 +46,8 @@ class DryCleaningViewModel @Inject constructor(
     val dataLoaded = _dataLoaded.asStateFlow()
 
     private lateinit var availableTimesResponse: AvailableTimesResponse
-    private lateinit var items: List<JSONItem>
+    var items: List<JSONItem> = emptyList()
+        private set
 
 
     private val _pickupDateValues = MutableStateFlow(
@@ -172,10 +173,6 @@ class DryCleaningViewModel @Inject constructor(
         val counts = _itemCounts.value.toMutableMap()
         counts[item] = value
         _itemCounts.value = counts
-    }
-
-    fun getItems(): List<JSONItem> {
-        return items
     }
 
     val bookEnabled = combine(_dropoffDateValues, _itemCounts, _orderPosting, _selectedAddress, _pickupDateValues) {
