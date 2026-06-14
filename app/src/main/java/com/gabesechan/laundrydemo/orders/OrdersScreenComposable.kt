@@ -22,19 +22,19 @@ import com.gabesechan.laundrydemo.R
 @Composable
 fun OrderScreen(navController: NavController, viewModel: OrderViewModel = hiltViewModel()) {
     val isLoaded by viewModel.isLoaded.collectAsState()
-    if(isLoaded) {
-        OrderScreenInternal(viewModel.sortedOrders)
-    }
+    OrderScreenInternal(isLoaded, viewModel.sortedOrders)
 }
 
 @Composable
-fun OrderScreenInternal(orders: List<GetOrder>) {
-    Column(
-        Modifier.fillMaxHeight().verticalScroll(rememberScrollState()).padding(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        orders.forEach {
-            OrderDisplay(it)
+fun OrderScreenInternal(isLoaded: Boolean, orders: List<GetOrder>) {
+    if(isLoaded) {
+        Column(
+            Modifier.fillMaxHeight().verticalScroll(rememberScrollState()).padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            orders.forEach {
+                OrderDisplay(it)
+            }
         }
     }
 }

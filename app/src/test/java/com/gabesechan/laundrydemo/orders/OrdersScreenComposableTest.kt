@@ -62,12 +62,23 @@ class OrdersScreenComposableTest {
     )
 
     @Test
+    fun testOrdersNotShownWhenNotLoaded() {
+        val order1 = order("1", "pending", listOf(lineWithQuantity))
+
+        composeTestRule.setContent {
+            OrderScreenInternal(false, listOf(order1))
+        }
+
+        composeTestRule.onNodeWithText(string(R.string.order_num, "1")).assertDoesNotExist()
+    }
+
+    @Test
     fun testAllOrdersAreDisplayed() {
         val order1 = order("1", "pending", listOf(lineWithQuantity))
         val order2 = order("2", "completed", listOf(lineWithQuantity))
 
         composeTestRule.setContent {
-            OrderScreenInternal(listOf(order1, order2))
+            OrderScreenInternal(true, listOf(order1, order2))
         }
 
         composeTestRule.onNodeWithText(string(R.string.order_num, "1")).assertIsDisplayed()
@@ -79,7 +90,7 @@ class OrdersScreenComposableTest {
         val order1 = order("1", "pending", listOf(lineWithQuantity, lineWithoutQuantity))
 
         composeTestRule.setContent {
-            OrderScreenInternal(listOf(order1))
+            OrderScreenInternal(true, listOf(order1))
         }
 
         composeTestRule.onNodeWithText(string(R.string.order_num, "1")).assertIsDisplayed()
@@ -107,7 +118,7 @@ class OrdersScreenComposableTest {
         val order1 = order("1", "pending", listOf(lineWithoutQuantity))
 
         composeTestRule.setContent {
-            OrderScreenInternal(listOf(order1))
+            OrderScreenInternal(true, listOf(order1))
         }
 
         composeTestRule.onNodeWithText(
@@ -124,7 +135,7 @@ class OrdersScreenComposableTest {
         val order1 = order("1", "pending", listOf(lineWithoutTotalCost))
 
         composeTestRule.setContent {
-            OrderScreenInternal(listOf(order1))
+            OrderScreenInternal(true, listOf(order1))
         }
 
         composeTestRule.onNodeWithText(
@@ -141,7 +152,7 @@ class OrdersScreenComposableTest {
         val order1 = order("1", "pending", listOf(lineWithQuantity))
 
         composeTestRule.setContent {
-            OrderScreenInternal(listOf(order1))
+            OrderScreenInternal(true, listOf(order1))
         }
 
         composeTestRule.onNodeWithText(

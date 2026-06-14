@@ -39,12 +39,6 @@ class MainActivity : ComponentActivity() {
 
     private var isReady = MutableStateFlow(false)
 
-    private var navItems = listOf(
-        DestinationScreen("wash", R.string.wash_fold, R.drawable.washer, ::WashFoldScreen),
-        DestinationScreen("dryclean", R.string.dry_clean, R.drawable.dry_cleaning, ::DryCleaningComposable),
-        DestinationScreen("orders", R.string.orders, R.drawable.order, ::OrderScreen),
-        DestinationScreen("account", R.string.account, R.drawable.account, ::AccountScreen),
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,36 +50,7 @@ class MainActivity : ComponentActivity() {
         }
         enableEdgeToEdge()
         setContent {
-            val navController = rememberNavController()
-            val user = userRepository.current.collectAsState().value
-            LaundryDemoTheme {
-                if(user.isLoggedIn()) {
-                    NavMenuScreen(navController, navItems) {
-                        NavHost(
-                            navController = navController,
-                            startDestination = "wash",
-                        ) {
-                            navItems.forEach { item->
-                                composable(item.route){ item.screen(navController) }
-                            }
-                            composable("addAddress") {
-                                AddAddressScreen(navController)
-                            }
-                        }
-
-                    }
-                }
-                else {
-                    NavHost(navController = navController, startDestination = "login") {
-                        composable("login") {
-                            Login(navController)
-                        }
-                        composable("createAccount") {
-                            CreateAccountScreen()
-                        }
-                    }
-                }
-            }
+            MainScreenComposable(userRepository)
         }
     }
 }
