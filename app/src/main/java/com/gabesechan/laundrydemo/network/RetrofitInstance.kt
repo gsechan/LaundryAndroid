@@ -27,6 +27,7 @@ object AppModule {
         val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(AuthInterceptor(tokenStorage))
             .addInterceptor(LocaleInterceptor(context))
+            .addInterceptor(HttpErrorInterceptor())
             .build()
         val networkJson = Json { ignoreUnknownKeys = true }
         return  Retrofit.Builder()
