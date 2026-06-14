@@ -55,9 +55,15 @@ class DryCleaningComposableTest {
         onBook: () -> Unit = {},
         pickup: DateTimePickerValues = emptyDateTimeValues,
         buttonEnabled: Boolean = true,
+        isBooked: Boolean = false,
+        dataError: Boolean = false,
+        isLoaded: Boolean = true,
     ) {
         composeTestRule.setContent {
             DryCleaningComposableInner(
+                isBooked = isBooked,
+                dataError = dataError,
+                isLoaded = isLoaded,
                 addresses = emptyList(),
                 selectedAddress = null,
                 onAddressSelected = {},
@@ -157,6 +163,31 @@ class DryCleaningComposableTest {
         composeTestRule.onNodeWithTag("LoadingButtonRoot").performClick()
 
         verify(exactly = 1) { onBook() }
+    }
+
+    @Test
+    fun testOrderBookedMessageShownWhenIsBooked() {
+        setContent(isBooked = true)
+
+        composeTestRule.onNodeWithText(getString(R.string.order_booked)).assertIsDisplayed()
+        composeTestRule.onNodeWithText("Shirt").assertDoesNotExist()
+    }
+
+    @Test
+    fun testNetworkErrorShownWhenDataError() {
+        setContent(dataError = true)
+
+        composeTestRule.onNodeWithText(getString(R.string.network_error)).assertIsDisplayed()
+        composeTestRule.onNodeWithText("Shirt").assertDoesNotExist()
+    }
+
+    @Test
+    fun testNothingShownWhenNotLoaded() {
+        setContent(isLoaded = false)
+
+        composeTestRule.onNodeWithText("Shirt").assertDoesNotExist()
+        composeTestRule.onNodeWithText(getString(R.string.order_booked)).assertDoesNotExist()
+        composeTestRule.onNodeWithText(getString(R.string.network_error)).assertDoesNotExist()
     }
 
     private fun getString(resId: Int): String {

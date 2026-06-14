@@ -28,27 +28,20 @@ fun AddAddressScreen(navController: NavController, viewModel: AddAddressViewMode
     val addEnabled by viewModel.createEnabled.collectAsState()
     val addSpinner by viewModel.addRunning.collectAsState()
 
-
-    if(viewModel.networkError) {
-        Column(Modifier.fillMaxHeight().padding(12.dp)) {
-            Text(stringResource(R.string.network_error))
-        }
-    }
-    else {
-        CreateAccountScreenInner(
-            viewModel.street1,
-            viewModel.street2,
-            viewModel.city,
-            viewModel.state,
-            viewModel.country,
-            viewModel.postcode,
-            viewModel::addAccountClicked,
-            addEnabled,
-            addSpinner,
-            viewModel.navEvent,
-            navController
-        )
-    }
+    CreateAccountScreenInner(
+        viewModel.street1,
+        viewModel.street2,
+        viewModel.city,
+        viewModel.state,
+        viewModel.country,
+        viewModel.postcode,
+        viewModel::addAccountClicked,
+        addEnabled,
+        addSpinner,
+        viewModel.navEvent,
+        navController,
+        viewModel.networkError,
+    )
 }
 
 @Composable
@@ -64,6 +57,7 @@ fun CreateAccountScreenInner(
     createSpinner: Boolean,
     navEvent: SharedFlow<Unit>,
     navController: NavController,
+    networkError: Boolean,
 ) {
     LaunchedEffect(Unit) {
         navEvent.collect { _ ->
@@ -71,6 +65,12 @@ fun CreateAccountScreenInner(
         }
     }
 
+    if(networkError) {
+        Column(Modifier.fillMaxHeight().padding(12.dp)) {
+            Text(stringResource(R.string.network_error))
+        }
+        return
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),

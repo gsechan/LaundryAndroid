@@ -30,35 +30,28 @@ import androidx.compose.ui.text.input.KeyboardType
 
 @Composable
 fun CreateAccountScreen(viewModel: CreateAccountViewModel = hiltViewModel()) {
+    val createEnabled by viewModel.createEnabled.collectAsState()
+    val createSpinner by viewModel.createRunning.collectAsState()
+    val password1SupportText by viewModel.passWordSuppotingText.collectAsState()
+    val password2SupportText by viewModel.passWordSuppotingText2.collectAsState()
+    val phoneSupportText by viewModel.phoneSupportingText.collectAsState()
+    val emailSupportText by viewModel.emailSupportingText.collectAsState()
 
-    if(viewModel.neworkError) {
-        Column(Modifier.fillMaxHeight().padding(12.dp)) {
-            Text(stringResource(R.string.network_error))
-        }
-    }
-    else {
-        val createEnabled by viewModel.createEnabled.collectAsState()
-        val createSpinner by viewModel.createRunning.collectAsState()
-        val password1SupportText by viewModel.passWordSuppotingText.collectAsState()
-        val password2SupportText by viewModel.passWordSuppotingText2.collectAsState()
-        val phoneSupportText by viewModel.phoneSupportingText.collectAsState()
-        val emailSupportText by viewModel.emailSupportingText.collectAsState()
-
-        CreateAccountScreenInner(
-            viewModel.name,
-            viewModel.password1,
-            password1SupportText,
-            viewModel.password2,
-            password2SupportText,
-            viewModel.phone,
-            phoneSupportText,
-            viewModel.email,
-            emailSupportText,
-            viewModel::createAccountClicked,
-            createEnabled,
-            createSpinner,
-        )
-    }
+    CreateAccountScreenInner(
+        viewModel.neworkError,
+        viewModel.name,
+        viewModel.password1,
+        password1SupportText,
+        viewModel.password2,
+        password2SupportText,
+        viewModel.phone,
+        phoneSupportText,
+        viewModel.email,
+        emailSupportText,
+        viewModel::createAccountClicked,
+        createEnabled,
+        createSpinner,
+    )
 }
 
 object PasswordOutputTransformation : OutputTransformation {
@@ -69,6 +62,7 @@ object PasswordOutputTransformation : OutputTransformation {
 
 @Composable
 fun CreateAccountScreenInner(
+    networkError: Boolean,
     nameState: TextFieldState,
     password1: TextFieldState,
     @StringRes password1SupportText: Int,
@@ -82,6 +76,13 @@ fun CreateAccountScreenInner(
     createEnabled: Boolean,
     createSpinner: Boolean
 ) {
+    if(networkError) {
+        Column(Modifier.fillMaxHeight().padding(12.dp)) {
+            Text(stringResource(R.string.network_error))
+        }
+        return
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = { },

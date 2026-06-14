@@ -44,9 +44,11 @@ class CreateAccountScreenTest {
         onCreateClicked: () -> Unit = {},
         createEnabled: Boolean = true,
         createSpinner: Boolean = false,
+        networkError: Boolean = false,
     ) {
         composeTestRule.setContent {
             CreateAccountScreenInner(
+                networkError,
                 nameState,
                 password1,
                 password1SupportText,
@@ -61,6 +63,21 @@ class CreateAccountScreenTest {
                 createSpinner,
             )
         }
+    }
+
+    @Test
+    fun testNetworkErrorShownWhenNetworkErrorIsTrue() {
+        setContent(networkError = true)
+
+        composeTestRule.onNodeWithText(string(R.string.network_error)).assertIsDisplayed()
+        composeTestRule.onNodeWithText(string(R.string.enter_name)).assertDoesNotExist()
+    }
+
+    @Test
+    fun testNetworkErrorNotShownWhenNetworkErrorIsFalse() {
+        setContent(networkError = false, password1SupportText = R.string.order_booked)
+
+        composeTestRule.onNodeWithText(string(R.string.network_error)).assertDoesNotExist()
     }
 
     @Test

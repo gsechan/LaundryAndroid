@@ -35,25 +35,33 @@ class AddAddressComposableTest {
     }
 
     private fun setContent(
+        street1: TextFieldState = TextFieldState(""),
+        street2: TextFieldState = TextFieldState(""),
+        city: TextFieldState = TextFieldState(""),
+        state: TextFieldState = TextFieldState(""),
+        country: TextFieldState = TextFieldState(""),
+        postcode: TextFieldState = TextFieldState(""),
         onAddClicked: () -> Unit = {},
         createEnabled: Boolean = true,
         createSpinner: Boolean = false,
         navEvent: MutableSharedFlow<Unit> = MutableSharedFlow(1),
         navController: NavController = mockk(relaxed = true),
+        networkError: Boolean = false,
     ) {
         composeTestRule.setContent {
             CreateAccountScreenInner(
-                TextFieldState(""),
-                TextFieldState(""),
-                TextFieldState(""),
-                TextFieldState(""),
-                TextFieldState(""),
-                TextFieldState(""),
+                street1,
+                street2,
+                city,
+                state,
+                country,
+                postcode,
                 onAddClicked,
                 createEnabled,
                 createSpinner,
                 navEvent,
                 navController,
+                networkError,
             )
         }
     }
@@ -72,6 +80,20 @@ class AddAddressComposableTest {
     }
 
     @Test
+    fun testNetworkErrorShownWhenNetworkErrorIsTrue() {
+        setContent(networkError = true)
+
+        composeTestRule.onNodeWithText(string(R.string.network_error)).assertExists()
+    }
+
+    @Test
+    fun testNetworkErrorNotShownWhenNetworkErrorIsFalse() {
+        setContent(networkError = false)
+
+        composeTestRule.onNodeWithText(string(R.string.network_error)).assertDoesNotExist()
+    }
+
+    @Test
     fun testAllSixTextFieldsAppear() {
         setContent()
 
@@ -80,6 +102,31 @@ class AddAddressComposableTest {
         composeTestRule.onNodeWithText(string(R.string.enter_city)).assertExists()
         composeTestRule.onNodeWithText(string(R.string.enter_state)).assertExists()
         composeTestRule.onNodeWithText(string(R.string.enter_postcode)).assertExists()
+    }
+
+    @Test
+    fun testValuesShownAndPlaceholdersHiddenWhenFieldsAreNonEmpty() {
+        setContent(
+            street1 = TextFieldState("123 Main St"),
+            street2 = TextFieldState("Apt 4"),
+            city = TextFieldState("Springfield"),
+            state = TextFieldState("IL"),
+            country = TextFieldState("USA"),
+            postcode = TextFieldState("62701"),
+        )
+
+        composeTestRule.onNodeWithText("123 Main St").assertExists()
+        composeTestRule.onNodeWithText("Apt 4").assertExists()
+        composeTestRule.onNodeWithText("Springfield").assertExists()
+        composeTestRule.onNodeWithText("IL").assertExists()
+        composeTestRule.onNodeWithText("USA").assertExists()
+        composeTestRule.onNodeWithText("62701").assertExists()
+
+        composeTestRule.onNodeWithText(string(R.string.enter_street1)).assertDoesNotExist()
+        composeTestRule.onNodeWithText(string(R.string.enter_country)).assertDoesNotExist()
+        composeTestRule.onNodeWithText(string(R.string.enter_city)).assertDoesNotExist()
+        composeTestRule.onNodeWithText(string(R.string.enter_state)).assertDoesNotExist()
+        composeTestRule.onNodeWithText(string(R.string.enter_postcode)).assertDoesNotExist()
     }
 
     @Test

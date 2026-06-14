@@ -30,34 +30,40 @@ private var navItems = listOf(
 fun MainScreenComposable(
     userRepository: UserRepository,
     navController: NavHostController = rememberNavController(),
-    loggedInContent: @Composable (NavHostController) -> Unit = { nc ->
-        NavMenuScreen(nc, navItems) {
-            NavHost(
-                navController = nc,
-                startDestination = "wash",
-            ) {
-                navItems.forEach { item->
-                    composable(item.route){ item.screen(nc) }
-                }
-                composable("addAddress") {
-                    AddAddressScreen(nc)
-                }
-            }
-        }
-    },
-    loggedOutContent: @Composable (NavHostController) -> Unit = { nc ->
-        NavHost(navController = nc, startDestination = "login") {
-            composable("login") {
-                Login(nc)
-            }
-            composable("createAccount") {
-                CreateAccountScreen()
-            }
-        }
-    },
+    loggedInContent: @Composable (NavHostController) -> Unit = { nc -> LoggedInContent(nc, navItems) },
+    loggedOutContent: @Composable (NavHostController) -> Unit = { nc -> LoggedOutContent(nc) },
 ) {
     val user = userRepository.current.collectAsState().value
     MainScreenComposableInner(user, navController, loggedInContent, loggedOutContent)
+}
+
+@Composable
+fun LoggedInContent(navController: NavHostController, navItems: List<DestinationScreen>) {
+    NavMenuScreen(navController, navItems) {
+        NavHost(
+            navController = navController,
+            startDestination = "wash",
+        ) {
+            navItems.forEach { item->
+                composable(item.route){ item.screen(navController) }
+            }
+            composable("addAddress") {
+                AddAddressScreen(navController)
+            }
+        }
+    }
+}
+
+@Composable
+fun LoggedOutContent(navController: NavHostController) {
+    NavHost(navController = navController, startDestination = "login") {
+        composable("login") {
+            Login(navController)
+        }
+        composable("createAccount") {
+            CreateAccountScreen()
+        }
+    }
 }
 
 @Composable

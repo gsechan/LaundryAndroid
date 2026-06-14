@@ -43,43 +43,36 @@ fun DryCleaningComposable(navController: NavController, viewModel: DryCleaningVi
     val bookEnabled by viewModel.bookEnabled.collectAsState()
     val showBookingSpinner by viewModel.showBookingSpinner.collectAsState()
 
-    if(isBooked) {
-        Column(Modifier.fillMaxHeight().padding(12.dp)) {
-            Text(stringResource(R.string.order_booked))
-        }
-    }
-    else if(viewModel.dataError) {
-        Column(Modifier.fillMaxHeight().padding(12.dp)) {
-            Text(stringResource(R.string.network_error))
-        }
-    }
-    else if(isLoaded) {
-
-        DryCleaningComposableInner(
-            addresses,
-            selectedAddress,
-            viewModel::selectAddress,
-            pickupDateValues,
-            DateTimePickerCallbacks(
-                viewModel::setPickupDate, viewModel::setPickupTime
-            ),
-            dropoffDateValues,
-            DateTimePickerCallbacks(
-                viewModel::setDropoffDate, viewModel::setDropoffTime
-            ),
-            viewModel::book,
-            itemCounts,
-            viewModel::onCountChanged,
-            viewModel.getItems(),
-            bookEnabled,
-            showBookingSpinner,
-            navController
-        )
-    }
+    DryCleaningComposableInner(
+        isBooked,
+        viewModel.dataError,
+        isLoaded,
+        addresses,
+        selectedAddress,
+        viewModel::selectAddress,
+        pickupDateValues,
+        DateTimePickerCallbacks(
+            viewModel::setPickupDate, viewModel::setPickupTime
+        ),
+        dropoffDateValues,
+        DateTimePickerCallbacks(
+            viewModel::setDropoffDate, viewModel::setDropoffTime
+        ),
+        viewModel::book,
+        itemCounts,
+        viewModel::onCountChanged,
+        viewModel.getItems(),
+        bookEnabled,
+        showBookingSpinner,
+        navController
+    )
 }
 
 @Composable
 fun DryCleaningComposableInner(
+    isBooked: Boolean,
+    dataError: Boolean,
+    isLoaded: Boolean,
     addresses: List<Address>,
     selectedAddress: Address?,
     onAddressSelected: (Address)->Unit,
@@ -95,6 +88,22 @@ fun DryCleaningComposableInner(
     showBookingSpinner: Boolean,
     navController: NavController
 ) {
+    if(isBooked) {
+        Column(Modifier.fillMaxHeight().padding(12.dp)) {
+            Text(stringResource(R.string.order_booked))
+        }
+        return
+    }
+    else if(dataError) {
+        Column(Modifier.fillMaxHeight().padding(12.dp)) {
+            Text(stringResource(R.string.network_error))
+        }
+        return
+    }
+    else if(!isLoaded) {
+        return
+    }
+
     val formatter = NumberFormat.getCurrencyInstance()
 
     Column(Modifier.fillMaxHeight().verticalScroll(rememberScrollState()).padding(12.dp),

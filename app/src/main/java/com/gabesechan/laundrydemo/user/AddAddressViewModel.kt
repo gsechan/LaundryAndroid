@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.gabesechan.laundrydemo.login.LoginAddress
 import com.gabesechan.laundrydemo.login.asFlow
 import com.gabesechan.laundrydemo.login.combine
-import com.gabesechan.laundrydemo.login.toAddress
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -55,8 +54,8 @@ class AddAddressViewModel @Inject constructor(
         postcode.asFlow(),
 
         ) { running: Boolean, street1: String, country:String, city:String, state:String, postcode:String ->
-        !running && street1.length >=1 && country.length >=1 && city.length >= 1 && state.length >=1 &&
-               postcode.length >=1
+        !running && street1.isNotEmpty() && country.isNotEmpty() && city.isNotEmpty() && state.isNotEmpty() &&
+                postcode.isNotEmpty()
     }.stateIn(viewModelScope, SharingStarted.Lazily, false)
 
     fun addAccountClicked() {
@@ -91,7 +90,7 @@ class AddAddressViewModel @Inject constructor(
                 userRepository.setUser(user, userRepository.authToken)
                 _navEvents.emit(Unit)
             }
-            catch (ex: IOException) {
+            catch (_: IOException) {
                 networkError = true
             }
             _addRunning.value = false

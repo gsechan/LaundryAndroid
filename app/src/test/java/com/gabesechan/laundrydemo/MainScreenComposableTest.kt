@@ -5,6 +5,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.navigation.compose.rememberNavController
+import com.gabesechan.laundrydemo.ui.widgets.DestinationScreen
 import com.gabesechan.laundrydemo.user.User
 import org.junit.Rule
 import org.junit.Test
@@ -48,5 +49,20 @@ class MainScreenComposableTest {
 
         composeTestRule.onNodeWithText("WashFoldContent").assertIsDisplayed()
         composeTestRule.onNodeWithText("LoginContent").assertDoesNotExist()
+    }
+
+    @Test
+    fun testLoggedInContentShowsStartDestination() {
+        val stubNavItems = listOf(
+            DestinationScreen("wash", R.string.wash_fold, R.drawable.washer) { Text("StubWashScreen") },
+            DestinationScreen("dryclean", R.string.dry_clean, R.drawable.dry_cleaning) { Text("StubDryCleanScreen") },
+        )
+
+        composeTestRule.setContent {
+            LoggedInContent(rememberNavController(), stubNavItems)
+        }
+
+        composeTestRule.onNodeWithText("StubWashScreen").assertIsDisplayed()
+        composeTestRule.onNodeWithText("StubDryCleanScreen").assertDoesNotExist()
     }
 }
