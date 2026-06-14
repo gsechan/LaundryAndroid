@@ -37,7 +37,7 @@ class WashFoldViewModel @Inject constructor(
 ): ViewModel() {
 
     val addresses = userRepository.current.map { it.addresses }
-    var networkError = false
+    var dataError = false
 
     private val _selectedAddress = MutableStateFlow(userRepository.current.value.addresses.getOrNull(0))
     val selectedAddress = _selectedAddress.asStateFlow()
@@ -48,7 +48,8 @@ class WashFoldViewModel @Inject constructor(
 
     private lateinit var availableTimesResponse: AvailableTimesResponse
     private lateinit var pricesResponse: ItemsResponse
-    private lateinit var items: List<Item>
+    var items: List<Item> = emptyList()
+        private set
 
 
     private val _pickupDateValues = MutableStateFlow(
@@ -85,7 +86,7 @@ class WashFoldViewModel @Inject constructor(
                 )
             }
             catch (ex: IOException) {
-                networkError = true
+                dataError = true
             }
             _dataLoaded.value = true
         }
@@ -95,7 +96,6 @@ class WashFoldViewModel @Inject constructor(
         _selectedAddress.value = address
     }
 
-    fun washPrice(): BigDecimal = items[0].price
 
     fun setPickupDate(date: Long?) {
         _pickupDateValues.value = _pickupDateValues.value.copy(
@@ -160,7 +160,7 @@ class WashFoldViewModel @Inject constructor(
                 _isBooked.value = true
             }
             catch (ex: IOException) {
-                networkError = true
+                dataError = true
             }
             _orderPosting.value = false
         }

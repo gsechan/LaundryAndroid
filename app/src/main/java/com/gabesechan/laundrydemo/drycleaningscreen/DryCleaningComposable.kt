@@ -30,6 +30,7 @@ import com.gabesechan.laundrydemo.ui.widgets.convertMillisToDate
 import com.gabesechan.laundrydemo.models.Address
 import java.math.BigDecimal
 import java.text.NumberFormat
+import kotlin.plus
 
 @Composable
 fun DryCleaningComposable(navController: NavController, viewModel: DryCleaningViewModel = hiltViewModel()) {
@@ -64,8 +65,45 @@ fun DryCleaningComposable(navController: NavController, viewModel: DryCleaningVi
         viewModel.items,
         bookEnabled,
         showBookingSpinner,
-        navController
+        navController,
+        ::DryCleanPricingComposable
     )
+}
+
+@Composable
+fun DryCleanPricingComposable(
+    items: List<Item>,
+    itemCounts: Map<String, Int>,
+    onCountChanged: (String, Int) -> Unit
+) {
+    val formatter = NumberFormat.getCurrencyInstance()
+    var totalCost = BigDecimal(0)
+    items.forEach { item->
+        val cost = item.price * BigDecimal(itemCounts[item.id]!!)
+        totalCost = totalCost.plus(cost)
+        Row(modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(item.name, modifier = Modifier.alignByBaseline().fillMaxWidth(.2f))
+            NumberPicker(
+                itemCounts[item.id]!!,
+                {onCountChanged(item.id, it)},
+                0,
+                10
+                , modifier = Modifier.alignByBaseline()
+            )
+            Text(formatter.format(cost),modifier = Modifier.alignByBaseline())
+        }
+    }
+    Row(modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text("Total price:")
+        Text(formatter.format(totalCost))
+    }
+
 }
 
 @Composable
@@ -86,7 +124,8 @@ fun DryCleaningComposableInner(
     items:List<Item>,
     buttonEnabled: Boolean,
     showBookingSpinner: Boolean,
-    navController: NavController
+    navController: NavController,
+    pricingComposable: @Composable (List<Item>, Map<String, Int>, (String, Int) -> Unit)->Unit,
 ) {
     if(isBooked) {
         Column(Modifier.fillMaxHeight().padding(12.dp)) {
@@ -104,36 +143,11 @@ fun DryCleaningComposableInner(
         return
     }
 
-    val formatter = NumberFormat.getCurrencyInstance()
 
     Column(Modifier.fillMaxHeight().verticalScroll(rememberScrollState()).padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        var totalCost = BigDecimal(0)
-        items.forEach { item->
-            val cost = item.price * BigDecimal(itemCounts[item.id]!!)
-            totalCost = totalCost.plus(cost)
-            Row(modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(item.name, modifier = Modifier.alignByBaseline().fillMaxWidth(.2f))
-                NumberPicker(
-                    itemCounts[item.id]!!,
-                    {onCountChanged(item.id, it)},
-                    0,
-                    10
-                    , modifier = Modifier.alignByBaseline()
-                )
-                Text(formatter.format(cost),modifier = Modifier.alignByBaseline())
-            }
-        }
-        Row(modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text("Total price:")
-            Text(formatter.format(totalCost))
-        }
+
+        pricingComposable(items, itemCounts, onCountChanged)
 
         AddressPicker(addresses, selectedAddress, onAddressSelected, navController)
         val pickupDateText = pickup.curSelectedDate?.let {

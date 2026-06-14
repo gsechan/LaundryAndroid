@@ -88,7 +88,7 @@ class WashFoldViewModelTest {
         val viewModel = WashFoldViewModel(laundromatInfoServer, userRepository(), orderServer)
         awaitDataLoaded(viewModel)
 
-        assertFalse(viewModel.networkError)
+        assertFalse(viewModel.dataError)
         assertEquals(BigDecimal("10.00"), viewModel.washPrice())
         assertTrue(viewModel.pickupDateValues.value.selectableDates.isSelectableDate(1000L))
         assertFalse(viewModel.pickupDateValues.value.selectableDates.isSelectableDate(999L))
@@ -104,7 +104,7 @@ class WashFoldViewModelTest {
         val viewModel = WashFoldViewModel(laundromatInfoServer, userRepository(), orderServer)
         awaitDataLoaded(viewModel)
 
-        assertTrue(viewModel.networkError)
+        assertTrue(viewModel.dataError)
     }
 
     @Test
@@ -198,7 +198,7 @@ class WashFoldViewModelTest {
 
         assertTrue(viewModel.isBooked.value)
         assertFalse(viewModel.showBookingSpinner.value)
-        assertFalse(viewModel.networkError)
+        assertFalse(viewModel.dataError)
     }
 
     @Test
@@ -223,7 +223,7 @@ class WashFoldViewModelTest {
 
         assertFalse(viewModel.isBooked.value)
         assertFalse(viewModel.showBookingSpinner.value)
-        assertTrue(viewModel.networkError)
+        assertTrue(viewModel.dataError)
     }
 
     @Test
