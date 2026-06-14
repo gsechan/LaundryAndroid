@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gabesechan.laundrydemo.laundromatinfo.AvailableTimesResponse
 import com.gabesechan.laundrydemo.laundromatinfo.ItemsResponse
-import com.gabesechan.laundrydemo.laundromatinfo.JSONItem
+import com.gabesechan.laundrydemo.models.Item
 import com.gabesechan.laundrydemo.laundromatinfo.LaundromatInfoServer
 import com.gabesechan.laundrydemo.laundromatinfo.TimeRange
 import com.gabesechan.laundrydemo.orders.OrdersServer
@@ -48,7 +48,7 @@ class WashFoldViewModel @Inject constructor(
 
     private lateinit var availableTimesResponse: AvailableTimesResponse
     private lateinit var pricesResponse: ItemsResponse
-    private lateinit var items: List<JSONItem>
+    private lateinit var items: List<Item>
 
 
     private val _pickupDateValues = MutableStateFlow(
@@ -95,7 +95,7 @@ class WashFoldViewModel @Inject constructor(
         _selectedAddress.value = address
     }
 
-    fun washPrice(): BigDecimal = BigDecimal(items[0].price)
+    fun washPrice(): BigDecimal = items[0].price
 
     fun setPickupDate(date: Long?) {
         _pickupDateValues.value = _pickupDateValues.value.copy(

@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.gabesechan.laundrydemo.R
-import com.gabesechan.laundrydemo.laundromatinfo.JSONItem
+import com.gabesechan.laundrydemo.models.Item
 import com.gabesechan.laundrydemo.ui.widgets.AddressPicker
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePicker
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerCallbacks
@@ -83,7 +83,7 @@ fun DryCleaningComposableInner(
     onBook: ()->Unit,
     itemCounts: Map<String, Int>,
     onCountChanged: (String, Int)->Unit,
-    items:List<JSONItem>,
+    items:List<Item>,
     buttonEnabled: Boolean,
     showBookingSpinner: Boolean,
     navController: NavController
@@ -110,7 +110,7 @@ fun DryCleaningComposableInner(
         verticalArrangement = Arrangement.spacedBy(12.dp)) {
         var totalCost = BigDecimal(0)
         items.forEach { item->
-            val cost = BigDecimal(item.price) * BigDecimal(itemCounts[item.id]!!)
+            val cost = item.price * BigDecimal(itemCounts[item.id]!!)
             totalCost = totalCost.plus(cost)
             Row(modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,

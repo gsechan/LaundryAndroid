@@ -7,7 +7,7 @@ import com.gabesechan.laundrydemo.laundromatinfo.TimeRange
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gabesechan.laundrydemo.laundromatinfo.JSONItem
+import com.gabesechan.laundrydemo.models.Item
 import com.gabesechan.laundrydemo.orders.OrdersServer
 import com.gabesechan.laundrydemo.orders.PostOrder
 import com.gabesechan.laundrydemo.orders.PostOrderLine
@@ -46,7 +46,7 @@ class DryCleaningViewModel @Inject constructor(
     val dataLoaded = _dataLoaded.asStateFlow()
 
     private lateinit var availableTimesResponse: AvailableTimesResponse
-    var items: List<JSONItem> = emptyList()
+    var items: List<Item> = emptyList()
         private set
 
 

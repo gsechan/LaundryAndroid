@@ -1,11 +1,10 @@
 package com.gabesechan.laundrydemo.laundromatinfo
 
+import com.gabesechan.laundrydemo.models.Item
 import com.gabesechan.laundrydemo.network.NetworkResponse
 import kotlinx.serialization.Serializable
 import retrofit2.http.GET
 import retrofit2.http.Headers
-import java.math.BigDecimal
-import java.util.UUID
 
 @Serializable
 data class AvailableTimesResponse(
@@ -25,15 +24,7 @@ data class TimeRange(val startTime: Long, val endTime:Long) //Start and end of a
 
 @Serializable
 data class ItemsResponse(
-    val items: List<JSONItem>
-)
-
-@Serializable
-data class JSONItem(
-    val id: String,
-    val name: String,
-    val price: String,
-    val itemType: String
+    val items: List<Item>
 )
 
 

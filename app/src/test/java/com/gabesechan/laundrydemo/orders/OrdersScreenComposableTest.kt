@@ -13,6 +13,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
+import java.math.BigDecimal
 import java.time.Instant
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
@@ -47,15 +48,15 @@ class OrdersScreenComposableTest {
     private val lineWithQuantity = OrderLine(
         itemType = "wash",
         name = "Shirt",
-        pricePerUnit = "5.00",
-        quantity = "3",
-        totalCost = "15.00",
+        pricePerUnit = BigDecimal("5.00"),
+        quantity = BigDecimal("3"),
+        totalCost = BigDecimal("15.00"),
     )
 
     private val lineWithoutQuantity = OrderLine(
         itemType = "dryclean",
         name = "Suit",
-        pricePerUnit = "20.00",
+        pricePerUnit = BigDecimal("20.00"),
         quantity = null,
         totalCost = null,
     )
@@ -63,8 +64,8 @@ class OrdersScreenComposableTest {
     private val lineWithoutTotalCost = OrderLine(
         itemType = "dryclean",
         name = "Coat",
-        pricePerUnit = "25.00",
-        quantity = "1",
+        pricePerUnit = BigDecimal("25.00"),
+        quantity = BigDecimal("1"),
         totalCost = null,
     )
 

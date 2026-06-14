@@ -10,7 +10,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.navigation.NavController
 import com.gabesechan.laundrydemo.R
-import com.gabesechan.laundrydemo.laundromatinfo.JSONItem
+import com.gabesechan.laundrydemo.models.Item
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerCallbacks
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerValues
 import io.mockk.mockk
@@ -32,8 +32,8 @@ class DryCleaningComposableTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private val item1 = JSONItem("1", "Shirt", "10.00", "wash")
-    private val item2 = JSONItem("2", "Pants", "5.50", "wash")
+    private val item1 = Item("1", "Shirt", BigDecimal("10.00"), "wash")
+    private val item2 = Item("2", "Pants", BigDecimal("5.50"), "wash")
     private val items = listOf(item1, item2)
     private val itemCounts = mapOf("1" to 2, "2" to 3)
 
@@ -94,8 +94,8 @@ class DryCleaningComposableTest {
     fun testEachItemHasFormattedCostString() {
         setContent()
 
-        val cost1 = formatter.format(BigDecimal(item1.price) * BigDecimal(itemCounts[item1.id]!!))
-        val cost2 = formatter.format(BigDecimal(item2.price) * BigDecimal(itemCounts[item2.id]!!))
+        val cost1 = formatter.format(item1.price * BigDecimal(itemCounts[item1.id]!!))
+        val cost2 = formatter.format(item2.price * BigDecimal(itemCounts[item2.id]!!))
 
         composeTestRule.onNodeWithText(cost1).assertIsDisplayed()
         composeTestRule.onNodeWithText(cost2).assertIsDisplayed()
@@ -107,7 +107,7 @@ class DryCleaningComposableTest {
 
         var totalCost = BigDecimal(0)
         items.forEach { item ->
-            totalCost = totalCost.plus(BigDecimal(item.price) * BigDecimal(itemCounts[item.id]!!))
+            totalCost = totalCost.plus(item.price * BigDecimal(itemCounts[item.id]!!))
         }
 
         composeTestRule.onNodeWithText(formatter.format(totalCost)).assertIsDisplayed()

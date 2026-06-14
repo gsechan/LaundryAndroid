@@ -3,7 +3,7 @@ package com.gabesechan.laundrydemo.drycleaningscreen
 import com.gabesechan.laundrydemo.laundromatinfo.AvailableDateTime
 import com.gabesechan.laundrydemo.laundromatinfo.AvailableTimesResponse
 import com.gabesechan.laundrydemo.laundromatinfo.ItemsResponse
-import com.gabesechan.laundrydemo.laundromatinfo.JSONItem
+import com.gabesechan.laundrydemo.models.Item
 import com.gabesechan.laundrydemo.laundromatinfo.LaundromatInfoServer
 import com.gabesechan.laundrydemo.laundromatinfo.TimeRange
 import com.gabesechan.laundrydemo.network.NetworkResponse
@@ -37,6 +37,7 @@ import org.junit.Test
 import java.time.Instant
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
+import java.math.BigDecimal
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DryCleaningViewModelTest {
@@ -44,8 +45,8 @@ class DryCleaningViewModelTest {
     private val address = Address("addr1", "123 Main St", null, "Anytown", "ST", "US", "00000")
     private val user = User("gabe", "gabe@example.com", "1234567890", listOf(address))
 
-    private val dryCleanItem = JSONItem("1", "Shirt", "5.00", "DRY_CLEANING")
-    private val washFoldItem = JSONItem("2", "Wash and Fold", "10.00", "WASH_AND_FOLD")
+    private val dryCleanItem = Item("1", "Shirt", BigDecimal("5.00"), "DRY_CLEANING")
+    private val washFoldItem = Item("2", "Wash and Fold", BigDecimal("10.00"), "WASH_AND_FOLD")
 
     private val availableTimesResponse = AvailableTimesResponse(
         pickup = listOf(AvailableDateTime(1000L, listOf(TimeRange(0L, 3600000L)))),

@@ -1,7 +1,9 @@
 package com.gabesechan.laundrydemo.models
 
+import com.gabesechan.laundrydemo.network.BigDecimalSerializer
 import com.gabesechan.laundrydemo.network.OffsetDateTimeSerializer
 import kotlinx.serialization.Serializable
+import java.math.BigDecimal
 import java.time.OffsetDateTime
 
 @Serializable
@@ -28,7 +30,10 @@ data class Order(
 data class OrderLine(
     val itemType: String,
     val name: String,
-    val pricePerUnit: String,
-    val quantity: String?,
-    val totalCost: String?,
+    @Serializable(with = BigDecimalSerializer::class)
+    val pricePerUnit: BigDecimal,
+    @Serializable(with = BigDecimalSerializer::class)
+    val quantity: BigDecimal?,
+    @Serializable(with = BigDecimalSerializer::class)
+    val totalCost: BigDecimal?,
 )

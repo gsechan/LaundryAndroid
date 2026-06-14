@@ -54,12 +54,3 @@ class UserRepository @Inject constructor( private val datastore: DataStore<Prefe
     }
 
 }
-
-fun <T> MutablePreferences.writeOrRemove(key: Preferences.Key<T>, value: T?) {
-    if(value != null) {
-        this[key] = value
-    }
-    else {
-        remove(key)
-    }
-}
