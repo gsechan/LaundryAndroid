@@ -1,4 +1,4 @@
-package com.gabesechan.laundrydemo.drycleaningscreen
+package com.gabesechan.laundrydemo.schedulepickupscreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,7 +34,7 @@ import java.text.NumberFormat
 import kotlin.plus
 
 @Composable
-fun DryCleaningComposable(navController: NavController, viewModel: DryCleaningViewModel = hiltViewModel()) {
+fun SchedulePickupComposable(navController: NavController, viewModel: SchedulePickupViewModel = hiltViewModel()) {
     val isLoaded by viewModel.dataLoaded.collectAsState()
     val isBooked by viewModel.isBooked.collectAsState()
     val pickupDateValues by viewModel.pickupDateValues.collectAsState()
@@ -45,7 +45,7 @@ fun DryCleaningComposable(navController: NavController, viewModel: DryCleaningVi
     val bookEnabled by viewModel.bookEnabled.collectAsState()
     val showBookingSpinner by viewModel.showBookingSpinner.collectAsState()
     val itemType = navController.currentBackStackEntryAsState().value?.arguments?.getString("itemType")
-    DryCleaningComposableInner(
+    SchedulePickupInner(
         isBooked,
         viewModel.dataError,
         isLoaded,
@@ -125,7 +125,7 @@ fun WashFoldPricingComposable(
 
 
 @Composable
-fun DryCleaningComposableInner(
+fun SchedulePickupInner(
     isBooked: Boolean,
     dataError: Boolean,
     isLoaded: Boolean,

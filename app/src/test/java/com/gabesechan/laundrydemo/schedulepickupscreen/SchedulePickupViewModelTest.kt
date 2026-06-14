@@ -1,4 +1,4 @@
-package com.gabesechan.laundrydemo.drycleaningscreen
+package com.gabesechan.laundrydemo.schedulepickupscreen
 
 import androidx.lifecycle.SavedStateHandle
 import com.gabesechan.laundrydemo.laundromatinfo.AvailableDateTime
@@ -15,7 +15,9 @@ import com.gabesechan.laundrydemo.models.Address
 import com.gabesechan.laundrydemo.models.User
 import com.gabesechan.laundrydemo.user.UserRepository
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.match
 import io.mockk.mockk
 import junit.framework.TestCase.*
 import kotlinx.coroutines.Dispatchers
@@ -41,13 +43,15 @@ import java.time.ZoneOffset
 import java.math.BigDecimal
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class DryCleaningViewModelTest {
+class SchedulePickupViewModelTest {
 
     private val address = Address("addr1", "123 Main St", null, "Anytown", "ST", "US", "00000")
     private val user = User("gabe", "gabe@example.com", "1234567890", listOf(address))
 
     private val dryCleanItem = Item("1", "Shirt", BigDecimal("5.00"), "DRY_CLEANING")
+    private val dryCleanItem2 = Item("3", "Pants", BigDecimal("7.00"), "DRY_CLEANING")
     private val washFoldItem = Item("2", "Wash and Fold", BigDecimal("10.00"), "WASH_AND_FOLD")
+    private val washFoldItem2 = Item("4", "Bedding", BigDecimal("15.00"), "WASH_AND_FOLD")
 
     private val availableTimesResponse = AvailableTimesResponse(
         pickup = listOf(AvailableDateTime(1000L, listOf(TimeRange(0L, 3600000L)))),
@@ -65,13 +69,17 @@ class DryCleaningViewModelTest {
         Dispatchers.resetMain()
     }
 
+    private fun savedStateHandle(itemType: String? = null): SavedStateHandle {
+        return if (itemType == null) SavedStateHandle() else SavedStateHandle(mapOf("itemType" to itemType))
+    }
+
     private fun userRepository(currentUser: User = user): UserRepository {
         return mockk<UserRepository> {
             every { current } returns MutableStateFlow(currentUser).asStateFlow()
         }
     }
 
-    private fun awaitDataLoaded(viewModel: DryCleaningViewModel) = runBlocking {
+    private fun awaitDataLoaded(viewModel: SchedulePickupViewModel) = runBlocking {
         viewModel.dataLoaded.first { it }
     }
 
@@ -86,7 +94,7 @@ class DryCleaningViewModelTest {
         }
         val orderServer = mockk<OrdersServer>()
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
+        val viewModel = SchedulePickupViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         assertFalse(viewModel.dataError)
@@ -103,7 +111,7 @@ class DryCleaningViewModelTest {
         }
         val orderServer = mockk<OrdersServer>()
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
+        val viewModel = SchedulePickupViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         assertTrue(viewModel.dataError)
@@ -117,7 +125,7 @@ class DryCleaningViewModelTest {
         }
         val orderServer = mockk<OrdersServer>()
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
+        val viewModel = SchedulePickupViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         val newAddress = Address("addr2", "456 Other St", null, "Othertown", "ST", "US", "11111")
@@ -134,7 +142,7 @@ class DryCleaningViewModelTest {
         }
         val orderServer = mockk<OrdersServer>()
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
+        val viewModel = SchedulePickupViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         viewModel.onCountChanged("1", 3)
@@ -150,7 +158,7 @@ class DryCleaningViewModelTest {
         }
         val orderServer = mockk<OrdersServer>()
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
+        val viewModel = SchedulePickupViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         viewModel.setPickupDate(1000L)
@@ -175,7 +183,7 @@ class DryCleaningViewModelTest {
         }
         val orderServer = mockk<OrdersServer>()
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
+        val viewModel = SchedulePickupViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         viewModel.setDropoffDate(2000L)
@@ -204,7 +212,7 @@ class DryCleaningViewModelTest {
             coEvery { postOrder(any()) } returns NetworkResponse(true, null, emptyList(), PostOrderResponse(order))
         }
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
+        val viewModel = SchedulePickupViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         viewModel.setPickupDate(1000L)
@@ -229,7 +237,7 @@ class DryCleaningViewModelTest {
             coEvery { postOrder(any()) } throws IOException()
         }
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
+        val viewModel = SchedulePickupViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         viewModel.setPickupDate(1000L)
@@ -254,7 +262,7 @@ class DryCleaningViewModelTest {
         }
         val orderServer = mockk<OrdersServer>()
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
+        val viewModel = SchedulePickupViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         val job = launch { viewModel.bookEnabled.collect {} }
@@ -284,7 +292,7 @@ class DryCleaningViewModelTest {
         }
         val orderServer = mockk<OrdersServer>()
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
+        val viewModel = SchedulePickupViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         val job = launch { viewModel.bookEnabled.collect {} }
@@ -312,7 +320,7 @@ class DryCleaningViewModelTest {
         }
         val orderServer = mockk<OrdersServer>()
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
+        val viewModel = SchedulePickupViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         val job = launch { viewModel.bookEnabled.collect {} }
@@ -340,7 +348,7 @@ class DryCleaningViewModelTest {
         }
         val orderServer = mockk<OrdersServer>()
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
+        val viewModel = SchedulePickupViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         val job = launch { viewModel.bookEnabled.collect {} }
@@ -368,7 +376,7 @@ class DryCleaningViewModelTest {
         }
         val orderServer = mockk<OrdersServer>()
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
+        val viewModel = SchedulePickupViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         val job = launch { viewModel.bookEnabled.collect {} }
@@ -400,7 +408,7 @@ class DryCleaningViewModelTest {
             }
         }
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
+        val viewModel = SchedulePickupViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         val job = launch { viewModel.bookEnabled.collect {} }
@@ -435,7 +443,7 @@ class DryCleaningViewModelTest {
         val orderServer = mockk<OrdersServer>()
 
         val noAddressUser = User("gabe", "gabe@example.com", "1234567890", emptyList())
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(noAddressUser), orderServer, SavedStateHandle())
+        val viewModel = SchedulePickupViewModel(laundromatInfoServer, userRepository(noAddressUser), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         val job = launch { viewModel.bookEnabled.collect {} }
@@ -452,5 +460,149 @@ class DryCleaningViewModelTest {
         assertFalse(viewModel.bookEnabled.value)
 
         job.cancel()
+    }
+
+    @Test
+    fun testInitWithWashAndFoldItemTypeFiltersToWashAndFoldItems() {
+        val laundromatInfoServer = mockk<LaundromatInfoServer> {
+            coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
+            coEvery { items() } returns NetworkResponse(
+                true, null, emptyList(),
+                ItemsResponse(listOf(dryCleanItem, washFoldItem))
+            )
+        }
+        val orderServer = mockk<OrdersServer>()
+
+        val viewModel = SchedulePickupViewModel(laundromatInfoServer, userRepository(), orderServer, savedStateHandle("WASH_AND_FOLD"))
+        awaitDataLoaded(viewModel)
+
+        assertFalse(viewModel.dataError)
+        assertEquals(listOf(washFoldItem), viewModel.items)
+        assertEquals(mapOf("2" to 0), viewModel.itemCounts.value)
+    }
+
+    @Test
+    fun testBookEnabledTrueForWashAndFoldEvenWithZeroCounts() = runTest {
+        Dispatchers.setMain(StandardTestDispatcher(testScheduler))
+
+        val laundromatInfoServer = mockk<LaundromatInfoServer> {
+            coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
+            coEvery { items() } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(washFoldItem)))
+        }
+        val orderServer = mockk<OrdersServer>()
+
+        val viewModel = SchedulePickupViewModel(laundromatInfoServer, userRepository(), orderServer, savedStateHandle("WASH_AND_FOLD"))
+        awaitDataLoaded(viewModel)
+
+        val job = launch { viewModel.bookEnabled.collect {} }
+        advanceUntilIdle()
+
+        viewModel.setPickupDate(1000L)
+        viewModel.setPickupTime(TimeRange(0L, 3600000L))
+        viewModel.setDropoffDate(2000L)
+        viewModel.setDropoffTime(TimeRange(0L, 3600000L))
+        advanceUntilIdle()
+
+        assertTrue(viewModel.itemCounts.value.all { it.value == 0 })
+        assertTrue(viewModel.bookEnabled.value)
+
+        job.cancel()
+    }
+
+    @Test
+    fun testBookWithWashAndFoldPostsLineWithNullQuantityForEachItem() = runTest {
+        val laundromatInfoServer = mockk<LaundromatInfoServer> {
+            coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
+            coEvery { items() } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(washFoldItem)))
+        }
+        val epoch = OffsetDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC)
+        val order = Order(
+            "order1", "PENDING", null, epoch, epoch,
+            OffsetDateTime.ofInstant(Instant.ofEpochMilli(1000L), ZoneOffset.UTC),
+            OffsetDateTime.ofInstant(Instant.ofEpochMilli(2000L), ZoneOffset.UTC),
+            "addr1", "addr1", emptyList()
+        )
+        val orderServer = mockk<OrdersServer> {
+            coEvery { postOrder(any()) } returns NetworkResponse(true, null, emptyList(), PostOrderResponse(order))
+        }
+
+        val viewModel = SchedulePickupViewModel(laundromatInfoServer, userRepository(), orderServer, savedStateHandle("WASH_AND_FOLD"))
+        awaitDataLoaded(viewModel)
+
+        viewModel.setPickupDate(1000L)
+        viewModel.setPickupTime(TimeRange(0L, 3600000L))
+        viewModel.setDropoffDate(2000L)
+        viewModel.setDropoffTime(TimeRange(0L, 3600000L))
+
+        viewModel.book()
+
+        coVerify(exactly = 1) {
+            orderServer.postOrder(match { it.order.lines == listOf(PostOrderLine("2", null)) })
+        }
+    }
+
+    @Test
+    fun testBookWithWashAndFoldPostsAllLinesWithNullQuantity() = runTest {
+        val laundromatInfoServer = mockk<LaundromatInfoServer> {
+            coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
+            coEvery { items() } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(washFoldItem, washFoldItem2)))
+        }
+        val epoch = OffsetDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC)
+        val order = Order(
+            "order1", "PENDING", null, epoch, epoch,
+            OffsetDateTime.ofInstant(Instant.ofEpochMilli(1000L), ZoneOffset.UTC),
+            OffsetDateTime.ofInstant(Instant.ofEpochMilli(2000L), ZoneOffset.UTC),
+            "addr1", "addr1", emptyList()
+        )
+        val orderServer = mockk<OrdersServer> {
+            coEvery { postOrder(any()) } returns NetworkResponse(true, null, emptyList(), PostOrderResponse(order))
+        }
+
+        val viewModel = SchedulePickupViewModel(laundromatInfoServer, userRepository(), orderServer, savedStateHandle("WASH_AND_FOLD"))
+        awaitDataLoaded(viewModel)
+
+        viewModel.setPickupDate(1000L)
+        viewModel.setPickupTime(TimeRange(0L, 3600000L))
+        viewModel.setDropoffDate(2000L)
+        viewModel.setDropoffTime(TimeRange(0L, 3600000L))
+
+        viewModel.book()
+
+        coVerify(exactly = 1) {
+            orderServer.postOrder(match { it.order.lines.isNotEmpty() && it.order.lines.all { line -> line.quantity == null } })
+        }
+    }
+
+    @Test
+    fun testBookWithDryCleaningOnlyIncludesItemsWithPositiveCounts() = runTest {
+        val laundromatInfoServer = mockk<LaundromatInfoServer> {
+            coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
+            coEvery { items() } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem, dryCleanItem2)))
+        }
+        val epoch = OffsetDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC)
+        val order = Order(
+            "order1", "PENDING", null, epoch, epoch,
+            OffsetDateTime.ofInstant(Instant.ofEpochMilli(1000L), ZoneOffset.UTC),
+            OffsetDateTime.ofInstant(Instant.ofEpochMilli(2000L), ZoneOffset.UTC),
+            "addr1", "addr1", emptyList()
+        )
+        val orderServer = mockk<OrdersServer> {
+            coEvery { postOrder(any()) } returns NetworkResponse(true, null, emptyList(), PostOrderResponse(order))
+        }
+
+        val viewModel = SchedulePickupViewModel(laundromatInfoServer, userRepository(), orderServer, savedStateHandle("DRY_CLEANING"))
+        awaitDataLoaded(viewModel)
+
+        viewModel.setPickupDate(1000L)
+        viewModel.setPickupTime(TimeRange(0L, 3600000L))
+        viewModel.setDropoffDate(2000L)
+        viewModel.setDropoffTime(TimeRange(0L, 3600000L))
+        viewModel.onCountChanged("1", 2)
+
+        viewModel.book()
+
+        coVerify(exactly = 1) {
+            orderServer.postOrder(match { it.order.lines == listOf(PostOrderLine("1", "2")) })
+        }
     }
 }

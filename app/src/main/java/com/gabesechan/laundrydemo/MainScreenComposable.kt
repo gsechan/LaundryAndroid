@@ -9,7 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.gabesechan.laundrydemo.accountscreen.AccountScreen
-import com.gabesechan.laundrydemo.drycleaningscreen.DryCleaningComposable
+import com.gabesechan.laundrydemo.schedulepickupscreen.SchedulePickupComposable
 import com.gabesechan.laundrydemo.login.CreateAccountScreen
 import com.gabesechan.laundrydemo.login.Login
 import com.gabesechan.laundrydemo.orders.OrderScreen
@@ -19,11 +19,10 @@ import com.gabesechan.laundrydemo.ui.widgets.NavMenuScreen
 import com.gabesechan.laundrydemo.user.AddAddressScreen
 import com.gabesechan.laundrydemo.models.User
 import com.gabesechan.laundrydemo.user.UserRepository
-import com.gabesechan.laundrydemo.washfoldscreen.WashFoldScreen
 
 private var navItems = listOf(
-    DestinationScreen("pickup/WASH_AND_FOLD", R.string.wash_fold, R.drawable.washer, ::DryCleaningComposable),
-    DestinationScreen("pickup/DRY_CLEANING", R.string.dry_clean, R.drawable.dry_cleaning, ::DryCleaningComposable),
+    DestinationScreen("pickup/WASH_AND_FOLD", R.string.wash_fold, R.drawable.washer, ::SchedulePickupComposable),
+    DestinationScreen("pickup/DRY_CLEANING", R.string.dry_clean, R.drawable.dry_cleaning, ::SchedulePickupComposable),
     DestinationScreen("orders", R.string.orders, R.drawable.order, ::OrderScreen),
     DestinationScreen("account", R.string.account, R.drawable.account, ::AccountScreen),
 )
