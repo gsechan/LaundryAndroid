@@ -2,7 +2,7 @@ package com.gabesechan.laundrydemo.ui.widgets
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -42,7 +42,8 @@ fun DisplayTimes(times: List<TimeRange>, selected: TimeRange?, onTimeSelected: (
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
-                modifier = (if(selected == time) selectedModifier else unselectedModifier).clickable { onTimeSelected(time) }
+                modifier = (if(selected == time) selectedModifier else unselectedModifier)
+                    .selectable(selected = selected == time) { onTimeSelected(time) }
             ) {
                 Text(
                     text= stringResource(R.string.time_range_format, startTime, endTime),
