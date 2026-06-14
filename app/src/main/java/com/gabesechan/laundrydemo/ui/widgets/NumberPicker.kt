@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -27,7 +28,8 @@ fun NumberPicker(
         Button(
             onClick = { if (value > min) onValueChange(value - 1) },
             enabled = value > min,
-            shape = CircleShape
+            shape = CircleShape,
+            modifier = Modifier.testTag("DecrementButton")
         ) {
             Text("-")
         }
@@ -40,7 +42,8 @@ fun NumberPicker(
         Button(
             onClick = { if (value < max) onValueChange(value + 1) },
             enabled = value < max,
-            shape = CircleShape
+            shape = CircleShape,
+            modifier = Modifier.testTag("IncrementButton")
         ) {
             Text("+")
         }
