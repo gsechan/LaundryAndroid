@@ -59,7 +59,7 @@ fun AccountScreenInner(user: User, logoutClicked: ()->Unit) {
             }
         }
         Button(onClick = logoutClicked, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(0.dp)) {
-            Text("Logout")
+            Text(stringResource(R.string.logout))
         }
 
     }
