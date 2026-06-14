@@ -1,7 +1,7 @@
 package com.gabesechan.laundrydemo.network
 
 import android.content.Context
-import com.gabesechan.laundrydemo.user.UserRepository
+import com.gabesechan.laundrydemo.login.TokenStorage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,10 +22,10 @@ object AppModule {
 
         @Provides
     @Singleton
-    fun provideRetrofit(userRepo: UserRepository,
+    fun provideRetrofit(tokenStorage: TokenStorage,
                         @ApplicationContext context: Context): Retrofit {
         val okHttpClient = OkHttpClient.Builder()
-            .addInterceptor(AuthInterceptor(userRepo))
+            .addInterceptor(AuthInterceptor(tokenStorage))
             .addInterceptor(LocaleInterceptor(context))
             .build()
         val networkJson = Json { ignoreUnknownKeys = true }

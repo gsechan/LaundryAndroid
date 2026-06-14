@@ -1,13 +1,13 @@
 package com.gabesechan.laundrydemo.network
 
-import com.gabesechan.laundrydemo.user.UserRepository
+import com.gabesechan.laundrydemo.login.TokenStorage
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class AuthInterceptor(private val userRepository: UserRepository) : Interceptor {
+class AuthInterceptor(private val tokenStorage: TokenStorage) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        val token = userRepository.authToken
-        val request = if (userRepository.authToken.isNotEmpty()) {
+        val token = tokenStorage.authToken
+        val request = if (tokenStorage.authToken.isNotEmpty()) {
             chain.request().newBuilder()
                 .addHeader("Authorization", "Bearer $token")
                 .build()

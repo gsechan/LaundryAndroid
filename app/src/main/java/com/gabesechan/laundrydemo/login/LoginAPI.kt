@@ -2,12 +2,14 @@ package com.gabesechan.laundrydemo.login
 
 import com.gabesechan.laundrydemo.network.BadAuthException
 import com.gabesechan.laundrydemo.models.User
+import com.gabesechan.laundrydemo.login.TokenStorage
 import com.gabesechan.laundrydemo.user.UserRepository
 import okio.IOException
 import javax.inject.Inject
 
 class LoginAPI @Inject constructor(
     private var userRepository: UserRepository,
+    private var tokenStorage: TokenStorage,
     private var loginServer: LoginServer
 ) {
     private val org = "eaf6aefc-33ef-4245-8ef9-fd87827f0000"
@@ -22,6 +24,7 @@ class LoginAPI @Inject constructor(
             }
         }
         userRepository.clearUser()
+        tokenStorage.clearToken()
     }
 
     sealed class LoginResult {
@@ -40,7 +43,8 @@ class LoginAPI @Inject constructor(
                 )
             ).process()
             val user = response.user
-            userRepository.setUser(user, response.session)
+            userRepository.setUser(user)
+            tokenStorage.setToken(response.session)
             return LoginResult.LoginSuccess(user)
         }
         catch(ex: Exception){
@@ -56,7 +60,8 @@ class LoginAPI @Inject constructor(
     suspend fun checkAuth(token: String): User {
         try {
             val user = loginServer.checkAuth(CheckAuthRequest(token)).process()
-            userRepository.setUser(user, token)
+            userRepository.setUser(user)
+            tokenStorage.setToken(token)
             return user
         }
         catch (ex: Exception) {
@@ -67,7 +72,7 @@ class LoginAPI @Inject constructor(
     }
 
     suspend fun useSavedLogin() {
-        val token = userRepository.initFromDisk()
+        val token = tokenStorage.initFromDisk()
         //If we're logged in, check the auth with the server for expiry issues
         if(token != null) {
             checkAuth(token)
@@ -97,7 +102,8 @@ class LoginAPI @Inject constructor(
         try {
             val response = loginServer.createAccount(request).process()
             val user = response.user
-            userRepository.setUser(user, response.session)
+            userRepository.setUser(user)
+            tokenStorage.setToken(response.session)
             return LoginResult.LoginSuccess(user)
         }
         catch (ex: IOException) {

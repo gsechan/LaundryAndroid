@@ -78,7 +78,7 @@ class AddAddressViewModel @Inject constructor(
                 val user =userRepository.current.value.copy(
                     addresses = userRepository.current.value.addresses + response.address
                 )
-                userRepository.setUser(user, userRepository.authToken)
+                userRepository.setUser(user)
                 _navEvents.emit(Unit)
             }
             catch (_: IOException) {

@@ -7,9 +7,9 @@ import com.gabesechan.laundrydemo.models.Address
 import com.gabesechan.laundrydemo.models.User
 import com.gabesechan.laundrydemo.network.NetworkResponse
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import junit.framework.TestCase.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -51,8 +51,7 @@ class AddAddressViewModelTest {
     private fun userRepository(currentUser: User = user): UserRepository {
         return mockk<UserRepository> {
             every { current } returns MutableStateFlow(currentUser).asStateFlow()
-            every { authToken } returns "token"
-            coEvery { setUser(any(), any()) } returns Unit
+            every { setUser(any()) } returns Unit
         }
     }
 
@@ -157,10 +156,9 @@ class AddAddressViewModelTest {
 
         assertFalse(viewModel.networkError)
         assertEquals(Unit, viewModel.navEvent.first())
-        coVerify(exactly = 1) {
+        verify(exactly = 1) {
             userRepository.setUser(
-                match { it.addresses == listOf(Address("addr2", "123 Main St", null, "Anytown", "ST", "US", "00000")) },
-                "token"
+                match { it.addresses == listOf(Address("addr2", "123 Main St", null, "Anytown", "ST", "US", "00000")) }
             )
         }
     }

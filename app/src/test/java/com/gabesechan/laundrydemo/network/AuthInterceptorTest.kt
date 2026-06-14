@@ -1,6 +1,6 @@
 package com.gabesechan.laundrydemo.network
 
-import com.gabesechan.laundrydemo.user.UserRepository
+import com.gabesechan.laundrydemo.login.TokenStorage
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -22,13 +22,13 @@ class AuthInterceptorTest {
 
     @Test
     fun testAddsAuthorizationHeaderWhenTokenPresent() {
-        val userRepository = mockk<UserRepository> {
+        val tokenStorage = mockk<TokenStorage> {
             every { authToken } returns "my-token"
         }
         val originalRequest = Request.Builder().url("https://example.com").build()
         val chain = chainFor(originalRequest)
 
-        AuthInterceptor(userRepository).intercept(chain)
+        AuthInterceptor(tokenStorage).intercept(chain)
 
         verify(exactly = 1) {
             chain.proceed(match { it.header("Authorization") == "Bearer my-token" })
@@ -37,13 +37,13 @@ class AuthInterceptorTest {
 
     @Test
     fun testDoesNotAddAuthorizationHeaderWhenTokenEmpty() {
-        val userRepository = mockk<UserRepository> {
+        val tokenStorage = mockk<TokenStorage> {
             every { authToken } returns ""
         }
         val originalRequest = Request.Builder().url("https://example.com").build()
         val chain = chainFor(originalRequest)
 
-        AuthInterceptor(userRepository).intercept(chain)
+        AuthInterceptor(tokenStorage).intercept(chain)
 
         verify(exactly = 1) {
             chain.proceed(match { it.header("Authorization") == null && it === originalRequest })

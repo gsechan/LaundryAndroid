@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
+import com.gabesechan.laundrydemo.login.TokenStorage
 import com.gabesechan.laundrydemo.orders.OrdersServer
 import dagger.Module
 import dagger.Provides
@@ -26,10 +27,16 @@ object LoginModule {
 
     @Provides
     @Singleton
-    fun provideUserRepository(
+    fun provideUserRepository(): UserRepository {
+        return UserRepository()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTokenStorage(
         @Named("account_datastore") datastore: DataStore<Preferences>
-    ): UserRepository {
-        return UserRepository(datastore)
+    ): TokenStorage {
+        return TokenStorage(datastore)
     }
 
     @Singleton
