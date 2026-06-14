@@ -27,7 +27,7 @@ import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerValues
 import com.gabesechan.laundrydemo.ui.widgets.LoadingButton
 import com.gabesechan.laundrydemo.ui.widgets.NumberPicker
 import com.gabesechan.laundrydemo.ui.widgets.convertMillisToDate
-import com.gabesechan.laundrydemo.user.Address
+import com.gabesechan.laundrydemo.models.Address
 import java.math.BigDecimal
 import java.text.NumberFormat
 

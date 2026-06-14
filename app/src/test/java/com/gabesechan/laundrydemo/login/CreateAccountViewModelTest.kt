@@ -4,7 +4,7 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.runtime.snapshots.Snapshot
 import com.gabesechan.laundrydemo.R
-import com.gabesechan.laundrydemo.user.User
+import com.gabesechan.laundrydemo.models.User
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import io.mockk.coEvery
 import io.mockk.coVerify

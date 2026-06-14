@@ -1,7 +1,7 @@
 package com.gabesechan.laundrydemo.accountscreen
 
 import com.gabesechan.laundrydemo.login.LoginAPI
-import com.gabesechan.laundrydemo.user.User
+import com.gabesechan.laundrydemo.models.User
 import com.gabesechan.laundrydemo.user.UserRepository
 import io.mockk.coEvery
 import io.mockk.coVerify

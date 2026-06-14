@@ -1,7 +1,7 @@
 package com.gabesechan.laundrydemo.login
 
 import com.gabesechan.laundrydemo.network.NetworkResponse
-import com.gabesechan.laundrydemo.user.User
+import com.gabesechan.laundrydemo.models.User
 import com.gabesechan.laundrydemo.user.UserRepository
 import io.mockk.coEvery
 import io.mockk.coVerify

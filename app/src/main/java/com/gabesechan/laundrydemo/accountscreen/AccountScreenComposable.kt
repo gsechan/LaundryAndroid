@@ -21,7 +21,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.gabesechan.laundrydemo.R
 import com.gabesechan.laundrydemo.ui.widgets.AddressDisplay
-import com.gabesechan.laundrydemo.user.User
+import com.gabesechan.laundrydemo.models.User
 
 @Composable
 @Suppress("unused")

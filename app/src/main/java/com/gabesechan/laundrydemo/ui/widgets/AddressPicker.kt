@@ -15,7 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.gabesechan.laundrydemo.R
-import com.gabesechan.laundrydemo.user.Address
+import com.gabesechan.laundrydemo.models.Address
 
 @Composable
 fun AddressPicker(

@@ -6,7 +6,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.navigation.NavController
-import com.gabesechan.laundrydemo.user.Address
+import com.gabesechan.laundrydemo.models.Address
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Rule

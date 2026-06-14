@@ -6,7 +6,7 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.navigation.compose.rememberNavController
 import com.gabesechan.laundrydemo.ui.widgets.DestinationScreen
-import com.gabesechan.laundrydemo.user.User
+import com.gabesechan.laundrydemo.models.User
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith

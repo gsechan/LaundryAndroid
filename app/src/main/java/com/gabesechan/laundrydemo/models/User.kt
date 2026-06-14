@@ -1,4 +1,4 @@
-package com.gabesechan.laundrydemo.user
+package com.gabesechan.laundrydemo.models
 
 import kotlinx.serialization.Serializable
 
@@ -17,14 +17,3 @@ data class User(
       return this != NoUser
    }
 }
-
-@Serializable
-data class Address(
-   val id: String,
-   val street1: String,
-   val street2: String?,
-   val city: String,
-   val state: String,
-   val country: String,
-   val postcode: String
-)

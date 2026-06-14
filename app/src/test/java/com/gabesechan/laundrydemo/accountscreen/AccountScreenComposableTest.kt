@@ -6,8 +6,8 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import com.gabesechan.laundrydemo.R
-import com.gabesechan.laundrydemo.user.Address
-import com.gabesechan.laundrydemo.user.User
+import com.gabesechan.laundrydemo.models.Address
+import com.gabesechan.laundrydemo.models.User
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Rule

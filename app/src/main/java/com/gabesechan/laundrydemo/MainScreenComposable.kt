@@ -15,7 +15,7 @@ import com.gabesechan.laundrydemo.ui.theme.LaundryDemoTheme
 import com.gabesechan.laundrydemo.ui.widgets.DestinationScreen
 import com.gabesechan.laundrydemo.ui.widgets.NavMenuScreen
 import com.gabesechan.laundrydemo.user.AddAddressScreen
-import com.gabesechan.laundrydemo.user.User
+import com.gabesechan.laundrydemo.models.User
 import com.gabesechan.laundrydemo.user.UserRepository
 import com.gabesechan.laundrydemo.washfoldscreen.WashFoldScreen
 

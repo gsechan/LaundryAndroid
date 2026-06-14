@@ -1,7 +1,7 @@
 package com.gabesechan.laundrydemo.login
 
-import com.gabesechan.laundrydemo.user.Address
-import com.gabesechan.laundrydemo.user.User
+import com.gabesechan.laundrydemo.models.Address
+import com.gabesechan.laundrydemo.models.User
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 

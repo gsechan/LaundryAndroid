@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.preferencesOf
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.gabesechan.laundrydemo.models.User
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every

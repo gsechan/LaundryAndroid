@@ -1,4 +1,4 @@
-package com.gabesechan.laundrydemo.user
+package com.gabesechan.laundrydemo.models
 
 import junit.framework.TestCase.*
 import org.junit.Test
