@@ -1,5 +1,6 @@
 package com.gabesechan.laundrydemo.orders
 
+import com.gabesechan.laundrydemo.models.Order
 import com.gabesechan.laundrydemo.network.NetworkResponse
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -14,7 +15,7 @@ class OrderViewModelTest {
         id: String,
         state: String,
         submitted: Long
-    ) = GetOrder(
+    ) = Order(
         id, state, null, submitted, submitted, 0L, 0L, "addr1", "addr1", emptyList()
     )
 

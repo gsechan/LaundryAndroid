@@ -7,7 +7,7 @@ import com.gabesechan.laundrydemo.laundromatinfo.JSONItem
 import com.gabesechan.laundrydemo.laundromatinfo.LaundromatInfoServer
 import com.gabesechan.laundrydemo.laundromatinfo.TimeRange
 import com.gabesechan.laundrydemo.network.NetworkResponse
-import com.gabesechan.laundrydemo.orders.GetOrder
+import com.gabesechan.laundrydemo.models.Order
 import com.gabesechan.laundrydemo.orders.OrdersServer
 import com.gabesechan.laundrydemo.orders.PostOrderResponse
 import com.gabesechan.laundrydemo.models.Address
@@ -188,7 +188,7 @@ class DryCleaningViewModelTest {
             coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
             coEvery { items() } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
         }
-        val order = GetOrder(
+        val order = Order(
             "order1", "PENDING", null, 0L, 0L, 1000L, 2000L, "addr1", "addr1", emptyList()
         )
         val orderServer = mockk<OrdersServer> {

@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.gabesechan.laundrydemo.R
+import com.gabesechan.laundrydemo.models.Order
 
 @Composable
 fun OrderScreen(navController: NavController, viewModel: OrderViewModel = hiltViewModel()) {
@@ -26,7 +27,7 @@ fun OrderScreen(navController: NavController, viewModel: OrderViewModel = hiltVi
 }
 
 @Composable
-fun OrderScreenInternal(isLoaded: Boolean, orders: List<GetOrder>) {
+fun OrderScreenInternal(isLoaded: Boolean, orders: List<Order>) {
     if(isLoaded) {
         Column(
             Modifier.fillMaxHeight().verticalScroll(rememberScrollState()).padding(12.dp),
@@ -40,7 +41,7 @@ fun OrderScreenInternal(isLoaded: Boolean, orders: List<GetOrder>) {
 }
 
 @Composable
-fun OrderDisplay(order: GetOrder) {
+fun OrderDisplay(order: Order) {
     Column() {
         Text(stringResource(R.string.order_num, order.id))
         Text(stringResource(R.string.status, order.state))

@@ -2,7 +2,6 @@ package com.gabesechan.laundrydemo.login
 
 import com.gabesechan.laundrydemo.network.NetworkResponse
 import com.gabesechan.laundrydemo.models.User
-import com.gabesechan.laundrydemo.models.incomingdto.IncomingUser
 import com.gabesechan.laundrydemo.user.UserRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -14,7 +13,7 @@ import org.junit.Test
 
 class LoginAPITest {
 
-    private val incomingUser = IncomingUser(
+    private val incomingUser = User(
         "gabe",
         "gabe@example.com",
         "1234567890",

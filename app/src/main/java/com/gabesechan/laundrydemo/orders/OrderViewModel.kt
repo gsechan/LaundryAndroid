@@ -2,6 +2,7 @@ package com.gabesechan.laundrydemo.orders
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gabesechan.laundrydemo.models.Order
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,13 +18,13 @@ class OrderViewModel @Inject constructor(
     private val _isLoaded = MutableStateFlow(false)
     val isLoaded = _isLoaded.asStateFlow()
 
-    lateinit var sortedOrders: List<GetOrder>
+    lateinit var sortedOrders: List<Order>
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
             val orders = ordersServer.getAll().process()
             sortedOrders = orders.sortedWith(
-                compareBy<GetOrder> { it.state == "COMPLETED" }
+                compareBy<Order> { it.state == "COMPLETED" }
                     .thenByDescending { it.submitted }
             )
             _isLoaded.value = true

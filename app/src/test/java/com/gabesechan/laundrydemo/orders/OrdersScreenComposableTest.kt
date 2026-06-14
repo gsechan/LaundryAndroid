@@ -5,6 +5,8 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.core.app.ApplicationProvider
 import com.gabesechan.laundrydemo.R
+import com.gabesechan.laundrydemo.models.Order
+import com.gabesechan.laundrydemo.models.OrderLine
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -24,7 +26,7 @@ class OrdersScreenComposableTest {
         return ApplicationProvider.getApplicationContext<android.content.Context>().getString(resId, *formatArgs)
     }
 
-    private fun order(id: String, state: String, lines: List<GetOrderLine>) = GetOrder(
+    private fun order(id: String, state: String, lines: List<OrderLine>) = Order(
         id = id,
         state = state,
         completed = null,
@@ -37,7 +39,7 @@ class OrdersScreenComposableTest {
         lines = lines,
     )
 
-    private val lineWithQuantity = GetOrderLine(
+    private val lineWithQuantity = OrderLine(
         itemType = "wash",
         name = "Shirt",
         pricePerUnit = "5.00",
@@ -45,7 +47,7 @@ class OrdersScreenComposableTest {
         totalCost = "15.00",
     )
 
-    private val lineWithoutQuantity = GetOrderLine(
+    private val lineWithoutQuantity = OrderLine(
         itemType = "dryclean",
         name = "Suit",
         pricePerUnit = "20.00",
@@ -53,7 +55,7 @@ class OrdersScreenComposableTest {
         totalCost = null,
     )
 
-    private val lineWithoutTotalCost = GetOrderLine(
+    private val lineWithoutTotalCost = OrderLine(
         itemType = "dryclean",
         name = "Coat",
         pricePerUnit = "25.00",

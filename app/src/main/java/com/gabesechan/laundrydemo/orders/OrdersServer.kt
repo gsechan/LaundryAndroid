@@ -1,5 +1,6 @@
 package com.gabesechan.laundrydemo.orders
 
+import com.gabesechan.laundrydemo.models.Order
 import com.gabesechan.laundrydemo.network.NetworkResponse
 import kotlinx.serialization.Serializable
 import retrofit2.http.Body
@@ -28,33 +29,7 @@ data class PostOrderLine(
 )
 
 @Serializable
-data class PostOrderResponse(val order: GetOrder)
-
-@Serializable
-data class GetOrderResponse(val orders:List<GetOrder>)
-
-@Serializable
-data class GetOrder(
-    val id: String,
-    val state: String,
-    val completed: Long?,
-    val lastChange: Long,
-    val submitted: Long,
-    val scheduledPickup: Long,
-    val scheduledDropoff: Long,
-    val pickupAddressId: String,
-    val dropoffAddressId: String,
-    val lines: List<GetOrderLine>
-)
-
-@Serializable
-data class GetOrderLine(
-    val itemType: String,
-    val name: String,
-    val pricePerUnit: String,
-    val quantity: String?,
-    val totalCost: String?,
-)
+data class PostOrderResponse(val order: Order)
 
 interface OrdersServer {
 
@@ -64,7 +39,7 @@ interface OrdersServer {
 
     @Headers("Content-Type: application/json")
     @GET("orders")
-    suspend fun getAll(): NetworkResponse<List<GetOrder>>
+    suspend fun getAll(): NetworkResponse<List<Order>>
 
 
 }

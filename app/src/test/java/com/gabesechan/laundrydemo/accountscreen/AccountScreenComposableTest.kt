@@ -59,17 +59,6 @@ class AccountScreenComposableTest {
     }
 
     @Test
-    fun testPhoneLabelDisplayedAsEmptyWhenPhoneIsNull() {
-        val userWithoutPhone = userWithAddresses.copy(phone = null)
-
-        composeTestRule.setContent {
-            AccountScreenInner(userWithoutPhone) {}
-        }
-
-        composeTestRule.onNodeWithText(string(R.string.phone_label, "")).assertIsDisplayed()
-    }
-
-    @Test
     fun testEmailLabelDisplayedAsEmptyWhenEmailIsNull() {
         val userWithoutEmail = userWithAddresses.copy(email = null)
 

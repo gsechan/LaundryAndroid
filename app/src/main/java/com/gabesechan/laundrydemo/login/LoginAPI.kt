@@ -2,7 +2,6 @@ package com.gabesechan.laundrydemo.login
 
 import com.gabesechan.laundrydemo.network.BadAuthException
 import com.gabesechan.laundrydemo.models.User
-import com.gabesechan.laundrydemo.models.incomingdto.IncomingUser
 import com.gabesechan.laundrydemo.user.UserRepository
 import okio.IOException
 import javax.inject.Inject
@@ -40,7 +39,7 @@ class LoginAPI @Inject constructor(
                     org
                 )
             ).process()
-            val user = response.user.toModel()
+            val user = response.user
             userRepository.setUser(user, response.session)
             return LoginResult.LoginSuccess(user)
         }
@@ -56,8 +55,7 @@ class LoginAPI @Inject constructor(
 
     suspend fun checkAuth(token: String): User {
         try {
-            val response = loginServer.checkAuth(CheckAuthRequest(token)).process()
-            val user = response.toModel()
+            val user = loginServer.checkAuth(CheckAuthRequest(token)).process()
             userRepository.setUser(user, token)
             return user
         }
@@ -87,7 +85,7 @@ class LoginAPI @Inject constructor(
         email: String,
     ): LoginResult {
         val request = CreateUserRequest(
-            IncomingUser(
+            User(
                 name,
                 email,
                 phone,
@@ -98,7 +96,7 @@ class LoginAPI @Inject constructor(
         )
         try {
             val response = loginServer.createAccount(request).process()
-            val user = response.user.toModel()
+            val user = response.user
             userRepository.setUser(user, response.session)
             return LoginResult.LoginSuccess(user)
         }
