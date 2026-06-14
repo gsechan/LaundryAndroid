@@ -4,6 +4,7 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gabesechan.laundrydemo.models.Address
@@ -24,25 +25,32 @@ import javax.inject.Inject
 @HiltViewModel
 class AddAddressViewModel @Inject constructor(
     private val userServer: UserServer,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    savedStateHandle: SavedStateHandle,
 ): ViewModel() {
+
+    private val addressId: String = savedStateHandle.get<String>("id") ?: "new"
+
+    private val existingAddress: Address? = userRepository.current.value.addresses.find { it.id == addressId }
+
+    val isEditing = existingAddress != null
 
     private val _addRunning = MutableStateFlow(false)
     val addRunning = _addRunning.asStateFlow()
 
     var networkError = false
 
-    var street1 by mutableStateOf(TextFieldState())
+    var street1 by mutableStateOf(TextFieldState(existingAddress?.street1 ?: ""))
         private set
-    var street2 by mutableStateOf(TextFieldState())
+    var street2 by mutableStateOf(TextFieldState(existingAddress?.street2 ?: ""))
         private set
-    var country by mutableStateOf(TextFieldState())
+    var country by mutableStateOf(TextFieldState(existingAddress?.country ?: ""))
         private set
-    var city by mutableStateOf(TextFieldState())
+    var city by mutableStateOf(TextFieldState(existingAddress?.city ?: ""))
         private set
-    var state by mutableStateOf(TextFieldState())
+    var state by mutableStateOf(TextFieldState(existingAddress?.state ?: ""))
         private set
-    var postcode by mutableStateOf(TextFieldState())
+    var postcode by mutableStateOf(TextFieldState(existingAddress?.postcode ?: ""))
         private set
 
     val createEnabled = combine(
@@ -61,24 +69,32 @@ class AddAddressViewModel @Inject constructor(
     fun addAccountClicked() {
         _addRunning.value = true
         viewModelScope.launch(Dispatchers.IO) {
-            val request = PostAddressRequest(
-                Address(
-                    "",
+            val newAddress = Address(
+                if (addressId == "new") "" else addressId,
                 street1.text.toString(),
                 street2.text.toString(),
-                    city.text.toString(),
-                    state.text.toString(),
-                    country.text.toString(),
-                    postcode.text.toString(),
-                )
+                city.text.toString(),
+                state.text.toString(),
+                country.text.toString(),
+                postcode.text.toString(),
             )
-            try {
 
-                val response = userServer.addAddress(request).process()
-                val user =userRepository.current.value.copy(
-                    addresses = userRepository.current.value.addresses + response.address
-                )
-                userRepository.setUser(user)
+            try {
+                if (addressId == "new") {
+                    val response = userServer.addAddress(PostAddressRequest(newAddress)).process()
+                    val user = userRepository.current.value.copy(
+                        addresses = userRepository.current.value.addresses + response.address
+                    )
+                    userRepository.setUser(user)
+                } else {
+                    val response = userServer.updateAddress(addressId, PatchAddressRequest(newAddress)).process()
+                    val user = userRepository.current.value.copy(
+                        addresses = userRepository.current.value.addresses.map {
+                            if (it.id == addressId) response.address else it
+                        }
+                    )
+                    userRepository.setUser(user)
+                }
                 _navEvents.emit(Unit)
             }
             catch (_: IOException) {

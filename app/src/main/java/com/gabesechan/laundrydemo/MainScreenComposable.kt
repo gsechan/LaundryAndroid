@@ -16,7 +16,7 @@ import com.gabesechan.laundrydemo.orders.OrderScreen
 import com.gabesechan.laundrydemo.ui.theme.LaundryDemoTheme
 import com.gabesechan.laundrydemo.ui.widgets.DestinationScreen
 import com.gabesechan.laundrydemo.ui.widgets.NavMenuScreen
-import com.gabesechan.laundrydemo.user.AddAddressScreen
+import com.gabesechan.laundrydemo.user.AddEditAddressScreen
 import com.gabesechan.laundrydemo.models.User
 import com.gabesechan.laundrydemo.user.UserRepository
 
@@ -56,8 +56,20 @@ fun LoggedInContent(navController: NavHostController, navItems: List<Destination
                 }
                 composable(item.route, arguments = arguments){ item.screen(navController) }
             }
-            composable("addAddress") {
-                AddAddressScreen(navController)
+            composable(
+                "editAddress/{id}",
+                arguments = listOf(navArgument("id") { type = NavType.StringType })
+            ) {
+                AddEditAddressScreen(navController)
+            }
+            composable(
+                "editAddress/new",
+                arguments = listOf(navArgument("id") {
+                    type = NavType.StringType
+                    defaultValue = "new"
+                })
+            ) {
+                AddEditAddressScreen(navController)
             }
         }
     }

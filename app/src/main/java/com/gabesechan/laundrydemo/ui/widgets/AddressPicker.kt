@@ -37,7 +37,7 @@ fun AddressPicker(
                     })
                     Spacer(modifier = Modifier.fillMaxWidth().background(Color.Black).height(2.dp))
                 }
-                Text(stringResource(R.string.add_new_address), modifier = Modifier.clickable {navController.navigate("addAddress")})
+                Text(stringResource(R.string.add_new_address), modifier = Modifier.clickable {navController.navigate("editAddress/new")})
             }
         },
         onSelection
@@ -48,7 +48,7 @@ fun AddressPicker(
 fun AddressDisplay(address: Address, modifier: Modifier= Modifier) {
     Column(modifier = modifier) {
         Text(address.street1)
-        if (address.street2 != null) {
+        if (address.street2?.isNotEmpty() ?:false) {
             Text(address.street2)
         }
         Text(stringResource(R.string.address_format, address.city, address.state, address.postcode))

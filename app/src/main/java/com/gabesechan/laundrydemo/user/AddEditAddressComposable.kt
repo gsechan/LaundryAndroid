@@ -24,7 +24,7 @@ import com.gabesechan.laundrydemo.ui.widgets.LoadingButton
 import kotlinx.coroutines.flow.SharedFlow
 
 @Composable
-fun AddAddressScreen(navController: NavController, viewModel: AddAddressViewModel = hiltViewModel()) {
+fun AddEditAddressScreen(navController: NavController, viewModel: AddAddressViewModel = hiltViewModel()) {
     val addEnabled by viewModel.createEnabled.collectAsState()
     val addSpinner by viewModel.addRunning.collectAsState()
 
@@ -41,6 +41,7 @@ fun AddAddressScreen(navController: NavController, viewModel: AddAddressViewMode
         viewModel.navEvent,
         navController,
         viewModel.networkError,
+        viewModel.isEditing,
     )
 }
 
@@ -58,6 +59,7 @@ fun CreateAccountScreenInner(
     navEvent: SharedFlow<Unit>,
     navController: NavController,
     networkError: Boolean,
+    isEditing: Boolean = false,
 ) {
     LaunchedEffect(Unit) {
         navEvent.collect { _ ->
@@ -113,7 +115,8 @@ fun CreateAccountScreenInner(
                 modifier = Modifier.fillMaxWidth()
             )
             //Add all textfields
-            LoadingButton(onAddClicked, stringResource(R.string.add_new_address), createEnabled,createSpinner)
+            val buttonText = if (isEditing) stringResource(R.string.edit_address_button) else stringResource(R.string.add_new_address)
+            LoadingButton(onAddClicked, buttonText, createEnabled,createSpinner)
         }
     }
 

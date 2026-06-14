@@ -47,6 +47,7 @@ class AddAddressComposableTest {
         navEvent: MutableSharedFlow<Unit> = MutableSharedFlow(1),
         navController: NavController = mockk(relaxed = true),
         networkError: Boolean = false,
+        isEditing: Boolean = false,
     ) {
         composeTestRule.setContent {
             CreateAccountScreenInner(
@@ -62,6 +63,7 @@ class AddAddressComposableTest {
                 navEvent,
                 navController,
                 networkError,
+                isEditing,
             )
         }
     }
@@ -134,6 +136,22 @@ class AddAddressComposableTest {
         setContent()
 
         composeTestRule.onNodeWithText(string(R.string.add_new_address)).assertExists()
+    }
+
+    @Test
+    fun testButtonTextIsAddNewAddressWhenNotEditing() {
+        setContent(isEditing = false)
+
+        composeTestRule.onNodeWithText(string(R.string.add_new_address)).assertExists()
+        composeTestRule.onNodeWithText(string(R.string.edit_address_button)).assertDoesNotExist()
+    }
+
+    @Test
+    fun testButtonTextIsEditAddressWhenEditing() {
+        setContent(isEditing = true)
+
+        composeTestRule.onNodeWithText(string(R.string.edit_address_button)).assertExists()
+        composeTestRule.onNodeWithText(string(R.string.add_new_address)).assertDoesNotExist()
     }
 
     @Test

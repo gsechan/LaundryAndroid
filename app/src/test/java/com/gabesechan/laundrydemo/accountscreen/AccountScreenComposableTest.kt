@@ -1,7 +1,9 @@
 package com.gabesechan.laundrydemo.accountscreen
 
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
@@ -50,7 +52,7 @@ class AccountScreenComposableTest {
     @Test
     fun testNameEmailAndPhoneAreDisplayed() {
         composeTestRule.setContent {
-            AccountScreenInner(userWithAddresses) {}
+            AccountScreenInner(userWithAddresses, {}, {})
         }
 
         composeTestRule.onNodeWithText("Jane Doe").assertIsDisplayed()
@@ -72,7 +74,7 @@ class AccountScreenComposableTest {
     @Test
     fun testAddressesHeaderAndAddressesAreDisplayedWhenUserHasAddresses() {
         composeTestRule.setContent {
-            AccountScreenInner(userWithAddresses) {}
+            AccountScreenInner(userWithAddresses, {}, {})
         }
 
         composeTestRule.onNodeWithText(string(R.string.addresses)).assertIsDisplayed()
@@ -83,7 +85,7 @@ class AccountScreenComposableTest {
     @Test
     fun testAddressesHeaderIsNotDisplayedWhenUserHasNoAddresses() {
         composeTestRule.setContent {
-            AccountScreenInner(userWithoutAddresses) {}
+            AccountScreenInner(userWithoutAddresses, {}, {})
         }
 
         composeTestRule.onNodeWithText(string(R.string.addresses)).assertDoesNotExist()
@@ -92,7 +94,7 @@ class AccountScreenComposableTest {
     @Test
     fun testLogoutButtonIsDisplayed() {
         composeTestRule.setContent {
-            AccountScreenInner(userWithAddresses) {}
+            AccountScreenInner(userWithAddresses, {}, {})
         }
 
         composeTestRule.onNodeWithText(string(R.string.logout)).assertIsDisplayed()
@@ -103,11 +105,57 @@ class AccountScreenComposableTest {
         val logoutClicked = mockk<() -> Unit>(relaxed = true)
 
         composeTestRule.setContent {
-            AccountScreenInner(userWithAddresses, logoutClicked)
+            AccountScreenInner(userWithAddresses, logoutClicked, {})
         }
 
         composeTestRule.onNodeWithText(string(R.string.logout)).performClick()
 
         verify(exactly = 1) { logoutClicked() }
+    }
+
+    @Test
+    fun testDeleteButtonsAreDisplayedForEachAddress() {
+        composeTestRule.setContent {
+            AccountScreenInner(userWithAddresses, {}, {})
+        }
+
+        composeTestRule.onAllNodesWithContentDescription(string(R.string.delete_address))
+            .assertCountEquals(2)
+    }
+
+    @Test
+    fun testClickingDeleteButtonCallsOnDeleteAddressWithCorrectAddress() {
+        val onDeleteAddress = mockk<(Address) -> Unit>(relaxed = true)
+
+        composeTestRule.setContent {
+            AccountScreenInner(userWithAddresses, {}, onDeleteAddress)
+        }
+
+        composeTestRule.onAllNodesWithContentDescription(string(R.string.delete_address))[0].performClick()
+
+        verify(exactly = 1) { onDeleteAddress(address1) }
+    }
+
+    @Test
+    fun testEditButtonsAreDisplayedForEachAddress() {
+        composeTestRule.setContent {
+            AccountScreenInner(userWithAddresses, {}, {})
+        }
+
+        composeTestRule.onAllNodesWithContentDescription(string(R.string.edit_address))
+            .assertCountEquals(2)
+    }
+
+    @Test
+    fun testClickingEditButtonCallsOnEditAddressWithCorrectAddress() {
+        val onEditAddress = mockk<(Address) -> Unit>(relaxed = true)
+
+        composeTestRule.setContent {
+            AccountScreenInner(userWithAddresses, {}, {}, onEditAddress)
+        }
+
+        composeTestRule.onAllNodesWithContentDescription(string(R.string.edit_address))[0].performClick()
+
+        verify(exactly = 1) { onEditAddress(address1) }
     }
 }

@@ -37,6 +37,9 @@
     <string name="addresses">Addresses</string>
     <string name="address_format">%1$s, %2$s %3$s</string>
     <string name="select_address">Select an address</string>
+    <string name="delete_address">Delete address</string>
+    <string name="edit_address">Edit address</string>
+    <string name="edit_address_button">Edit Address</string>
 
     <string name="pickup_select">Select Pickup Date</string>
     <string name="dropoff_select">Select Delivery Date</string>
