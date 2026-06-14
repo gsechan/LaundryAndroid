@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldLineLimits
-import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SecureTextField
 import androidx.compose.material3.Text
@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -34,10 +35,12 @@ import com.gabesechan.laundrydemo.ui.widgets.LoadingButton
 
 @Composable
 fun Login(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
-    val loginButtonEnabled = viewModel.loginButtonEnabled.collectAsState().value
+    val loginButtonEnabled = viewModel.loginEnabled.collectAsState().value
     val showSpinner = viewModel.showSpinner.collectAsState().value
     val errorTextId = viewModel.errorTextId.collectAsState().value
     LoginInner(
+        viewModel.phone,
+        viewModel.password,
         viewModel::onLoginClicked,
         loginButtonEnabled,
         showSpinner,
@@ -48,7 +51,9 @@ fun Login(navController: NavController, viewModel: LoginViewModel = hiltViewMode
 
 @Composable
 fun LoginInner(
-    loginFunc: (CharSequence, CharSequence)->Unit,
+    phone: TextFieldState,
+    password: TextFieldState,
+    loginFunc: ()->Unit,
     loginEnabled: Boolean,
     showSpinner: Boolean,
     errorTextId: Int,
@@ -64,9 +69,7 @@ fun LoginInner(
                 .padding(16.dp)
                 .fillMaxSize()
         ) {
-            Image(painterResource(R.drawable.logo), null, modifier = Modifier.size(320.dp))
-            val usernameState = rememberTextFieldState("")
-            val passwordState = rememberTextFieldState("")
+            Image(painterResource(R.drawable.logo), null, modifier = Modifier.size(320.dp).testTag("Logo"))
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -77,7 +80,7 @@ fun LoginInner(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     TextField(
-                        usernameState,
+                        phone,
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                         lineLimits = TextFieldLineLimits.SingleLine,
 
@@ -85,7 +88,7 @@ fun LoginInner(
                         modifier = Modifier.fillMaxWidth()
                     )
                     SecureTextField(
-                        passwordState,
+                        password,
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Password,
                             imeAction = ImeAction.Done
@@ -94,16 +97,16 @@ fun LoginInner(
                         modifier = Modifier.fillMaxWidth()
                     )
                     LoadingButton(
-                        { loginFunc(usernameState.text, passwordState.text) },
+                        { loginFunc() },
                         stringResource(R.string.login_button),
-                        loginEnabled && usernameState.text.isNotEmpty() && passwordState.text.isNotEmpty(),
+                        loginEnabled,
                         showSpinner
                     )
                     LoadingButton(
-                        { navController.navigate("createAccount") },
-                        stringResource(R.string.create_account),
-                        true,
-                        false
+                        onClick = { navController.navigate("createAccount") },
+                        text = stringResource(R.string.create_account),
+                        enabled = true,
+                        showSpinner = false
                     )
                     if (errorTextId != 0) {
                         Text(text = stringResource(errorTextId), color = Color.Red)
@@ -120,7 +123,9 @@ fun LoginInner(
 @Composable
 fun LoginEnabled() {
     LoginInner(
-        {_,_ -> },
+        TextFieldState(""),
+        TextFieldState(""),
+        {},
         loginEnabled = true,
         showSpinner = false,
         errorTextId = 0,
@@ -132,7 +137,9 @@ fun LoginEnabled() {
 @Composable
 fun LoginSpinner() {
     LoginInner(
-        {_,_ -> },
+        TextFieldState(""),
+        TextFieldState(""),
+        {},
         loginEnabled = false,
         showSpinner = true,
         errorTextId = 0,
@@ -144,7 +151,10 @@ fun LoginSpinner() {
 @Preview
 @Composable
 fun LoginErrorText() {
-    LoginInner({_,_ -> },
+    LoginInner(
+        TextFieldState(""),
+        TextFieldState(""),
+        {},
         loginEnabled = true,
         showSpinner = false,
         errorTextId = R.string.network_error,

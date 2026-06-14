@@ -21,17 +21,13 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.gabesechan.laundrydemo.R
 import com.gabesechan.laundrydemo.ui.widgets.LoadingButton
+import kotlinx.coroutines.flow.SharedFlow
 
 @Composable
 fun AddAddressScreen(navController: NavController, viewModel: AddAddressViewModel = hiltViewModel()) {
     val addEnabled by viewModel.createEnabled.collectAsState()
     val addSpinner by viewModel.addRunning.collectAsState()
 
-    LaunchedEffect(Unit) {
-        viewModel.navEvent.collect { event ->
-            navController.popBackStack()
-        }
-    }
 
     if(viewModel.networkError) {
         Column(Modifier.fillMaxHeight().padding(12.dp)) {
@@ -49,6 +45,8 @@ fun AddAddressScreen(navController: NavController, viewModel: AddAddressViewMode
             viewModel::addAccountClicked,
             addEnabled,
             addSpinner,
+            viewModel.navEvent,
+            navController
         )
     }
 }
@@ -63,8 +61,17 @@ fun CreateAccountScreenInner(
     postcode: TextFieldState,
     onAddClicked: ()->Unit,
     createEnabled: Boolean,
-    createSpinner: Boolean
+    createSpinner: Boolean,
+    navEvent: SharedFlow<Unit>,
+    navController: NavController,
 ) {
+    LaunchedEffect(Unit) {
+        navEvent.collect { _ ->
+            navController.popBackStack()
+        }
+    }
+
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = { },
