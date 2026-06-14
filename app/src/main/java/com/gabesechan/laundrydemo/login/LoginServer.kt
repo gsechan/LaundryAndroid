@@ -1,6 +1,8 @@
 package com.gabesechan.laundrydemo.login
 
 import com.gabesechan.laundrydemo.network.NetworkResponse
+import com.gabesechan.laundrydemo.user.Address
+import com.gabesechan.laundrydemo.user.User
 import kotlinx.serialization.Serializable
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -21,7 +23,16 @@ data class LoginUser(
     val email: String?,
     val phone: String,
     val addresses: List<LoginAddress>,
-)
+) {
+    fun toModel() : User {
+        return User(
+            name,
+            email,
+            phone,
+            addresses.map(LoginAddress::toModel)
+        )
+    }
+}
 
 @Serializable
 data class LoginAddress(
@@ -32,7 +43,19 @@ data class LoginAddress(
     val state: String,
     val country: String,
     val postcode: String
-)
+) {
+    fun toModel(): Address {
+        return Address(
+            id,
+            street1,
+            street2,
+            city,
+            state,
+            country,
+            postcode
+        )
+    }
+}
 
 @Serializable
 data class CheckAuthRequest(val token: String)

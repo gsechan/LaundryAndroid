@@ -40,12 +40,7 @@ class LoginAPI @Inject constructor(
                     org
                 )
             ).process()
-            val user = User(
-                response.user.name,
-                response.user.email,
-                response.user.phone,
-                response.user.addresses.toAddress()
-            )
+            val user = response.user.toModel()
             userRepository.setUser(user, response.session)
             return LoginResult.LoginSuccess(user)
         }
@@ -62,12 +57,7 @@ class LoginAPI @Inject constructor(
     suspend fun checkAuth(token: String): User {
         try {
             val response = loginServer.checkAuth(CheckAuthRequest(token)).process()
-            val user = User(
-                response.name,
-                response.email,
-                response.phone,
-                response.addresses.toAddress()
-            )
+            val user = response.toModel()
             userRepository.setUser(user, token)
             return user
         }
@@ -108,12 +98,7 @@ class LoginAPI @Inject constructor(
         )
         try {
             val response = loginServer.createAccount(request).process()
-            val user = User(
-                response.user.name,
-                response.user.email,
-                response.user.phone,
-                response.user.addresses.toAddress()
-            )
+            val user = response.user.toModel()
             userRepository.setUser(user, response.session)
             return LoginResult.LoginSuccess(user)
         }
@@ -123,19 +108,5 @@ class LoginAPI @Inject constructor(
         catch (ex: BadAuthException) {
             return LoginResult.NetworkError
         }
-    }
-}
-
-fun List<LoginAddress>.toAddress(): List<Address> {
-    return map {
-        Address(
-            it.id,
-            it.street1,
-            it.street2,
-            it.city,
-            it.state,
-            it.country,
-            it.postcode
-        )
     }
 }
