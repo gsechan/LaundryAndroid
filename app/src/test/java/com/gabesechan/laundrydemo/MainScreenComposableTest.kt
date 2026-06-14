@@ -54,8 +54,8 @@ class MainScreenComposableTest {
     @Test
     fun testLoggedInContentShowsStartDestination() {
         val stubNavItems = listOf(
-            DestinationScreen("wash", R.string.wash_fold, R.drawable.washer) { Text("StubWashScreen") },
-            DestinationScreen("dryclean", R.string.dry_clean, R.drawable.dry_cleaning) { Text("StubDryCleanScreen") },
+            DestinationScreen("pickup/WASH_AND_FOLD", R.string.wash_fold, R.drawable.washer) { Text("StubWashScreen") },
+            DestinationScreen("pickup/DRY_CLEANING", R.string.dry_clean, R.drawable.dry_cleaning) { Text("StubDryCleanScreen") },
         )
 
         composeTestRule.setContent {

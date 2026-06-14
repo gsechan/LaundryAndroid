@@ -1,4 +1,4 @@
-package com.gabesechan.laundrydemo.drycleaningscreen
+package com.gabesechan.laundrydemo.schedulepickupscreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.gabesechan.laundrydemo.R
 import com.gabesechan.laundrydemo.models.Item
 import com.gabesechan.laundrydemo.ui.widgets.AddressPicker
@@ -30,9 +31,10 @@ import com.gabesechan.laundrydemo.ui.widgets.convertMillisToDate
 import com.gabesechan.laundrydemo.models.Address
 import java.math.BigDecimal
 import java.text.NumberFormat
+import kotlin.plus
 
 @Composable
-fun DryCleaningComposable(navController: NavController, viewModel: DryCleaningViewModel = hiltViewModel()) {
+fun SchedulePickupComposable(navController: NavController, viewModel: SchedulePickupViewModel = hiltViewModel()) {
     val isLoaded by viewModel.dataLoaded.collectAsState()
     val isBooked by viewModel.isBooked.collectAsState()
     val pickupDateValues by viewModel.pickupDateValues.collectAsState()
@@ -42,8 +44,8 @@ fun DryCleaningComposable(navController: NavController, viewModel: DryCleaningVi
     val itemCounts by viewModel.itemCounts.collectAsState()
     val bookEnabled by viewModel.bookEnabled.collectAsState()
     val showBookingSpinner by viewModel.showBookingSpinner.collectAsState()
-
-    DryCleaningComposableInner(
+    val itemType = navController.currentBackStackEntryAsState().value?.arguments?.getString("itemType")
+    SchedulePickupInner(
         isBooked,
         viewModel.dataError,
         isLoaded,
@@ -64,12 +66,66 @@ fun DryCleaningComposable(navController: NavController, viewModel: DryCleaningVi
         viewModel.items,
         bookEnabled,
         showBookingSpinner,
-        navController
+        navController,
+        if(itemType == "DRY_CLEANING") ::DryCleanPricingComposable else ::WashFoldPricingComposable
     )
 }
 
 @Composable
-fun DryCleaningComposableInner(
+fun DryCleanPricingComposable(
+    items: List<Item>,
+    itemCounts: Map<String, Int>,
+    onCountChanged: (String, Int) -> Unit
+) {
+    val formatter = NumberFormat.getCurrencyInstance()
+    var totalCost = BigDecimal(0)
+    items.forEach { item->
+        val cost = item.price * BigDecimal(itemCounts[item.id]!!)
+        totalCost = totalCost.plus(cost)
+        Row(modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(item.name, modifier = Modifier.alignByBaseline().fillMaxWidth(.2f))
+            NumberPicker(
+                itemCounts[item.id]!!,
+                {onCountChanged(item.id, it)},
+                0,
+                10
+                , modifier = Modifier.alignByBaseline()
+            )
+            Text(formatter.format(cost),modifier = Modifier.alignByBaseline())
+        }
+    }
+    Row(modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text("Total price:")
+        Text(formatter.format(totalCost))
+    }
+
+}
+
+@Composable
+fun WashFoldPricingComposable(
+    items: List<Item>,
+    itemCounts: Map<String, Int>,
+    onCountChanged: (String, Int) -> Unit
+) {
+    val formatter = NumberFormat.getCurrencyInstance()
+    Text(
+        stringResource(
+            R.string.expected_wash_price,
+            formatter.format(items[0].price),
+        )
+    )
+
+}
+
+
+@Composable
+fun SchedulePickupInner(
     isBooked: Boolean,
     dataError: Boolean,
     isLoaded: Boolean,
@@ -86,7 +142,8 @@ fun DryCleaningComposableInner(
     items:List<Item>,
     buttonEnabled: Boolean,
     showBookingSpinner: Boolean,
-    navController: NavController
+    navController: NavController,
+    pricingComposable: @Composable (List<Item>, Map<String, Int>, (String, Int) -> Unit)->Unit,
 ) {
     if(isBooked) {
         Column(Modifier.fillMaxHeight().padding(12.dp)) {
@@ -104,36 +161,11 @@ fun DryCleaningComposableInner(
         return
     }
 
-    val formatter = NumberFormat.getCurrencyInstance()
 
     Column(Modifier.fillMaxHeight().verticalScroll(rememberScrollState()).padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        var totalCost = BigDecimal(0)
-        items.forEach { item->
-            val cost = item.price * BigDecimal(itemCounts[item.id]!!)
-            totalCost = totalCost.plus(cost)
-            Row(modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(item.name, modifier = Modifier.alignByBaseline().fillMaxWidth(.2f))
-                NumberPicker(
-                    itemCounts[item.id]!!,
-                    {onCountChanged(item.id, it)},
-                    0,
-                    10
-                    , modifier = Modifier.alignByBaseline()
-                )
-                Text(formatter.format(cost),modifier = Modifier.alignByBaseline())
-            }
-        }
-        Row(modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text("Total price:")
-            Text(formatter.format(totalCost))
-        }
+
+        pricingComposable(items, itemCounts, onCountChanged)
 
         AddressPicker(addresses, selectedAddress, onAddressSelected, navController)
         val pickupDateText = pickup.curSelectedDate?.let {

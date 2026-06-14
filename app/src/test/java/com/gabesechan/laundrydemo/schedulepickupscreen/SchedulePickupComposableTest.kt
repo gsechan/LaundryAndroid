@@ -1,10 +1,13 @@
-package com.gabesechan.laundrydemo.drycleaningscreen
+package com.gabesechan.laundrydemo.schedulepickupscreen
 
 import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -27,7 +30,7 @@ import java.text.NumberFormat
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(sdk = [35])
-class DryCleaningComposableTest {
+class SchedulePickupComposableTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()
@@ -58,9 +61,12 @@ class DryCleaningComposableTest {
         isBooked: Boolean = false,
         dataError: Boolean = false,
         isLoaded: Boolean = true,
+        items: List<Item> = this.items,
+        itemCounts: Map<String, Int> = this.itemCounts,
+        pricingComposable: @Composable (List<Item>, Map<String, Int>, (String, Int) -> Unit) -> Unit = ::DryCleanPricingComposable,
     ) {
         composeTestRule.setContent {
-            DryCleaningComposableInner(
+            SchedulePickupInner(
                 isBooked = isBooked,
                 dataError = dataError,
                 isLoaded = isLoaded,
@@ -77,7 +83,8 @@ class DryCleaningComposableTest {
                 items = items,
                 buttonEnabled = buttonEnabled,
                 showBookingSpinner = false,
-                navController = mockk<NavController>(relaxed = true)
+                navController = mockk<NavController>(relaxed = true),
+                pricingComposable = pricingComposable,
             )
         }
     }
@@ -111,6 +118,39 @@ class DryCleaningComposableTest {
         }
 
         composeTestRule.onNodeWithText(formatter.format(totalCost)).assertIsDisplayed()
+    }
+
+    @Test
+    fun testEachItemHasNumberPickerForDryCleaning() {
+        setContent()
+
+        composeTestRule.onAllNodesWithTag("IncrementButton").assertCountEquals(2)
+        composeTestRule.onAllNodesWithTag("DecrementButton").assertCountEquals(2)
+    }
+
+    @Test
+    fun testWashFoldShowsExpectedPriceMessage() {
+        setContent(
+            items = listOf(item1),
+            itemCounts = mapOf(item1.id to 0),
+            pricingComposable = ::WashFoldPricingComposable,
+        )
+
+        val expectedText = getString(R.string.expected_wash_price, formatter.format(item1.price))
+        composeTestRule.onNodeWithText(expectedText).assertIsDisplayed()
+    }
+
+    @Test
+    fun testWashFoldDoesNotShowNumberPickerOrTotalCost() {
+        setContent(
+            items = listOf(item1),
+            itemCounts = mapOf(item1.id to 0),
+            pricingComposable = ::WashFoldPricingComposable,
+        )
+
+        composeTestRule.onNodeWithTag("IncrementButton").assertDoesNotExist()
+        composeTestRule.onNodeWithTag("DecrementButton").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Total price:").assertDoesNotExist()
     }
 
     @Test
@@ -190,7 +230,7 @@ class DryCleaningComposableTest {
         composeTestRule.onNodeWithText(getString(R.string.network_error)).assertDoesNotExist()
     }
 
-    private fun getString(resId: Int): String {
-        return androidx.test.core.app.ApplicationProvider.getApplicationContext<android.content.Context>().getString(resId)
+    private fun getString(resId: Int, vararg formatArgs: Any): String {
+        return androidx.test.core.app.ApplicationProvider.getApplicationContext<android.content.Context>().getString(resId, *formatArgs)
     }
 }

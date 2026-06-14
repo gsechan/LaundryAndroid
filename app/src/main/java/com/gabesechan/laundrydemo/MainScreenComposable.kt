@@ -3,11 +3,13 @@ package com.gabesechan.laundrydemo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.gabesechan.laundrydemo.accountscreen.AccountScreen
-import com.gabesechan.laundrydemo.drycleaningscreen.DryCleaningComposable
+import com.gabesechan.laundrydemo.schedulepickupscreen.SchedulePickupComposable
 import com.gabesechan.laundrydemo.login.CreateAccountScreen
 import com.gabesechan.laundrydemo.login.Login
 import com.gabesechan.laundrydemo.orders.OrderScreen
@@ -17,11 +19,10 @@ import com.gabesechan.laundrydemo.ui.widgets.NavMenuScreen
 import com.gabesechan.laundrydemo.user.AddAddressScreen
 import com.gabesechan.laundrydemo.models.User
 import com.gabesechan.laundrydemo.user.UserRepository
-import com.gabesechan.laundrydemo.washfoldscreen.WashFoldScreen
 
 private var navItems = listOf(
-    DestinationScreen("wash", R.string.wash_fold, R.drawable.washer, ::WashFoldScreen),
-    DestinationScreen("dryclean", R.string.dry_clean, R.drawable.dry_cleaning, ::DryCleaningComposable),
+    DestinationScreen("pickup/WASH_AND_FOLD", R.string.wash_fold, R.drawable.washer, ::SchedulePickupComposable),
+    DestinationScreen("pickup/DRY_CLEANING", R.string.dry_clean, R.drawable.dry_cleaning, ::SchedulePickupComposable),
     DestinationScreen("orders", R.string.orders, R.drawable.order, ::OrderScreen),
     DestinationScreen("account", R.string.account, R.drawable.account, ::AccountScreen),
 )
@@ -42,10 +43,18 @@ fun LoggedInContent(navController: NavHostController, navItems: List<Destination
     NavMenuScreen(navController, navItems) {
         NavHost(
             navController = navController,
-            startDestination = "wash",
+            startDestination = "pickup/WASH_AND_FOLD",
         ) {
             navItems.forEach { item->
-                composable(item.route){ item.screen(navController) }
+                val arguments = if (item.route.startsWith("pickup/")) {
+                    listOf(navArgument("itemType") {
+                        type = NavType.StringType
+                        defaultValue = item.route.removePrefix("pickup/")
+                    })
+                } else {
+                    emptyList()
+                }
+                composable(item.route, arguments = arguments){ item.screen(navController) }
             }
             composable("addAddress") {
                 AddAddressScreen(navController)
