@@ -1,5 +1,6 @@
 package com.gabesechan.laundrydemo.drycleaningscreen
 
+import androidx.lifecycle.SavedStateHandle
 import com.gabesechan.laundrydemo.laundromatinfo.AvailableDateTime
 import com.gabesechan.laundrydemo.laundromatinfo.AvailableTimesResponse
 import com.gabesechan.laundrydemo.laundromatinfo.ItemsResponse
@@ -85,7 +86,7 @@ class DryCleaningViewModelTest {
         }
         val orderServer = mockk<OrdersServer>()
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer)
+        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         assertFalse(viewModel.dataError)
@@ -102,7 +103,7 @@ class DryCleaningViewModelTest {
         }
         val orderServer = mockk<OrdersServer>()
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer)
+        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         assertTrue(viewModel.dataError)
@@ -116,7 +117,7 @@ class DryCleaningViewModelTest {
         }
         val orderServer = mockk<OrdersServer>()
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer)
+        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         val newAddress = Address("addr2", "456 Other St", null, "Othertown", "ST", "US", "11111")
@@ -133,7 +134,7 @@ class DryCleaningViewModelTest {
         }
         val orderServer = mockk<OrdersServer>()
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer)
+        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         viewModel.onCountChanged("1", 3)
@@ -149,7 +150,7 @@ class DryCleaningViewModelTest {
         }
         val orderServer = mockk<OrdersServer>()
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer)
+        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         viewModel.setPickupDate(1000L)
@@ -174,7 +175,7 @@ class DryCleaningViewModelTest {
         }
         val orderServer = mockk<OrdersServer>()
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer)
+        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         viewModel.setDropoffDate(2000L)
@@ -203,7 +204,7 @@ class DryCleaningViewModelTest {
             coEvery { postOrder(any()) } returns NetworkResponse(true, null, emptyList(), PostOrderResponse(order))
         }
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer)
+        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         viewModel.setPickupDate(1000L)
@@ -228,7 +229,7 @@ class DryCleaningViewModelTest {
             coEvery { postOrder(any()) } throws IOException()
         }
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer)
+        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         viewModel.setPickupDate(1000L)
@@ -253,7 +254,7 @@ class DryCleaningViewModelTest {
         }
         val orderServer = mockk<OrdersServer>()
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer)
+        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         val job = launch { viewModel.bookEnabled.collect {} }
@@ -283,7 +284,7 @@ class DryCleaningViewModelTest {
         }
         val orderServer = mockk<OrdersServer>()
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer)
+        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         val job = launch { viewModel.bookEnabled.collect {} }
@@ -311,7 +312,7 @@ class DryCleaningViewModelTest {
         }
         val orderServer = mockk<OrdersServer>()
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer)
+        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         val job = launch { viewModel.bookEnabled.collect {} }
@@ -339,7 +340,7 @@ class DryCleaningViewModelTest {
         }
         val orderServer = mockk<OrdersServer>()
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer)
+        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         val job = launch { viewModel.bookEnabled.collect {} }
@@ -367,7 +368,7 @@ class DryCleaningViewModelTest {
         }
         val orderServer = mockk<OrdersServer>()
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer)
+        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         val job = launch { viewModel.bookEnabled.collect {} }
@@ -399,7 +400,7 @@ class DryCleaningViewModelTest {
             }
         }
 
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer)
+        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         val job = launch { viewModel.bookEnabled.collect {} }
@@ -434,7 +435,7 @@ class DryCleaningViewModelTest {
         val orderServer = mockk<OrdersServer>()
 
         val noAddressUser = User("gabe", "gabe@example.com", "1234567890", emptyList())
-        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(noAddressUser), orderServer)
+        val viewModel = DryCleaningViewModel(laundromatInfoServer, userRepository(noAddressUser), orderServer, SavedStateHandle())
         awaitDataLoaded(viewModel)
 
         val job = launch { viewModel.bookEnabled.collect {} }

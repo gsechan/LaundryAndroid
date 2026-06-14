@@ -5,6 +5,7 @@ import com.gabesechan.laundrydemo.laundromatinfo.AvailableTimesResponse
 import com.gabesechan.laundrydemo.laundromatinfo.LaundromatInfoServer
 import com.gabesechan.laundrydemo.laundromatinfo.TimeRange
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gabesechan.laundrydemo.models.Item
@@ -33,7 +34,10 @@ class DryCleaningViewModel @Inject constructor(
     private val laundromatInfoServer: LaundromatInfoServer,
     userRepository: UserRepository,
     private val orderServer: OrdersServer,
+    savedStateHandle: SavedStateHandle,
 ): ViewModel() {
+    private val itemType: String = savedStateHandle.get<String>("itemType") ?: "DRY_CLEANING"
+
     val addresses = userRepository.current.map { it.addresses }
 
     var dataError: Boolean = false
@@ -80,7 +84,7 @@ class DryCleaningViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 availableTimesResponse = laundromatInfoServer.availableTimes().process()
-                items = laundromatInfoServer.items().process().items.filter { it.itemType == "DRY_CLEANING" }
+                items = laundromatInfoServer.items().process().items.filter { it.itemType == itemType }
                 val initCounts = items.associate {
                     it.id to 0
                 }
@@ -147,12 +151,19 @@ class DryCleaningViewModel @Inject constructor(
         _orderPosting.value = true
         viewModelScope.launch {
             try {
+                val orderLines = if (itemType == "WASH_AND_FOLD") {
+                    items.map {
+                        PostOrderLine(it.id, null)
+                    }
+                } else {
+                    _itemCounts.value.filter { it.value > 0 }.map { entry ->
+                        PostOrderLine(entry.key, entry.value.toString())
+                    }
+                }
                 orderServer.postOrder(
                     PostOrderRequest(
                         PostOrder(
-                            _itemCounts.value.map { entry ->
-                                PostOrderLine(entry.key, entry.value.toString())
-                            },
+                            orderLines,
                             _pickupDateValues.value.toUtcTime(),
                             _dropoffDateValues.value.toUtcTime(),
                             _selectedAddress.value!!.id,
@@ -177,8 +188,9 @@ class DryCleaningViewModel @Inject constructor(
 
     val bookEnabled = combine(_dropoffDateValues, _itemCounts, _orderPosting, _selectedAddress, _pickupDateValues) {
         dropoff, counts, posting, address, pickup ->
+        val enabledForItemType = itemType == "WASH_AND_FOLD" || (itemType == "DRY_CLEANING" && counts.any{ entry-> entry.value != 0})
         pickup.curSelectedDate != null && pickup.curSelectedTime!= null &&
             dropoff.curSelectedDate != null && dropoff.curSelectedTime != null &&
-            counts.any{ entry-> entry.value != 0} && !posting && address != null
+            enabledForItemType && !posting && address != null
     }.stateIn(viewModelScope, SharingStarted.Lazily, false)
 }

@@ -17,6 +17,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.gabesechan.laundrydemo.R
 import com.gabesechan.laundrydemo.drycleaningscreen.DryCleaningComposableInner
+import com.gabesechan.laundrydemo.drycleaningscreen.DryCleaningViewModel
 import com.gabesechan.laundrydemo.ui.widgets.AddressPicker
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePicker
 import com.gabesechan.laundrydemo.ui.widgets.DateTimePickerCallbacks
@@ -29,7 +30,7 @@ import java.math.BigDecimal
 import java.text.NumberFormat
 
 @Composable
-fun WashFoldScreen(navController: NavController, viewModel: WashFoldViewModel = hiltViewModel()) {
+fun WashFoldScreen(navController: NavController, viewModel: DryCleaningViewModel = hiltViewModel()) {
     val isLoaded by viewModel.dataLoaded.collectAsState()
     val isBooked by viewModel.isBooked.collectAsState()
     val pickupDateValues by viewModel.pickupDateValues.collectAsState()
@@ -39,7 +40,7 @@ fun WashFoldScreen(navController: NavController, viewModel: WashFoldViewModel = 
     val bookEnabled by viewModel.bookEnabled.collectAsState()
     val showBookingSpinner by viewModel.showBookingSpinner.collectAsState()
 
-
+/*
 
     DryCleaningComposableInner(
         isBooked,
@@ -66,22 +67,7 @@ fun WashFoldScreen(navController: NavController, viewModel: WashFoldViewModel = 
         navController,
         ::WashFoldPricingComposable
 
-    )
+    )*/
 }
 
 
-@Composable
-fun WashFoldPricingComposable(
-    items: List<Item>,
-    itemCounts: Map<String, Int>,
-    onCountChanged: (String, Int) -> Unit
-) {
-    val formatter = NumberFormat.getCurrencyInstance()
-    Text(
-        stringResource(
-            R.string.expected_wash_price,
-            formatter.format(items[0].price),
-        )
-    )
-
-}

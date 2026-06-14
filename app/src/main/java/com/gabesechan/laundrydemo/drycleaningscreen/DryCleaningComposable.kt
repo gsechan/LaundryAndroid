@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.gabesechan.laundrydemo.R
 import com.gabesechan.laundrydemo.models.Item
 import com.gabesechan.laundrydemo.ui.widgets.AddressPicker
@@ -43,7 +44,7 @@ fun DryCleaningComposable(navController: NavController, viewModel: DryCleaningVi
     val itemCounts by viewModel.itemCounts.collectAsState()
     val bookEnabled by viewModel.bookEnabled.collectAsState()
     val showBookingSpinner by viewModel.showBookingSpinner.collectAsState()
-
+    val itemType = navController.currentBackStackEntryAsState().value?.arguments?.getString("itemType")
     DryCleaningComposableInner(
         isBooked,
         viewModel.dataError,
@@ -66,7 +67,7 @@ fun DryCleaningComposable(navController: NavController, viewModel: DryCleaningVi
         bookEnabled,
         showBookingSpinner,
         navController,
-        ::DryCleanPricingComposable
+        if(itemType == "DRY_CLEANING") ::DryCleanPricingComposable else ::WashFoldPricingComposable
     )
 }
 
@@ -105,6 +106,23 @@ fun DryCleanPricingComposable(
     }
 
 }
+
+@Composable
+fun WashFoldPricingComposable(
+    items: List<Item>,
+    itemCounts: Map<String, Int>,
+    onCountChanged: (String, Int) -> Unit
+) {
+    val formatter = NumberFormat.getCurrencyInstance()
+    Text(
+        stringResource(
+            R.string.expected_wash_price,
+            formatter.format(items[0].price),
+        )
+    )
+
+}
+
 
 @Composable
 fun DryCleaningComposableInner(
