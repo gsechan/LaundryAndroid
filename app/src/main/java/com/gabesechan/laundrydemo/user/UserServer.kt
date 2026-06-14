@@ -1,7 +1,6 @@
 package com.gabesechan.laundrydemo.user
 
-import com.gabesechan.laundrydemo.login.LoginAddress
-import com.gabesechan.laundrydemo.login.LoginUser
+import com.gabesechan.laundrydemo.models.Address
 import com.gabesechan.laundrydemo.network.NetworkResponse
 import kotlinx.serialization.Serializable
 import retrofit2.http.Body
@@ -9,8 +8,8 @@ import retrofit2.http.Headers
 import retrofit2.http.POST
 
 
-@Serializable data class PostAddressRequest(val address: LoginAddress)
-@Serializable data class PostAddressResponse(val address: LoginAddress)
+@Serializable data class PostAddressRequest(val address: Address)
+@Serializable data class PostAddressResponse(val address: Address)
 
 
 interface UserServer {

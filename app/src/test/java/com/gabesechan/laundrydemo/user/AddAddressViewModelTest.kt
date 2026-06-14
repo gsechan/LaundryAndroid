@@ -3,7 +3,6 @@ package com.gabesechan.laundrydemo.user
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.runtime.snapshots.Snapshot
-import com.gabesechan.laundrydemo.login.LoginAddress
 import com.gabesechan.laundrydemo.models.Address
 import com.gabesechan.laundrydemo.models.User
 import com.gabesechan.laundrydemo.network.NetworkResponse
@@ -142,7 +141,7 @@ class AddAddressViewModelTest {
 
     @Test
     fun testAddAccountClickedSuccessUpdatesUserAndEmitsNavEvent() = runTest {
-        val newAddress = LoginAddress("addr2", "123 Main St", null, "Anytown", "ST", "US", "00000")
+        val newAddress = Address("addr2", "123 Main St", null, "Anytown", "ST", "US", "00000")
         val userServer = mockk<UserServer> {
             coEvery { addAddress(any()) } returns NetworkResponse(
                 true, null, emptyList(), PostAddressResponse(newAddress)

@@ -1,8 +1,8 @@
 package com.gabesechan.laundrydemo.login
 
 import com.gabesechan.laundrydemo.network.BadAuthException
-import com.gabesechan.laundrydemo.models.Address
 import com.gabesechan.laundrydemo.models.User
+import com.gabesechan.laundrydemo.models.incomingdto.IncomingUser
 import com.gabesechan.laundrydemo.user.UserRepository
 import okio.IOException
 import javax.inject.Inject
@@ -87,7 +87,7 @@ class LoginAPI @Inject constructor(
         email: String,
     ): LoginResult {
         val request = CreateUserRequest(
-            LoginUser(
+            IncomingUser(
                 name,
                 email,
                 phone,

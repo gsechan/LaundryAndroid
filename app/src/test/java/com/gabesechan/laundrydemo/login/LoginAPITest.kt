@@ -2,6 +2,7 @@ package com.gabesechan.laundrydemo.login
 
 import com.gabesechan.laundrydemo.network.NetworkResponse
 import com.gabesechan.laundrydemo.models.User
+import com.gabesechan.laundrydemo.models.incomingdto.IncomingUser
 import com.gabesechan.laundrydemo.user.UserRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -13,7 +14,7 @@ import org.junit.Test
 
 class LoginAPITest {
 
-    private val loginUser = LoginUser(
+    private val incomingUser = IncomingUser(
         "gabe",
         "gabe@example.com",
         "1234567890",
@@ -115,7 +116,7 @@ class LoginAPITest {
         val loginServer = mockk<LoginServer> {
             coEvery { login(any()) } returns NetworkResponse(
                 true, null, emptyList(),
-                LoginResponse("session-token", loginUser)
+                LoginResponse("session-token", incomingUser)
             )
         }
         val api = LoginAPI(userRepo, loginServer)
@@ -139,7 +140,7 @@ class LoginAPITest {
             coEvery { setUser(any(), any()) } returns Unit
         }
         val loginServer = mockk<LoginServer> {
-            coEvery { checkAuth(any()) } returns NetworkResponse(true, null, emptyList(), loginUser)
+            coEvery { checkAuth(any()) } returns NetworkResponse(true, null, emptyList(), incomingUser)
         }
         val api = LoginAPI(userRepo, loginServer)
         val user = api.checkAuth("token")
@@ -177,7 +178,7 @@ class LoginAPITest {
         val loginServer = mockk<LoginServer> {
             coEvery { createAccount(any()) } returns NetworkResponse(
                 true, null, emptyList(),
-                CreateUserResponse("session-token", loginUser)
+                CreateUserResponse("session-token", incomingUser)
             )
         }
         val api = LoginAPI(userRepo, loginServer)
@@ -211,7 +212,7 @@ class LoginAPITest {
             coEvery { setUser(any(), any()) } returns Unit
         }
         val loginServer = mockk<LoginServer> {
-            coEvery { checkAuth(any()) } returns NetworkResponse(true, null, emptyList(), loginUser)
+            coEvery { checkAuth(any()) } returns NetworkResponse(true, null, emptyList(), incomingUser)
         }
         val api = LoginAPI(userRepo, loginServer)
         api.useSavedLogin()

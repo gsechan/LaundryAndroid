@@ -7,7 +7,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gabesechan.laundrydemo.models.Address
-import com.gabesechan.laundrydemo.login.LoginAddress
 import com.gabesechan.laundrydemo.login.asFlow
 import com.gabesechan.laundrydemo.login.combine
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -63,7 +62,7 @@ class AddAddressViewModel @Inject constructor(
         _addRunning.value = true
         viewModelScope.launch(Dispatchers.IO) {
             val request = PostAddressRequest(
-                LoginAddress(
+                Address(
                     "",
                 street1.text.toString(),
                 street2.text.toString(),
@@ -76,17 +75,8 @@ class AddAddressViewModel @Inject constructor(
             try {
 
                 val response = userServer.addAddress(request).process()
-                val address = Address(
-                    response.address.id,
-                    response.address.street1,
-                    response.address.street2,
-                    response.address.city,
-                    response.address.state,
-                    response.address.country,
-                    response.address.postcode
-                )
                 val user =userRepository.current.value.copy(
-                    addresses = userRepository.current.value.addresses + address
+                    addresses = userRepository.current.value.addresses + response.address
                 )
                 userRepository.setUser(user, userRepository.authToken)
                 _navEvents.emit(Unit)

@@ -1,8 +1,7 @@
 package com.gabesechan.laundrydemo.login
 
 import com.gabesechan.laundrydemo.network.NetworkResponse
-import com.gabesechan.laundrydemo.models.Address
-import com.gabesechan.laundrydemo.models.User
+import com.gabesechan.laundrydemo.models.incomingdto.IncomingUser
 import kotlinx.serialization.Serializable
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -15,54 +14,15 @@ data class LoginRequest(val phone: String, val password: String, val organizatio
 @Serializable
 data class LoginResponse(
     val session: String,
-    val user: LoginUser
+    val user: IncomingUser
 )
-@Serializable
-data class LoginUser(
-    val name: String,
-    val email: String?,
-    val phone: String,
-    val addresses: List<LoginAddress>,
-) {
-    fun toModel() : User {
-        return User(
-            name,
-            email,
-            phone,
-            addresses.map(LoginAddress::toModel)
-        )
-    }
-}
-
-@Serializable
-data class LoginAddress(
-    val id: String,
-    val street1: String,
-    val street2: String?,
-    val city: String,
-    val state: String,
-    val country: String,
-    val postcode: String
-) {
-    fun toModel(): Address {
-        return Address(
-            id,
-            street1,
-            street2,
-            city,
-            state,
-            country,
-            postcode
-        )
-    }
-}
 
 @Serializable
 data class CheckAuthRequest(val token: String)
 
 @Serializable
 data class CreateUserRequest(
-    val user: LoginUser,
+    val user: IncomingUser,
     val password: String,
     val org: String,
 )
@@ -70,7 +30,7 @@ data class CreateUserRequest(
 @Serializable
 data class CreateUserResponse(
     val session: String,
-    val user: LoginUser
+    val user: IncomingUser
 )
 
 
@@ -83,7 +43,7 @@ interface LoginServer {
 
     @Headers("Content-Type: application/json")
     @POST("checkAuth")
-    suspend fun checkAuth(@Body request: CheckAuthRequest): NetworkResponse<LoginUser>
+    suspend fun checkAuth(@Body request: CheckAuthRequest): NetworkResponse<IncomingUser>
 
     @Headers("Content-Type: application/json")
     @GET("logout")
