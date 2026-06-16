@@ -84,11 +84,7 @@ class SchedulePickupViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 availableTimesResponse = laundromatInfoServer.availableTimes().process()
-                items = laundromatInfoServer.items().process().items.filter { it.itemType == itemType }
-                val initCounts = items.associate {
-                    it.id to 0
-                }
-                _itemCounts.value = initCounts
+                fetchItems(_selectedAddress.value?.id)
                 _pickupDateValues.value = _pickupDateValues.value.copy(
                     selectableDates = SelectableDeliveryDates(availableTimesResponse.pickup, 0)
                 )
@@ -100,8 +96,21 @@ class SchedulePickupViewModel @Inject constructor(
         }
     }
 
+    private suspend fun fetchItems(addressId: String?) {
+        items = laundromatInfoServer.items(addressId).process().items.filter { it.itemType == itemType }
+        _itemCounts.value = items.associate { it.id to 0 }
+    }
+
     fun selectAddress(address: Address) {
         _selectedAddress.value = address
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                fetchItems(address.id)
+            }
+            catch (_: IOException) {
+                dataError = true
+            }
+        }
     }
 
     fun setPickupDate(date: Long?) {

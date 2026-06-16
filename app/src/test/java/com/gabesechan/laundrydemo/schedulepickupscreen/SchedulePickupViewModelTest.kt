@@ -16,6 +16,7 @@ import com.gabesechan.laundrydemo.models.Address
 import com.gabesechan.laundrydemo.models.User
 import com.gabesechan.laundrydemo.orders.PostOrderLine
 import com.gabesechan.laundrydemo.login.UserRepository
+import io.mockk.anyNullable
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -89,7 +90,7 @@ class SchedulePickupViewModelTest {
     fun testInitSuccessLoadsDryCleaningItemsAndEnablesPickupDates() {
         val laundromatInfoServer = mockk<LaundromatInfoServer> {
             coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
-            coEvery { items() } returns NetworkResponse(
+            coEvery { items(anyNullable()) } returns NetworkResponse(
                 true, null, emptyList(),
                 ItemsResponse(listOf(dryCleanItem, washFoldItem))
             )
@@ -123,7 +124,7 @@ class SchedulePickupViewModelTest {
     fun testSelectAddressUpdatesSelectedAddress() {
         val laundromatInfoServer = mockk<LaundromatInfoServer> {
             coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
-            coEvery { items() } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
+            coEvery { items(anyNullable()) } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
         }
         val orderServer = mockk<OrdersServer>()
 
@@ -140,7 +141,7 @@ class SchedulePickupViewModelTest {
     fun testOnCountChangedUpdatesItemCounts() {
         val laundromatInfoServer = mockk<LaundromatInfoServer> {
             coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
-            coEvery { items() } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
+            coEvery { items(anyNullable()) } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
         }
         val orderServer = mockk<OrdersServer>()
 
@@ -156,7 +157,7 @@ class SchedulePickupViewModelTest {
     fun testSetPickupDateAndTimeUpdatesDropoffSelectableDates() {
         val laundromatInfoServer = mockk<LaundromatInfoServer> {
             coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
-            coEvery { items() } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
+            coEvery { items(anyNullable()) } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
         }
         val orderServer = mockk<OrdersServer>()
 
@@ -181,7 +182,7 @@ class SchedulePickupViewModelTest {
     fun testSetDropoffDateAndTime() {
         val laundromatInfoServer = mockk<LaundromatInfoServer> {
             coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
-            coEvery { items() } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
+            coEvery { items(anyNullable()) } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
         }
         val orderServer = mockk<OrdersServer>()
 
@@ -201,7 +202,7 @@ class SchedulePickupViewModelTest {
     fun testBookSuccessSetsIsBeooked() = runTest {
         val laundromatInfoServer = mockk<LaundromatInfoServer> {
             coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
-            coEvery { items() } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
+            coEvery { items(anyNullable()) } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
         }
         val epoch = OffsetDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC)
         val order = Order(
@@ -233,7 +234,7 @@ class SchedulePickupViewModelTest {
     fun testBookNetworkErrorSetsDataError() = runTest {
         val laundromatInfoServer = mockk<LaundromatInfoServer> {
             coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
-            coEvery { items() } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
+            coEvery { items(anyNullable()) } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
         }
         val orderServer = mockk<OrdersServer> {
             coEvery { postOrder(any()) } throws IOException()
@@ -260,7 +261,7 @@ class SchedulePickupViewModelTest {
 
         val laundromatInfoServer = mockk<LaundromatInfoServer> {
             coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
-            coEvery { items() } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
+            coEvery { items(anyNullable()) } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
         }
         val orderServer = mockk<OrdersServer>()
 
@@ -290,7 +291,7 @@ class SchedulePickupViewModelTest {
 
         val laundromatInfoServer = mockk<LaundromatInfoServer> {
             coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
-            coEvery { items() } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
+            coEvery { items(anyNullable()) } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
         }
         val orderServer = mockk<OrdersServer>()
 
@@ -318,7 +319,7 @@ class SchedulePickupViewModelTest {
 
         val laundromatInfoServer = mockk<LaundromatInfoServer> {
             coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
-            coEvery { items() } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
+            coEvery { items(anyNullable()) } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
         }
         val orderServer = mockk<OrdersServer>()
 
@@ -346,7 +347,7 @@ class SchedulePickupViewModelTest {
 
         val laundromatInfoServer = mockk<LaundromatInfoServer> {
             coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
-            coEvery { items() } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
+            coEvery { items(anyNullable()) } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
         }
         val orderServer = mockk<OrdersServer>()
 
@@ -374,7 +375,7 @@ class SchedulePickupViewModelTest {
 
         val laundromatInfoServer = mockk<LaundromatInfoServer> {
             coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
-            coEvery { items() } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
+            coEvery { items(anyNullable()) } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
         }
         val orderServer = mockk<OrdersServer>()
 
@@ -402,7 +403,7 @@ class SchedulePickupViewModelTest {
 
         val laundromatInfoServer = mockk<LaundromatInfoServer> {
             coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
-            coEvery { items() } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
+            coEvery { items(anyNullable()) } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
         }
         val orderServer = mockk<OrdersServer> {
             coEvery { postOrder(any()) } coAnswers {
@@ -440,7 +441,7 @@ class SchedulePickupViewModelTest {
 
         val laundromatInfoServer = mockk<LaundromatInfoServer> {
             coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
-            coEvery { items() } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
+            coEvery { items(anyNullable()) } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
         }
         val orderServer = mockk<OrdersServer>()
 
@@ -468,7 +469,7 @@ class SchedulePickupViewModelTest {
     fun testInitWithWashAndFoldItemTypeFiltersToWashAndFoldItems() {
         val laundromatInfoServer = mockk<LaundromatInfoServer> {
             coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
-            coEvery { items() } returns NetworkResponse(
+            coEvery { items(anyNullable()) } returns NetworkResponse(
                 true, null, emptyList(),
                 ItemsResponse(listOf(dryCleanItem, washFoldItem))
             )
@@ -489,7 +490,7 @@ class SchedulePickupViewModelTest {
 
         val laundromatInfoServer = mockk<LaundromatInfoServer> {
             coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
-            coEvery { items() } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(washFoldItem)))
+            coEvery { items(anyNullable()) } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(washFoldItem)))
         }
         val orderServer = mockk<OrdersServer>()
 
@@ -515,7 +516,7 @@ class SchedulePickupViewModelTest {
     fun testBookWithWashAndFoldPostsLineWithNullQuantityForEachItem() = runTest {
         val laundromatInfoServer = mockk<LaundromatInfoServer> {
             coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
-            coEvery { items() } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(washFoldItem)))
+            coEvery { items(anyNullable()) } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(washFoldItem)))
         }
         val epoch = OffsetDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC)
         val order = Order(
@@ -547,7 +548,7 @@ class SchedulePickupViewModelTest {
     fun testBookWithWashAndFoldPostsAllLinesWithNullQuantity() = runTest {
         val laundromatInfoServer = mockk<LaundromatInfoServer> {
             coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
-            coEvery { items() } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(washFoldItem, washFoldItem2)))
+            coEvery { items(anyNullable()) } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(washFoldItem, washFoldItem2)))
         }
         val epoch = OffsetDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC)
         val order = Order(
@@ -579,7 +580,7 @@ class SchedulePickupViewModelTest {
     fun testBookWithDryCleaningOnlyIncludesItemsWithPositiveCounts() = runTest {
         val laundromatInfoServer = mockk<LaundromatInfoServer> {
             coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
-            coEvery { items() } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem, dryCleanItem2)))
+            coEvery { items(anyNullable()) } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem, dryCleanItem2)))
         }
         val epoch = OffsetDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC)
         val order = Order(
@@ -606,5 +607,42 @@ class SchedulePickupViewModelTest {
         coVerify(exactly = 1) {
             orderServer.postOrder(match { it.order.lines == listOf(PostOrderLine("1", "2")) })
         }
+    }
+
+    @Test
+    fun testSelectAddressRefetchesItemsWithAddressId() = runTest {
+        val newAddress = Address("addr2", "456 Other St", null, "Othertown", "ST", "US", "11111")
+        val newItem = Item("5", "Blazer", BigDecimal("20.00"), "DRY_CLEANING")
+        val laundromatInfoServer = mockk<LaundromatInfoServer> {
+            coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
+            coEvery { items(null) } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
+            coEvery { items("addr2") } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(newItem)))
+        }
+        val orderServer = mockk<OrdersServer>()
+
+        val viewModel = SchedulePickupViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
+        awaitDataLoaded(viewModel)
+        assertEquals(listOf(dryCleanItem), viewModel.items)
+
+        viewModel.selectAddress(newAddress)
+        viewModel.itemCounts.first { it.containsKey(newItem.id) }
+
+        assertEquals(listOf(newItem), viewModel.items)
+        assertEquals(mapOf(newItem.id to 0), viewModel.itemCounts.value)
+        coVerify(exactly = 1) { laundromatInfoServer.items("addr2") }
+    }
+
+    @Test
+    fun testInitPassesSelectedAddressIdToItems() = runTest {
+        val laundromatInfoServer = mockk<LaundromatInfoServer> {
+            coEvery { availableTimes() } returns NetworkResponse(true, null, emptyList(), availableTimesResponse)
+            coEvery { items("addr1") } returns NetworkResponse(true, null, emptyList(), ItemsResponse(listOf(dryCleanItem)))
+        }
+        val orderServer = mockk<OrdersServer>()
+
+        val viewModel = SchedulePickupViewModel(laundromatInfoServer, userRepository(), orderServer, SavedStateHandle())
+        awaitDataLoaded(viewModel)
+
+        coVerify(exactly = 1) { laundromatInfoServer.items("addr1") }
     }
 }

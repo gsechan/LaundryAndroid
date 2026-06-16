@@ -5,6 +5,7 @@ import com.gabesechan.laundrydemo.network.NetworkResponse
 import kotlinx.serialization.Serializable
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.Query
 
 @Serializable
 data class AvailableTimesResponse(
@@ -37,5 +38,5 @@ interface LaundromatInfoServer {
 
     @Headers("Content-Type: application/json")
     @GET("items")
-    suspend fun items(): NetworkResponse<ItemsResponse>
+    suspend fun items(@Query("addressId") addressId: String? = null): NetworkResponse<ItemsResponse>
 }
