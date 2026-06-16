@@ -18,7 +18,7 @@ import com.gabesechan.laundrydemo.ui.widgets.DestinationScreen
 import com.gabesechan.laundrydemo.ui.widgets.NavMenuScreen
 import com.gabesechan.laundrydemo.user.AddEditAddressScreen
 import com.gabesechan.laundrydemo.models.User
-import com.gabesechan.laundrydemo.user.UserRepository
+import com.gabesechan.laundrydemo.login.UserRepository
 
 private var navItems = listOf(
     DestinationScreen("pickup/WASH_AND_FOLD", R.string.wash_fold, R.drawable.washer, ::SchedulePickupComposable),

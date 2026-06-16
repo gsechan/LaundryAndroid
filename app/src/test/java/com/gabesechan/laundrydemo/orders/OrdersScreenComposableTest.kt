@@ -8,6 +8,7 @@ import com.gabesechan.laundrydemo.R
 import com.gabesechan.laundrydemo.models.Order
 import com.gabesechan.laundrydemo.models.OrderAddress
 import com.gabesechan.laundrydemo.models.OrderLine
+import com.gabesechan.laundrydemo.util.uuidToShortId
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -34,6 +35,9 @@ class OrdersScreenComposableTest {
     private val epoch = OffsetDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC)
 
     private val address = OrderAddress("123 Main St", null, "Anytown", "ST", "US", "00000")
+
+    private val uuid1 = "550e8400-e29b-41d4-a716-446655440000"
+    private val uuid2 = "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
 
     private fun order(id: String, state: String, lines: List<OrderLine>) = Order(
         id = id,
@@ -74,37 +78,37 @@ class OrdersScreenComposableTest {
 
     @Test
     fun testOrdersNotShownWhenNotLoaded() {
-        val order1 = order("1", "pending", listOf(lineWithQuantity))
+        val order1 = order(uuid1, "pending", listOf(lineWithQuantity))
 
         composeTestRule.setContent {
             OrderScreenInternal(false, listOf(order1))
         }
 
-        composeTestRule.onNodeWithText(string(R.string.order_num, "1")).assertDoesNotExist()
+        composeTestRule.onNodeWithText(string(R.string.order_num, uuidToShortId(uuid1))).assertDoesNotExist()
     }
 
     @Test
     fun testAllOrdersAreDisplayed() {
-        val order1 = order("1", "pending", listOf(lineWithQuantity))
-        val order2 = order("2", "completed", listOf(lineWithQuantity))
+        val order1 = order(uuid1, "pending", listOf(lineWithQuantity))
+        val order2 = order(uuid2, "completed", listOf(lineWithQuantity))
 
         composeTestRule.setContent {
             OrderScreenInternal(true, listOf(order1, order2))
         }
 
-        composeTestRule.onNodeWithText(string(R.string.order_num, "1")).assertIsDisplayed()
-        composeTestRule.onNodeWithText(string(R.string.order_num, "2")).assertIsDisplayed()
+        composeTestRule.onNodeWithText(string(R.string.order_num, uuidToShortId(uuid1))).assertIsDisplayed()
+        composeTestRule.onNodeWithText(string(R.string.order_num, uuidToShortId(uuid2))).assertIsDisplayed()
     }
 
     @Test
     fun testOrderNumberStatusAndLinesAreDisplayed() {
-        val order1 = order("1", "pending", listOf(lineWithQuantity, lineWithoutQuantity))
+        val order1 = order(uuid1, "pending", listOf(lineWithQuantity, lineWithoutQuantity))
 
         composeTestRule.setContent {
             OrderScreenInternal(true, listOf(order1))
         }
 
-        composeTestRule.onNodeWithText(string(R.string.order_num, "1")).assertIsDisplayed()
+        composeTestRule.onNodeWithText(string(R.string.order_num, uuidToShortId(uuid1))).assertIsDisplayed()
         composeTestRule.onNodeWithText(string(R.string.status, "pending")).assertIsDisplayed()
         composeTestRule.onNodeWithText(
             string(

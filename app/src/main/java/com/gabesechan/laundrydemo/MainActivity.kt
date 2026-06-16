@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
-import com.gabesechan.laundrydemo.user.UserRepository
+import com.gabesechan.laundrydemo.login.UserRepository
 import com.gabesechan.laundrydemo.login.LoginAPI
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers

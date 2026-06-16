@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gabesechan.laundrydemo.login.LoginAPI
 import com.gabesechan.laundrydemo.models.Address
-import com.gabesechan.laundrydemo.user.UserRepository
+import com.gabesechan.laundrydemo.login.UserRepository
 import com.gabesechan.laundrydemo.user.UserServer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

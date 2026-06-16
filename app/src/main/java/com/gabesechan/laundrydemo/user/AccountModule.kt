@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import com.gabesechan.laundrydemo.login.TokenStorage
+import com.gabesechan.laundrydemo.login.UserRepository
 import com.gabesechan.laundrydemo.orders.OrdersServer
 import dagger.Module
 import dagger.Provides

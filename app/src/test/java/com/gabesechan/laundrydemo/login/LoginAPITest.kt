@@ -3,7 +3,7 @@ package com.gabesechan.laundrydemo.login
 import com.gabesechan.laundrydemo.network.NetworkResponse
 import com.gabesechan.laundrydemo.models.User
 import com.gabesechan.laundrydemo.login.TokenStorage
-import com.gabesechan.laundrydemo.user.UserRepository
+import com.gabesechan.laundrydemo.login.UserRepository
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify

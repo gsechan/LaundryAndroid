@@ -1,5 +1,6 @@
 package com.gabesechan.laundrydemo.user
 
+import com.gabesechan.laundrydemo.login.UserRepository
 import com.gabesechan.laundrydemo.models.User
 import junit.framework.TestCase.*
 import org.junit.Test

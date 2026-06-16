@@ -19,6 +19,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.gabesechan.laundrydemo.R
 import com.gabesechan.laundrydemo.models.Order
+import com.gabesechan.laundrydemo.util.uuidToShortId
 
 @Composable
 fun OrderScreen(navController: NavController, viewModel: OrderViewModel = hiltViewModel()) {
@@ -43,7 +44,7 @@ fun OrderScreenInternal(isLoaded: Boolean, orders: List<Order>) {
 @Composable
 fun OrderDisplay(order: Order) {
     Column() {
-        Text(stringResource(R.string.order_num, order.id))
+        Text(stringResource(R.string.order_num, uuidToShortId(order.id)))
         Text(stringResource(R.string.status, order.state))
         order.lines.forEach { line->
             if(line.quantity != null && line.totalCost != null) {

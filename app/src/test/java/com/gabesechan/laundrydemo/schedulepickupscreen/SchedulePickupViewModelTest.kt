@@ -15,7 +15,7 @@ import com.gabesechan.laundrydemo.orders.PostOrderResponse
 import com.gabesechan.laundrydemo.models.Address
 import com.gabesechan.laundrydemo.models.User
 import com.gabesechan.laundrydemo.orders.PostOrderLine
-import com.gabesechan.laundrydemo.user.UserRepository
+import com.gabesechan.laundrydemo.login.UserRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
